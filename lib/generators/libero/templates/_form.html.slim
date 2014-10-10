@@ -1,0 +1,10 @@
+= tyson_errors @<%= singular_table_name %>
+
+<% belongs_to_associations.each do |attribute| -%>
+=f.association :<%=attribute%>
+<% end -%>
+
+<% content_columns.each do |attribute| -%>
+=f.input :<%=attribute%>
+<% end -%>
+
