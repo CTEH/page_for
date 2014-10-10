@@ -10,6 +10,10 @@ module PageFor
     attr_accessor :configuration
   end
 
+  def self.root
+    File.expand_path('../..', __FILE__)
+  end
+
   def self.configure
     self.configuration ||= Configuration.new
     yield(configuration)
