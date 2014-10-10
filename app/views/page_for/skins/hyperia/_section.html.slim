@@ -1,0 +1,6 @@
+div class="panel panel-default"
+  - if section_builder.title.present?
+    div class="panel-heading"
+      h3 class="panel-title" #{section_builder.title}
+  div class="panel-body"
+    | #{section_builder.content}

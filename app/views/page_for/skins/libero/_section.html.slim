@@ -1,0 +1,11 @@
+- if section_builder.title.present?
+  div class="module head"
+    div class="module-head"
+      b #{section_builder.title}
+    div class="module-body"
+      | #{section_builder.content}
+- else
+  div class="module no-head"
+    div class="module-body"
+      | #{section_builder.content}
+
