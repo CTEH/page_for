@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="777ada58-e891-4e25-82e5-75c48301dcf5" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/page_for.iml" afterPath="$PROJECT_DIR$/.idea/page_for.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/table_for.rb" afterPath="$PROJECT_DIR$/lib/table_for.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/helpers/table_for_helper.rb" afterPath="$PROJECT_DIR$/app/helpers/table_for_helper.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="777ada58-e891-4e25-82e5-75c48301dcf5" name="Default" comment="" />
     <ignored path="page_for.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="TRACKING_ENABLED" value="true" />
