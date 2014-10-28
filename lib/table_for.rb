@@ -21,11 +21,14 @@ module TableFor
       self.current_ability = context.current_ability
       self.filters = []
 
-      self.paginate = options[:paginate] || true
-      self.page_size = options[:page_size]
+      self.paginate = true
+      self.paginate = options[:paginate] unless options[:paginate] == nil
 
-      self.apply_abilities = options[:apply_abilities] || true
-      self.searchable = options[:searchable] || false
+      self.apply_abilities = true
+      self.apply_abilities = options[:apply_abilities] if options[:apply_abilities] != nil
+
+      self.searchable = true
+      self.searchable = options[:searchable] if options[:searchable] != nil
 
       if self.resources.length > 0
         resource = resources.first

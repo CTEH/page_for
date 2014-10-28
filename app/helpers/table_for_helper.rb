@@ -11,7 +11,8 @@ module TableForHelper
 
     builder = TableFor::TableBuilder.new(self, resources, options)
     yield(builder) if block_given?
-    builder.render.html_safe
+
+     builder.render.html_safe
   end
 
 
