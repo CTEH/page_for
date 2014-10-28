@@ -6,8 +6,8 @@ require 'page_for/version'
 Gem::Specification.new do |spec|
   spec.name          = "page_for"
   spec.version       = PageFor::VERSION
-  spec.authors       = ["jbarket"]
-  spec.email         = ["jbarket@sleepunit.com"]
+  spec.authors       = ["jrhicks", "jbarket"]
+  spec.email         = ["jrhicks@cteh.com", "jbarket@sleepunit.com"]
   spec.summary       = %q{TODO: Write a short summary. Required.}
   spec.description   = %q{TODO: Write a longer description. Optional.}
   spec.homepage      = ""
