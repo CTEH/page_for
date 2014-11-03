@@ -5,7 +5,6 @@ require 'definition_list_for'
 require 'pivot_for'
 
 module PageFor
-
   class << self
     attr_accessor :configuration
   end
@@ -16,7 +15,7 @@ module PageFor
 
   def self.configure
     self.configuration ||= Configuration.new
-    yield(configuration)
+    yield(configuration) if block_given?
   end
 
   class Configuration
@@ -26,6 +25,8 @@ module PageFor
       @theme = 'hyperia'
     end
   end
+
+  self.configure
 
   class Engine < ::Rails::Engine
   end
