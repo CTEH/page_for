@@ -1,9 +1,7 @@
 div class='panel panel-default'
   div class='panel-heading'
     ul class='nav nav-tabs'
-
       - tab_section_builder.tab_titles.each_with_index do |t, index|
-
         - if tab_section_builder.active_tab == index
           - tab_class = "active"
         - else
@@ -19,9 +17,7 @@ div class='panel panel-default'
   div class='panel-body'
     div class='tab'
       div class='tab-content'
-
         - tab_section_builder.tab_contents.each_with_index do |tc, index|
-
           - if tab_section_builder.active_tab == index
             - tab_class = "active in"
           - else

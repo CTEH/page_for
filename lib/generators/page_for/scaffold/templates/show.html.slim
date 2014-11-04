@@ -1,7 +1,7 @@
 =page_for @<%=singular_table_name%> do |page|
   =page.describe "Viewing <%=class_name%>"
   =page.button :edit
-<%for hm in has_many_associations -%>
+<%has_many_associations.each do |hm| -%>
   =page.add_button :<%=hm.to_s.singularize%>
 <%end -%>
 
@@ -14,7 +14,7 @@
       =dl.define :<%=attribute%>
 <%end -%>
 
-<%for hm in has_many_associations -%>
+<%has_many_associations.each do |hm| -%>
   =page.tab(<%=hm.to_s.titleize.inspect%>) do
     =table_for(@<%=singular_table_name%>.<%=hm%>) do |t|
       =t.action :view
