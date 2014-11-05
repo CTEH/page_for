@@ -343,7 +343,7 @@ module PageFor
 
     def render_button_dropdown
       if self.buttons.length > 0
-        '<div class="btn-group pull-right" style="margin: 0;">
+        ('<div class="btn-group pull-right" style="margin: 0;">
         <a style="border: 1px solid white;" class="btn dropdown-toggle" data-toggle="dropdown" href="#">
          &nbsp;
         <span class="icon-edit"></span>
@@ -352,7 +352,7 @@ module PageFor
        <ul class="dropdown-menu">' +
             self.buttons.map {|b| b.render_dropdown }.join('') +
             '</ul>
-       </div>'
+       </div>').html_safe
 
       else
         ''
