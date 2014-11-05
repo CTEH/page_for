@@ -37,7 +37,7 @@ class RouteTreeBuilder
     if rs and rs.length > 0
       rs.each do |resources_name|
         children = self.data[resources_name]
-        puts "DRAW ROUTES FOR #{p}#{resources_name}"
+        # puts "DRAW ROUTES FOR #{p}#{resources_name}"
         self.context.resources resources_name, concerns: ["actions_for_#{resources_name}".to_sym] do
           draw_routes_for(children, "#{p}#{resources_name}/")
         end
