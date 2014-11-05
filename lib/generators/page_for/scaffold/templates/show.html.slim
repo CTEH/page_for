@@ -5,7 +5,7 @@
   - page.add_button :<%=hm.to_s.singularize%>
 <%end -%>
 
-  -page.section do
+  - page.section do
     = definition_list_for(@<%=singular_table_name%>) do |dl|
 <%belongs_to_associations.each do |attribute| -%>
       - dl.define :<%=attribute%>
@@ -16,7 +16,7 @@
 
 
 <%has_many_associations.each do |hm| -%>
-  -page.tab(<%=hm.to_s.titleize.inspect%>) do
+  - page.tab(<%=hm.to_s.titleize.inspect%>) do
     = table_for(@<%=singular_table_name%>.<%=hm%>) do |t|
       - t.action :view
 
