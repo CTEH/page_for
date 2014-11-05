@@ -5,7 +5,6 @@ require 'definition_list_for'
 require 'pivot_for'
 
 module PageFor
-
   class << self
     attr_accessor :configuration
   end
@@ -16,7 +15,7 @@ module PageFor
 
   def self.configure
     self.configuration ||= Configuration.new
-    yield(configuration)
+    yield(configuration) if block_given?
   end
 
   class Configuration
@@ -27,11 +26,12 @@ module PageFor
     end
   end
 
+  self.configure # Configure, with defaults if not explicitly called
+
   class Engine < ::Rails::Engine
   end
 
   class AddButtonBuilder
-
     attr_accessor :page_builder, :label, :url_options,
                   :class, :child_klass, :method,
                   :resource, :url, :block, :phone_class,
@@ -79,7 +79,6 @@ module PageFor
         self.page_builder.context.can? :create, obj
       end
     end
-
   end
 
 
@@ -118,7 +117,6 @@ module PageFor
 
 
   class ButtonBuilder
-
     attr_accessor :page_builder, :label, :url_options,
                   :class, :action, :method,
                   :resource, :url, :block, :phone_class,
@@ -167,11 +165,10 @@ module PageFor
     def can?
       self.page_builder.context.can? self.action, self.resource
     end
-
   end
 
-  class TabSectionBuilder
 
+  class TabSectionBuilder
     attr_accessor :context, :tab_titles, :tab_contents, :unique
 
     def initialize(context)
@@ -212,7 +209,6 @@ module PageFor
     def tab_id(index)
       "#{tab_titles[index].to_s.underscore}_tab".gsub(' ','_')
     end
-
   end
 
 
@@ -237,7 +233,6 @@ module PageFor
         self.page_helper.context.render_page_for(partial: "section", locals: { section_builder: self })
       end
     end
-
   end
 
 
@@ -272,7 +267,7 @@ module PageFor
           if resource.id == nil
             "New #{resource.class.name.titleize}"
           else
-            "#{resource.class.name.titleize}<span class='hidden-phone'>: #{resource.to_s}</span>"
+            "#{resource.class.name.titleize}<span class='hidden-phone'>: #{resource.to_s}</span>".html_safe
           end
         end
       end
@@ -363,7 +358,5 @@ module PageFor
         ''
       end
     end
-
   end
-
 end

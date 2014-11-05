@@ -1,5 +1,4 @@
 module PageForHelper
-
   def page_for_theme_dir
     "page_for/skins/#{PageFor.configuration.theme}/"
   end
@@ -10,7 +9,6 @@ module PageForHelper
 
     ApplicationController.new.render_to_string(options).html_safe
   end
-
 
   def page_for(resource, *args, &block)
     options = args.extract_options!
@@ -27,5 +25,4 @@ module PageForHelper
 
     body
   end
-
 end
