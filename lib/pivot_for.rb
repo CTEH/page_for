@@ -425,11 +425,13 @@ module PivotFor
 
   class PivotBuilder
 
-    attr_accessor :context, :resources, :grid, :block, :row_builder, :column_builder, :value_builder
+    attr_accessor :context, :resources, :grid, :block, :row_builder, :column_builder, :value_builder,
+                  :freeze_header
 
     def initialize(context, resources)
       self.context = context
       self.resources = resources
+      self.freeze_header = true
     end
 
     ######################################
@@ -470,6 +472,7 @@ module PivotFor
     def render
       self.build
       c = 'table table-striped table-condensed'
+      c+= ' freeze-header' if self.freeze_header
       c+= ' table-header-rotated' if self.vertical_headers?
       content_tag(:table, (content_tag(:thead, render_header) + content_tag(:tbody, render_body)), id: 'rotate', class: c)
     end

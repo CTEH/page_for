@@ -6,12 +6,13 @@ module PageFor
       source_root File.expand_path("../templates", __FILE__)
 
       def view_templates
-        template "_form.html.slim", "app/views/#{plural_file_name}/_form.html.slim"
-        template "edit.html.slim", "app/views/#{plural_file_name}/edit.html.slim"
-        template "index.html.slim", "app/views/#{plural_file_name}/index.html.slim"
-        template "new.html.slim", "app/views/#{plural_file_name}/new.html.slim"
-        template "show.html.slim", "app/views/#{plural_file_name}/show.html.slim"
-        template "controller.rb", "app/controllers/#{plural_file_name}_controller.rb"
+        #template "_form.html.slim", "app/views/#{plural_file_name}/_form.html.slim"
+        #template "edit.html.slim", "app/views/#{plural_file_name}/edit.html.slim"
+        #template "index.html.slim", "app/views/#{plural_file_name}/index.html.slim"
+        #template "new.html.slim", "app/views/#{plural_file_name}/new.html.slim"
+        #template "show.html.slim", "app/views/#{plural_file_name}/show.html.slim"
+        #template "controller.rb", "app/controllers/#{plural_file_name}_controller.rb"
+        template "actions_for_resources.rb.slim", "config/actions_for_resources/actions_for_#{plural_file_name}.rb"
       end
 
       protected

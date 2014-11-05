@@ -1,13 +1,13 @@
-=page_for <%=class_name%> do |page|
+= page_for <%=class_name%> do |page|
 
-  =page.describe "Listing of <%=class_name.pluralize.titleize%>"
+  - page.describe "Listing of <%=class_name.pluralize.titleize%>"
 
-  =page.section do
-    =table_for @<%=plural_table_name%> do |t|
-      =t.action :view
+  - page.section do
+    = table_for @<%=plural_table_name%> do |t|
+      - t.action :view
 <%belongs_to_associations.each do |attribute| -%>
-      =t.column :<%=attribute%>, sort: '<%=attribute%>_<%=guess_sort_column(attribute)%>'
+      - t.column :<%=attribute%>, sort: '<%=attribute%>_<%=guess_sort_column(attribute)%>'
 <%end -%>
 <%content_columns.each do |attribute| -%>
-      =t.column :<%=attribute%>
+      - t.column :<%=attribute%>
 <%end -%>

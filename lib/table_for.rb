@@ -8,7 +8,7 @@ module TableFor
                   :searchable, :search, :filters, :ransack_key,
                   :current_ability, :apply_abilities, :filtered_resources,
                   :belongs_to, :belongs_to_names,
-                  :klass, :klass_name
+                  :klass, :klass_name, :freeze_header
 
     def initialize(context, resources, options)
       self.context = context
@@ -23,6 +23,9 @@ module TableFor
 
       self.paginate = true
       self.paginate = options[:paginate] unless options[:paginate] == nil
+
+      self.freeze_header = true
+      self.freeze_header = options[:freeze_header] if options[:freeze_header] != nil
 
       self.apply_abilities = true
       self.apply_abilities = options[:apply_abilities] if options[:apply_abilities] != nil
@@ -129,6 +132,14 @@ module TableFor
       else
         aname = attribute.to_s
         self.content_columns.select { |c| c.name.to_s == aname} .first.try(:type) || "reference"
+      end
+    end
+
+    def table_class
+      if self.freeze_header
+        "freeze-header"
+      else
+        ""
       end
     end
 

@@ -4,8 +4,6 @@ class <%=class_name.pluralize%>Controller < ApplicationController
 
   def index
     @<%=plural_table_name%> = <%=class_name%>.accessible_by(current_ability)
-    @q = @<%=plural_table_name%>.search(params[:q])
-    @<%=plural_table_name%> = @q.result.page params[:page]
 
     respond_to do |format|
       format.html
@@ -22,7 +20,12 @@ class <%=class_name.pluralize%>Controller < ApplicationController
   end
 
   def new
-    @<%=singular_table_name%> = @nester.<%=plural_table_name%>.new
+    if @nester
+      @<%=singular_table_name%> = @nester.<%=plural_table_name%>.new
+    else
+      @<%=singular_table_name%> = <%=class_name%>.new
+    end
+
     authorize! :create, @<%=singular_table_name%>
 
     respond_to do |format|
@@ -36,12 +39,16 @@ class <%=class_name.pluralize%>Controller < ApplicationController
   end
 
   def create
-    @<%=singular_table_name%> = @nester.<%=plural_table_name%>.new(params[:<%=singular_table_name%>])
+    if @nester
+      @<%=singular_table_name%> = @nester.<%=plural_table_name%>.new(params[:<%=singular_table_name%>])
+    else
+      @<%=singular_table_name%> = <%=class_name%>.new(params[:<%=singular_table_name%>])
+    end
     authorize! :create, @<%=singular_table_name%>
 
     respond_to do |format|
       if @<%=singular_table_name%>.save
-        format.html { redirect_to @<%=singular_table_name%>, notice: '<%=class_name%> was successfully created.' }
+        format.html { redirect_to [@nester, @<%=singular_table_name%>].compact, notice: '<%=class_name%> was successfully created.' }
       else
         format.html { render action: "new" }
       end
@@ -54,7 +61,7 @@ class <%=class_name.pluralize%>Controller < ApplicationController
 
     respond_to do |format|
       if @<%=singular_table_name%>.update_attributes(params[:<%=singular_table_name%>])
-        format.html { redirect_to @<%=singular_table_name%>, notice: '<%=class_name%> was successfully updated.' }
+        format.html { redirect_to [@nester, @<%=singular_table_name%>].compact, notice: '<%=class_name%> was successfully updated.' }
       else
         format.html { render action: "edit" }
       end
@@ -66,7 +73,11 @@ class <%=class_name.pluralize%>Controller < ApplicationController
     authorize! :destroy, @<%=singular_table_name%>
     @<%=singular_table_name%>.destroy
 
-    redirect_to <%=plural_table_name%>_path, notice: "Successfully destroyed <%=singular_table_name%>."
+    if @nester
+      redirect_to @nester, notice: "Successfully destroyed <%=singular_table_name%>."
+    else
+      redirect_to <%=plural_table_name%>_path, notice: "Successfully destroyed <%=singular_table_name%>."
+    end
   end
 
 end
