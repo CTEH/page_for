@@ -48,7 +48,11 @@ class <%=class_name.pluralize%>Controller < ApplicationController
 
     respond_to do |format|
       if @<%=singular_table_name%>.save
-        format.html { redirect_to [@nester, @<%=singular_table_name%>].compact, notice: '<%=class_name%> was successfully created.' }
+        if @nester
+          format.html { redirect_to @nester, notice: '<%=class_name%> was successfully created.' }
+        else
+          format.html { redirect_to @<%=singular_table_name%>, notice: '<%=class_name%> was successfully created.' }
+        end
       else
         format.html { render action: "new" }
       end
@@ -61,7 +65,11 @@ class <%=class_name.pluralize%>Controller < ApplicationController
 
     respond_to do |format|
       if @<%=singular_table_name%>.update_attributes(params[:<%=singular_table_name%>])
-        format.html { redirect_to [@nester, @<%=singular_table_name%>].compact, notice: '<%=class_name%> was successfully updated.' }
+        if @nester
+          format.html { redirect_to @<%=singular_table_name%>, notice: '<%=class_name%> was successfully updated.' }
+        else
+          format.html { redirect_to @nester, notice: '<%=class_name%> was successfully updated.' }
+        end
       else
         format.html { render action: "edit" }
       end
