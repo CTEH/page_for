@@ -98,23 +98,8 @@ module DefinitionListFor
         return '<i>Blank</i>'
       end
       if content_column?(attribute)
-        case content_type(attribute)
-        when :string
-          v
-        when :decimal
-          return "%.2f"%(v)
-        when :text
-          return v
-        when :datetime
-          self.name_reflect_datetime(attribute)
-        when :date
-          v.try(:strftime, "%b %d, %Y")
-        when :integer
-          v
-        when :float
-          return "%.2f"%(v)
-        when :boolean
-          self.context.check_icon(resource.send(attribute))
+        if PageFor::Format.respond_to?(content_type)
+          PageFor::Format.send(content_type, v)
         else
           "Unhandled type in definition_list_helper"
         end
@@ -142,13 +127,6 @@ module DefinitionListFor
       rescue
         false
       end
-    end
-
-    def name_reflect_datetime(attribute)
-      if attribute.to_s["_on"]
-        d = self.resource.send(attribute).try(:strftime, "%b %d, %Y")
-      end
-      d = self.resource.send(attribute).try(:strftime, "%b %d, %Y %I:%M %p %Z")
     end
 
     def content_column?(attribute)

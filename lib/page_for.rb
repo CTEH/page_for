@@ -3,6 +3,7 @@ require "page_for/version"
 require 'table_for'
 require 'definition_list_for'
 require 'pivot_for'
+require 'format'
 
 module PageFor
   class << self

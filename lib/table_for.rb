@@ -372,31 +372,8 @@ module TableFor
         return output
       end
       if is_content_column
-        case content_type
-        when :string
-          nested_send(resource)
-        when :decimal
-          if v=nested_send(resource)
-            return "%.2f"%(v)
-          else
-            return ''
-          end
-        when :text
-          return nested_send(resource)
-        when :datetime
-          self.name_reflect_datetime(resource)
-        when :date
-          nested_send(resource).try(:strftime, "%b %d, %Y")
-        when :integer
-          nested_send(resource)
-        when :float
-          begin
-            return "%.2f"%(nested_send(resource))
-          rescue
-            return nested_send(resource)
-          end
-        when :boolean
-          self.table_builder.context.check_icon(nested_send(resource))
+        if PageFor::Format.respond_to?(content_type)
+          PageFor::Format.send(content_type, nested_send(resource))
         else
           "Unhandled type in table_for_helper"
         end
@@ -424,7 +401,6 @@ module TableFor
       end
     end
 
-
     def paperclip_size(resource)
       self.table_builder.context.number_to_human_size(resource.send("#{attribute}_file_size"))
     end
@@ -437,13 +413,5 @@ module TableFor
         false
       end
     end
-
-    def name_reflect_datetime(resource)
-      if attribute.to_s["_on"]
-        d = nested_send(resource).try(:strftime, "%b %d, %Y")
-      end
-      d = nested_send(resource).try(:strftime, "%b %d, %Y %I:%M %p %Z")
-    end
-
   end
 end
