@@ -98,8 +98,8 @@ module DefinitionListFor
         return '<i>Blank</i>'
       end
       if content_column?(attribute)
-        if PageFor::Format.respond_to?(content_type)
-          PageFor::Format.send(content_type, v)
+        if PageFor::Format.respond_to?(:content_type)
+          PageFor::Format.send(:content_type, v)
         else
           "Unhandled type in definition_list_helper"
         end

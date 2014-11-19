@@ -329,13 +329,16 @@ module PageFor
       self.context.render_page_for(partial: "page", locals: { page_builder: self })
     end
 
-    def render_top
+    def render_header
+      self.context.render_page_for(partial: "header", locals: { page_builder: self })
+    end
+
+    def render_title
       self.context.render_page_for(partial: "title", locals: { page_builder: self })
     end
 
     def render_buttons
-      if self.buttons.length > 0
-      end
+      self.context.render_page_for(partial: "buttons", locals: { page_builder: self })
     end
 
     def render_title_bar

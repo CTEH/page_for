@@ -21,7 +21,9 @@ module PageForHelper
     self.content_for :title_bar, builder.render_title_bar.html_safe
 
     # Desktop
-    self.content_for :title, builder.render_top.html_safe
+    self.content_for :title, builder.render_title.html_safe
+    self.content_for :buttons, builder.render_buttons.html_safe
+    self.content_for :page_header, builder.render_header.html_safe
 
     body
   end

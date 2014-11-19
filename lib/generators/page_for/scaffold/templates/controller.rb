@@ -1,91 +1,65 @@
 class <%=class_name.pluralize%>Controller < ApplicationController
-  before_filter :authenticate_user!
-
-
   def index
-    @<%=plural_table_name%> = <%=class_name%>.accessible_by(current_ability)
-
-    respond_to do |format|
-      format.html
-    end
+    @nester = find_and_authorize_nester(nesters)
+    @<%=plural_table_name%> = load_authorized_collection(@nester)
   end
 
   def show
-    @<%=singular_table_name%> = <%=class_name%>.find(params[:id])
-    authorize! :read, @<%=singular_table_name%>
-
-    respond_to do |format|
-      format.html
-    end
+    @nester = find_and_authorize_nester(nesters)
+    @<%=singular_table_name%> = load_and_authorize_member(@nester)
   end
 
   def new
-    if @nester
-      @<%=singular_table_name%> = @nester.<%=plural_table_name%>.new
-    else
-      @<%=singular_table_name%> = <%=class_name%>.new
-    end
-
-    authorize! :create, @<%=singular_table_name%>
-
-    respond_to do |format|
-      format.html
-    end
+    @nester = find_and_authorize_nester(nesters)
+    @<%=singular_table_name%> = build_and_authorize_member(@nester)
   end
 
   def edit
-    @<%=singular_table_name%> = <%=class_name%>.find(params[:id])
-    authorize! :update, @<%=singular_table_name%>
+    @nester = find_and_authorize_nester(nesters)
+    @<%=singular_table_name%> = load_and_authorize_member(@nester)
   end
 
   def create
-    if @nester
-      @<%=singular_table_name%> = @nester.<%=plural_table_name%>.new(params[:<%=singular_table_name%>])
-    else
-      @<%=singular_table_name%> = <%=class_name%>.new(params[:<%=singular_table_name%>])
-    end
-    authorize! :create, @<%=singular_table_name%>
+    @nester = find_and_authorize_nester(nesters)
+    @<%=singular_table_name%> = build_and_authorize_member(@nester, <%=singular_table_name%>_params)
 
-    respond_to do |format|
-      if @<%=singular_table_name%>.save
-        if @nester
-          format.html { redirect_to @nester, notice: '<%=class_name%> was successfully created.' }
-        else
-          format.html { redirect_to @<%=singular_table_name%>, notice: '<%=class_name%> was successfully created.' }
-        end
-      else
-        format.html { render action: "new" }
-      end
+    if @<%=singular_table_name%>.save
+      redirect_to (@nester || @<%=singular_table_name%>), notice: '<%=class_name.titleize%> was successfully created.'
+    else
+      render action: 'new'
     end
   end
 
   def update
-    @<%=singular_table_name%> = <%=class_name%>.find(params[:id])
-    authorize! :update, @<%=singular_table_name%>
+    @nester = find_and_authorize_nester(nesters)
+    @<%=singular_table_name%> = load_and_authorize_member(@nester, <%=singular_table_name%>_params)
 
-    respond_to do |format|
-      if @<%=singular_table_name%>.update_attributes(params[:<%=singular_table_name%>])
-        if @nester
-          format.html { redirect_to @<%=singular_table_name%>, notice: '<%=class_name%> was successfully updated.' }
-        else
-          format.html { redirect_to @nester, notice: '<%=class_name%> was successfully updated.' }
-        end
-      else
-        format.html { render action: "edit" }
-      end
+    if @<%=singular_table_name%>.save
+      redirect_to (@nester || @<%=singular_table_name%>), notice: '<%=class_name.titleize%> was successfully updated.'
+    else
+      render action: 'edit'
     end
   end
 
   def destroy
-    @<%=singular_table_name%> = <%=class_name%>.find(params[:id])
-    authorize! :destroy, @<%=singular_table_name%>
-    @<%=singular_table_name%>.destroy
+    @nester = find_and_authorize_nester(nesters)
+    @<%=singular_table_name%> = load_and_authorize_member(@nester)
 
-    if @nester
-      redirect_to @nester, notice: "Successfully destroyed <%=singular_table_name%>."
+    @<%=singular_table_name%>.deleted = true
+    if @<%=singular_table_name%>.save
+      redirect_to (@nester || <%=table_name%>_path), notice: 'Deleted <%=singular_table_name.titleize.downcase%>'
     else
-      redirect_to <%=plural_table_name%>_path, notice: "Successfully destroyed <%=singular_table_name%>."
+      render action: 'show', notice: 'Failed to delete <%=class_name.titleize.downcase%>'
     end
   end
 
+  protected
+
+  def nesters
+    [:organization, :project]
+  end
+
+  def <%=singular_table_name%>_params
+    params.require(:<%=singular_table_name%>)#.permit(<%=content_columns.reject{|c| c=='deleted'}.map{|c| ":#{c}"}.join(', ')%>)
+  end
 end
