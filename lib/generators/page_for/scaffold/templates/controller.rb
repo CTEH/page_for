@@ -60,6 +60,6 @@ class <%=class_name.pluralize%>Controller < ApplicationController
   end
 
   def <%=singular_table_name%>_params
-    params.require(:<%=singular_table_name%>)#.permit(<%=content_columns.reject{|c| c=='deleted'}.map{|c| ":#{c}"}.join(', ')%>)
+    params.require(:<%=singular_table_name%>)#.permit(<%=(belongs_to_associations.map{|c|"#{c}_id"} + content_columns).map{|c| ":#{c}"}.join(', ')%>)
   end
 end

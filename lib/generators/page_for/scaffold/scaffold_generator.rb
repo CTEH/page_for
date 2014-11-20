@@ -53,7 +53,7 @@ module PageFor
       def clean(c)
         c=c.to_s
 
-        if ['updated_at', 'created_at'].include?(c)
+        if ['updated_at', 'created_at', 'deleted'].include?(c)
           return nil
         else
           if c['_file_name']
