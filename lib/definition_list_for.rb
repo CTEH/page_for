@@ -94,12 +94,13 @@ module DefinitionListFor
 
     def format(attribute)
       v = self.resource.send(attribute)
-      if v == nil or v.blank? and content_type(attribute)!=:boolean
+      type = content_type(attribute)
+      if v == nil or v.blank? and type!=:boolean
         return '<i>Blank</i>'
       end
       if content_column?(attribute)
-        if PageFor::Format.respond_to?(:content_type)
-          PageFor::Format.send(:content_type, v)
+        if PageFor::Format.respond_to?(type)
+          PageFor::Format.send(type, v)
         else
           "Unhandled type in definition_list_helper"
         end
