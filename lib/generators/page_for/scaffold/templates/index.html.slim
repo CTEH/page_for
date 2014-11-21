@@ -1,6 +1,6 @@
 = page_for <%=class_name%> do |page|
   - page.describe "Listing of <%=class_name.pluralize.titleize%>"
-  - page.add_button :program, nester: @nester
+  - page.add_button :<%=singular_table_name%>, nester: @nester
 
   - page.section do
     = table_for @<%=plural_table_name%> do |t|
