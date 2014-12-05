@@ -8,10 +8,10 @@
   - page.section do
     = definition_list_for(@<%=singular_table_name%>) do |dl|
 <%belongs_to_associations.each do |attribute| -%>
-      - dl.define :<%=attribute%>
+      = dl.define :<%=attribute%>
 <%end -%>
 <%content_columns.each do |attribute| -%>
-      - dl.define :<%=attribute%>
+      = dl.define :<%=attribute%>
 <%end -%>
 
 
