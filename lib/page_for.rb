@@ -76,11 +76,16 @@ module PageFor
       else
         # Member Action
         # TODO Probably need to be smarter about the has_many method
-        obj = self.resource.send(self.child_klass.to_s.pluralize).build
-        self.page_builder.context.can? :create, obj
+        association = self.resource.send(self.child_klass.to_s.pluralize)
+        obj = association.new
+        can_result = self.page_builder.context.can? :create, obj
+        # Remove the virtual created object from the association
+        association.delete(obj)
+        can_result
       end
     end
   end
+
 
 
   class JavascriptButtonBuilder
