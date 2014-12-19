@@ -1,5 +1,22 @@
 # PageFor
 
+## Dependencies
+
+* gem 'kaminari'
+
+* gem 'ransack'
+
+* gem 'cancan'
+
+* gem 'simple-navigation'
+
+* gem 'polywag'
+
+## Skin Dependencies
+
+* gem 'adminlte-rails'
+
+
 ## Configuration
 
 To change the theme for your application, create an initializer that follows the following formation:
@@ -8,7 +25,11 @@ To change the theme for your application, create an initializer that follows the
       config.theme = 'theme-name-here'
     end
 
-## Generator
+Setup simple-navigation
 
-The existing libero generator has been renamed page_for:scaffold. This is because it generates a
-page_for layout, and not something specific to the libero style.
+    rails generate navigation_config
+
+## Once your AcitveRecord model exists and migrations have run, you can scaffold views and controllers via
+
+    rails g page_for:scaffold ModelName
+

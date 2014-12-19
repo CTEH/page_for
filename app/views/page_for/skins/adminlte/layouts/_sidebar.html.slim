@@ -1,0 +1,22 @@
+section.sidebar
+  -if false
+    /! Sidebar user panel
+    .user-panel
+      .pull-left.image
+        img.img-circle alt=("User Image") src="http://content.screencast.com/users/jrhickscteh/folders/Jing/media/43baa450-c06c-4d38-b7b5-3f6e62bceda2/2014-12-01_2026.png" /
+      .pull-left.info
+        p Hello, Jane
+        a href="#"
+          i.fa.fa-circle.text-success
+          | Online
+
+  /! search form
+  form.sidebar-form action="#" method="get"
+    .input-group
+      input.form-control name="q" placeholder="Search..." type="text" /
+      span.input-group-btn
+        button#search-btn.btn.btn-flat name="seach" type="submit"
+          i.fa.fa-search
+
+  ul.sidebar-menu
+    = render partial: "page_for/skins/adminlte/layouts/simple_navigation/tree", locals: {renderer: layout_builder.navigation_renderer, container: layout_builder.navigation_item_container}

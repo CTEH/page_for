@@ -1,0 +1,30 @@
+- container.selected_class = 'active'
+
+- container.items.each do |item|
+  - if item.sub_navigation
+    - css_class = 'treeview'
+  - else
+    - css_class = ''
+
+  li class=css_class
+    -if item.url.nil?
+      a href="#"
+        -if true
+          i class="#{item.html_options[:icon]}"
+        -else
+          | i.fa.fa-angle-double-right
+        span
+          = item.name
+        i.fa.fa-angle-left.pull-right
+    -else
+      a href=item.url
+        i.fa.fa-th
+        span
+          = item.name
+        small.badge.pull-right.bg-green new
+
+    -if item.sub_navigation
+      ul.treeview-menu
+        = render partial: '/page_for/skins/adminlte/layouts/simple_navigation/tree', locals: {container: item.sub_navigation, renderer: renderer}
+
+-# if renderer.include_sub_navigation?(item)

@@ -1,0 +1,28 @@
+doctype html
+html
+  head
+    meta charset="UTF-8" /
+    title AdminLTE | Dashboard
+    meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport" /
+    = stylesheet_link_tag "application", media: :all
+    = javascript_include_tag "application"
+
+  body class="#{layout_builder.skin}"
+    /! header logo: style can be found in header.less
+    header.header
+      = render partial: 'page_for/skins/adminlte/layouts/header_logo', locals: {layout_builder: layout_builder}
+
+      /! Header Navbar: style can be found in header.less
+      nav.navbar.navbar-static-top role="navigation"
+        = render partial: 'page_for/skins/adminlte/layouts/navbar', locals: {layout_builder: layout_builder}
+
+    .wrapper.row-offcanvas.row-offcanvas-left
+      /! Left side column. contains the logo and sidebar
+      aside.left-side.sidebar-offcanvas
+        = render partial: 'page_for/skins/adminlte/layouts/sidebar', locals: {layout_builder: layout_builder}
+
+      aside.right-side
+        = render partial: 'page_for/skins/adminlte/layouts/content_header', locals: {layout_builder: layout_builder}
+        section.content
+          = yield
+

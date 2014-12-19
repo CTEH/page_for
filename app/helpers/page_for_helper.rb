@@ -7,6 +7,7 @@ module PageForHelper
     options = args.extract_options!
     options[:partial] = page_for_theme_dir + options[:partial]
 
+    # Not compatible with Rails 4.1.rc1
     ApplicationController.new.render_to_string(options).html_safe
   end
 
@@ -21,7 +22,7 @@ module PageForHelper
     self.content_for :title_bar, builder.render_title_bar.html_safe
 
     # Desktop
-    self.content_for :title, builder.render_top.html_safe
+    self.content_for :title, builder.render_page.html_safe
 
     body
   end
