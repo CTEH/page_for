@@ -1,0 +1,16 @@
+<%# Link to the "Next" page
+  - available local variables
+    url:           url to the next page
+    current_page:  a page object for the currently displayed page
+    num_pages:     total number of pages
+    per_page:      number of items to fetch per page
+    remote:        data-remote
+-%>
+
+<li class="next<% if current_page.last? -%> disabled<% end -%>">
+  <% if current_page.last? %>
+    <a rel="next"><i class="icon-chevron-right"></i></a>
+  <% else %>
+    <%= link_to raw('<i class="icon-chevron-right"></i>'), url, :rel => 'next', :remote => remote %>
+  <% end %>
+</li>

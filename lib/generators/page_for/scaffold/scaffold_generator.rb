@@ -1,8 +1,11 @@
 require 'rails/generators/base'
+require 'rails/generators/resource_helpers'
 
 module PageFor
   module Generators
     class ScaffoldGenerator < Rails::Generators::NamedBase
+      include ::Rails::Generators::ResourceHelpers
+
       source_root File.expand_path("../templates", __FILE__)
 
       def view_templates
@@ -12,6 +15,7 @@ module PageFor
         template "new.html.slim", "app/views/#{plural_file_name}/new.html.slim"
         template "show.html.slim", "app/views/#{plural_file_name}/show.html.slim"
         template "controller.rb", "app/controllers/#{plural_file_name}_controller.rb"
+        template "controller_test.rb", "test/controllers/#{plural_file_name}_controller_test.rb"
         template "actions_for_resources.rb.slim", "config/actions_for_resources/actions_for_#{plural_file_name}.rb"
       end
 
@@ -49,7 +53,7 @@ module PageFor
       def clean(c)
         c=c.to_s
 
-        if ['updated_at', 'created_at'].include?(c)
+        if ['updated_at', 'created_at', 'deleted', 'deleted_at'].include?(c)
           return nil
         else
           if c['_file_name']

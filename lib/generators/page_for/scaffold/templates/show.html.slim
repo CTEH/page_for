@@ -6,19 +6,19 @@
 <%end -%>
 
   - page.section do
-    = definition_list_for(@<%=singular_table_name%>) do |dl|
+    = page.definition_list_for(@<%=singular_table_name%>) do |dl|
 <%belongs_to_associations.each do |attribute| -%>
-      - dl.define :<%=attribute%>
+      = dl.define :<%=attribute%>
 <%end -%>
 <%content_columns.each do |attribute| -%>
-      - dl.define :<%=attribute%>
+      = dl.define :<%=attribute%>
 <%end -%>
 
 
 <%has_many_associations.each do |hm| -%>
   - page.tab(<%=hm.to_s.titleize.inspect%>) do
     = table_for(@<%=singular_table_name%>.<%=hm%>) do |t|
-      - t.action :view, nester: <%=hm.to_s.singularize%>
+      - t.action :view, nester: @<%=singular_table_name%>
 
 <%belongs_to_associations(hm.to_s.camelcase.singularize).each do |attribute| -%>
       - t.column :<%=attribute%>

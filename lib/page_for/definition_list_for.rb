@@ -1,11 +1,54 @@
 module DefinitionListFor
 
+  class DefinitionBuilder
+    attr_accessor :label, :attribute, :link, :options, :block_given, :block, :is_more, :dl_builder
+
+    def initialize(dl_builder, attribute, options, block)
+      self.dl_builder = dl_builder
+      self.options = options
+      self.label = options[:label] || attribute.to_s.titleize
+      self.is_more = options[:is_more]
+      self.link = options[:link] || false
+      self.block_given = options[:block_given]
+      self.attribute = attribute
+      self.block = block
+    end
+
+    def value
+      self.dl_builder.resource.send(self.attribute)
+    end
+
+    def block_contents
+      self.dl_builder.context.capture(self.dl_builder.resource, &self.block)
+    end
+
+    def belongs_to?
+      self.dl_builder.belongs_to?(self.attribute)
+    end
+
+    def selector
+      self.dl_builder.selector(self.attribute)
+    end
+
+    def dl_selector
+      self.dl_builder.dl_selector(self.attribute)
+    end
+
+    def format
+      self.dl_builder.format(self.attribute)
+    end
+
+  end
+
+
   class DefinitionListBuilder
 
     attr_accessor :resource, :content_columns, :belongs_to, :column_names, :bt_names, :context,
-                  :klass_name, :is_more
+                  :klass_name, :is_more, :definitions, :more_definitions, :page
 
-    def initialize(resource, context)
+    def initialize(resource, page)
+      self.page = page
+      self.context = page.context
       self.resource = resource
       self.klass_name = resource.class.name.underscore
       self.content_columns = resource.class.content_columns
@@ -14,6 +57,8 @@ module DefinitionListFor
       self.bt_names = self.belongs_to.map {|x|x.name.to_s}
       self.context = context
       self.is_more = false
+      self.definitions = []
+      self.more_definitions = []
     end
 
     #
@@ -22,44 +67,25 @@ module DefinitionListFor
     #
     def define(attribute, *args,  &block)
       options = args.extract_options!
-      label = options[:label] || attribute.to_s.titleize
-      link = options[:link] || false
-
-      dt = "<dt>#{label}</dt>"
-
-      if block_given?
-        output = ApplicationController.new.capture(self.resource, &block)
-        dd = "<dd id='#{selector(attribute)}'>#{output}</dd>"
-      else
-        if link and not self.belongs_to?(attribute)
-          dd = "<dd id='#{selector(attribute)}'>#{self.context.link_to format(attribute), self.resource.send(attribute)}</dd>"
-        else
-          dd = "<dd id='#{selector(attribute)}'>#{format(attribute)}</dd>"
-        end
-      end
-
-      return "#{dt}#{dd}".html_safe
+      options[:is_more] = false
+      options[:block_given] = block_given?
+      d = DefinitionBuilder.new(self, attribute, options, block)
+      self.definitions.append(d)
+      ''
     end
 
     #
     # link  | Set to true to link to resource, ignored for associations
     # label | Override attribute.titleize
     #
-    def define_more(attribute, *args)
+    def define_more(attribute, *args, &block)
       options = args.extract_options!
+      options[:is_more] = true
+      options[:block_given] = block_given?
       self.is_more = true
-      label = options[:label] || attribute.to_s.titleize
-      link = options[:link] || false
-
-      dt = "<dt class='hidden-phone' dlmore='true'>#{label}</dt>"
-
-      if link and not self.belongs_to?(attribute)
-        dd = "<dd class='hidden-phone' dlmore='true' id='#{selector(attribute)}'>#{self.context.link_to format(attribute), self.resource.send(attribute)}</dd>"
-      else
-        dd = "<dd class='hidden-phone' dlmore='true' id='#{selector(attribute)}'>#{format(attribute)}</dd>"
-      end
-
-      return "#{dt}#{dd}".html_safe
+      d = DefinitionBuilder.new(self, attribute, options, block)
+      self.definitions.append(d)
+      ''
     end
 
 
@@ -70,8 +96,6 @@ module DefinitionListFor
         ''.html_safe
       end
     end
-
-    protected
 
     def render_jquery
       "$(\"dt[dlmore='true']\").hide();
@@ -94,27 +118,13 @@ module DefinitionListFor
 
     def format(attribute)
       v = self.resource.send(attribute)
-      if v == nil or v.blank? and content_type(attribute)!=:boolean
+      type = content_type(attribute)
+      if v == nil or v.blank? and type!=:boolean
         return '<i>Blank</i>'
       end
       if content_column?(attribute)
-        case content_type(attribute)
-        when :string
-          v
-        when :decimal
-          return "%.2f"%(v)
-        when :text
-          return v
-        when :datetime
-          self.name_reflect_datetime(attribute)
-        when :date
-          v.try(:strftime, "%b %d, %Y")
-        when :integer
-          v
-        when :float
-          return "%.2f"%(v)
-        when :boolean
-          self.context.check_icon(resource.send(attribute))
+        if PageFor::Format.respond_to?(type)
+          PageFor::Format.send(type, v)
         else
           "Unhandled type in definition_list_helper"
         end
@@ -142,13 +152,6 @@ module DefinitionListFor
       rescue
         false
       end
-    end
-
-    def name_reflect_datetime(attribute)
-      if attribute.to_s["_on"]
-        d = self.resource.send(attribute).try(:strftime, "%b %d, %Y")
-      end
-      d = self.resource.send(attribute).try(:strftime, "%b %d, %Y %I:%M %p %Z")
     end
 
     def content_column?(attribute)

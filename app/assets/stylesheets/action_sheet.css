@@ -1,0 +1,59 @@
+/* ACTION SHEET */
+
+
+.action-sheet {
+  display: none;
+}
+
+
+.action-sheet > div{
+
+  position:absolute;
+  top:0;right:0;
+  left:0;bottom:0;
+
+  background: rgba(0,0,0, 0.5);
+  z-index: 3;
+
+  opacity:0;
+
+  -webkit-transition: opacity .15s;
+  -moz-transition: opacity .15s;
+  transition: opacity .15s;
+}
+
+.action-sheet > section{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  background: none;
+  padding: 0 10px;
+  z-index: 4;
+
+  -webkit-transition: -webkit-transform .3s;
+  -moz-transition: -moz-transform .3s;
+  transition: transform .3s;
+
+  -webkit-transform: translate3d(0, 110%, 0);
+  -moz-transform: translate3d(0, 110%, 0);
+  transform: translate3d(0, 110%, 0);
+}
+
+.action-sheet > section .row{
+  margin-top:10px;
+}.action-sheet > section .row:last-child{
+   margin-bottom:15px;
+ }
+.action-sheet button.cancel{
+  font-weight: bold;
+}
+
+.ActionSheetOpen > div{
+  opacity:1;
+}
+.ActionSheetOpen > section {
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+}

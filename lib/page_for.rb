@@ -1,12 +1,14 @@
 require "page_for/version"
 
 require 'page_for/format'
+require 'page_for/action_sheet_for'
 require 'page_for/table_for'
 require 'page_for/definition_list_for'
 require 'page_for/pivot_for'
 require 'page_for/routes_for'
-# require 'page_for/engine'
+require 'page_for/layout_for'
 
+# require 'page_for/engine'
 
 module PageFor
   class << self
@@ -37,15 +39,16 @@ module PageFor
 
   class AddButtonBuilder
     attr_accessor :page_builder, :label, :url_options,
-                  :class, :child_klass, :method,
-                  :resource, :url, :block, :phone_class,
-                  :remote
+                  :child_klass, :method,
+                  :resource, :url, :block,
+                  :remote, :options
 
     def initialize(page_builder, child_klass, options, block)
       self.child_klass = child_klass
       self.page_builder = page_builder
       self.resource = self.page_builder.resource
       self.block = block
+      self.options = options
 
       if self.resource.class == Class
         if options[:nester]
@@ -59,17 +62,24 @@ module PageFor
 
       self.remote = options[:remote] || false
       self.label = options[:label] || "Add #{self.child_klass.to_s.titleize}"
-      self.class = options[:class] || 'btn btn-default'
       self.method = options[:method] || 'get'
-      self.phone_class = options[:phone_class] || 'page_links'
     end
+
+    def css_class(default=nil)
+      options[:class] || default || 'btn btn-default'
+    end
+
+    def phone_class(default=nil)
+      options[:phone_class] || default || 'page_links'
+    end
+
 
     def render_dropdown
       '<li class="'+self.phone_class+'">'+self.page_builder.context.link_to(self.label, self.url, remote: self.remote, method: self.method) + '</li>'
     end
 
     def render
-      self.page_builder.context.link_to self.label, self.url, method: self.method, class: self.class, remote: self.remote
+      self.page_builder.context.link_to self.label, self.url, method: self.method, class: self.css_class, remote: self.remote
     end
 
     def can?
@@ -79,11 +89,16 @@ module PageFor
       else
         # Member Action
         # TODO Probably need to be smarter about the has_many method
-        obj = self.resource.send(self.child_klass.to_s.pluralize).build
-        self.page_builder.context.can? :create, obj
+        association = self.resource.send(self.child_klass.to_s.pluralize)
+        obj = association.new
+        can_result = self.page_builder.context.can? :create, obj
+        # Remove the virtual created object from the association
+        association.delete(obj)
+        can_result
       end
     end
   end
+
 
 
   class JavascriptButtonBuilder
@@ -122,9 +137,9 @@ module PageFor
 
   class ButtonBuilder
     attr_accessor :page_builder, :label, :url_options,
-                  :class, :action, :method,
-                  :resource, :url, :block, :phone_class,
-                  :remote, :params, :nester
+                  :action, :method,
+                  :resource, :url, :block,
+                  :remote, :params, :nester, :options
 
     def initialize(page_builder, action, options, block)
       self.action = action.to_s.underscore.to_sym
@@ -133,7 +148,6 @@ module PageFor
       self.block = block
       self.params = options[:params] || nil
       self.nester = options[:nester] || nil
-      trgt = [self.nester, self.resource].compact
 
       if options[:url] == nil
         if self.resource.class.name == 'Class'
@@ -153,9 +167,16 @@ module PageFor
 
       self.remote = options[:remote] || false
       self.label = options[:label] || self.label = action.to_s.titleize
-      self.class = options[:class] || 'btn btn-default'
       self.method = options[:method] || 'get'
-      self.phone_class = options[:phone_class] || 'page_links'
+      self.options = options
+    end
+
+    def css_class(default=nil)
+        options[:class] || default || 'btn btn-default'
+    end
+
+    def phone_class(default=nil)
+      options[:phone_class] || default || 'page_links'
     end
 
     def render_dropdown
@@ -163,7 +184,7 @@ module PageFor
     end
 
     def render
-      self.page_builder.context.link_to self.label, self.url, method: self.method, class: self.class, remote: self.remote
+      self.page_builder.context.link_to self.label, self.url, method: self.method, class: self.css_class, remote: self.remote
     end
 
     def can?
@@ -173,33 +194,36 @@ module PageFor
 
 
   class TabSectionBuilder
-    attr_accessor :context, :tab_titles, :tab_contents, :unique
+    attr_accessor :page, :context, :tab_titles, :tab_contents, :unique, :tab_ids
 
-    def initialize(context)
-      self.context = context
-      self.unique = ''
+    def initialize(page)
+      self.page = page
+      self.context = page.context
       self.tab_titles = []
       self.tab_contents = []
+      self.tab_ids = []
     end
 
-    def tab(title, &block)
+    def tab(title, tab_id, &block)
+      self.tab_ids << tab_id
       self.tab_titles.append(title)
+
+      # SET CURRENT TAB OF PAGE PRIOR TO CAPTURING
+      self.page.current_tab_id = tab_id
       self.tab_contents.append(self.context.capture &block)
+      self.page.current_tab_id = nil
       ''
     end
 
     def active_tab
-
       tab_titles.each_with_index do |t, i|
         return i if self.context.params["q_#{t.to_s.gsub(/( )/, '_').underscore.singularize}".to_sym] || self.context.params[:force_active_tab] == t
       end
-
       return 0
-
     end
 
     def acronym(t)
-      t.to_s.split().map { |x| x.first.upcase + '.'}.join("")
+      t.to_s.split().map { |x| x.first.upcase + '.'}.join('')
     end
 
     def render
@@ -211,8 +235,9 @@ module PageFor
     end
 
     def tab_id(index)
-      "#{tab_titles[index].to_s.underscore}_tab".gsub(' ','_')
+      "tab_#{self.tab_ids[index]}"
     end
+
   end
 
 
@@ -250,15 +275,25 @@ module PageFor
                   :page_options, :sections, :tab_section_builder,
                   :resource, :top_tab_section_builder
 
+    attr_accessor :action_sheet_id, :tab_id, :section_id, :table_id,
+                  :current_tab_id
+
     def initialize(context, resource, options)
       self.page_options = options
       self.context = context
       self.resource = resource
       self.title = build_title if self.title == nil
       self.sections = []
-      self.top_tab_section_builder = TabSectionBuilder.new(self.context)
-      self.tab_section_builder =  TabSectionBuilder.new(self.context)
+      self.top_tab_section_builder = TabSectionBuilder.new(self)
+      self.tab_section_builder =  TabSectionBuilder.new(self)
       self.buttons = []
+
+      # Initialize ID Incs
+      self.action_sheet_id = 0
+      self.tab_id = 0
+      self.section_id = 0
+      self.table_id = 0
+      self.current_tab_id = nil
     end
 
     def build_title
@@ -271,7 +306,24 @@ module PageFor
           if resource.id == nil
             "New #{resource.class.name.titleize}"
           else
-            "#{resource.class.name.titleize}<span class='hidden-phone'>: #{resource.to_s}</span>".html_safe
+            "#{resource.class.name.titleize} #{resource.to_s}".html_safe
+          end
+        end
+      end
+    end
+
+
+    def build_xs_title
+      if page_options[:title]
+        page_options[:title]
+      else
+        if resource.class == Class
+          resource.name.titleize.pluralize
+        else
+          if resource.id == nil
+            "New #{resource.class.name.titleize}"
+          else
+            resource.class.name.titleize
           end
         end
       end
@@ -281,42 +333,46 @@ module PageFor
       options = args.extract_options!
       b = AddButtonBuilder.new(self, child_class, options, block)
       self.buttons << b if b.can?
-      ""
+      ''
     end
 
     def button(action, *args, &block)
       options = args.extract_options!
       b = ButtonBuilder.new(self, action, options, block)
       self.buttons << b if b.can?
-      ""
+      ''
     end
 
     def javascript_button(label, javascript, *args)
       options = args.extract_options!
       b = JavascriptButtonBuilder.new(self, label, javascript, options)
       self.buttons << b
-      ""
+      ''
     end
 
     def insert(&block)
       # ADD A RAW SECTION WITH NO WRAPPING HTML
       self.sections << SectionBuilder.new(self,nil,block, true)
-      ""
+      ''
     end
 
     def section(title=nil, &block)
       self.sections << SectionBuilder.new(self, title, block)
-      ""
-    end
-
-    def top_tab(title, &block)
-      self.top_tab_section_builder.tab(title, &block)
-      ""
+      ''
     end
 
     def tab(title, &block)
-      self.tab_section_builder.tab(title, &block)
-      ""
+      self.tab_id += 1
+      self.current_tab_id = self.tab_id
+      self.tab_section_builder.tab(title, self.tab_id, &block)
+      ''
+    end
+
+    def top_tab(title, &block)
+      self.tab_id += 1
+      self.current_tab_id = self.tab_id
+      self.top_tab_section_builder.tab(title, self.tab_id, &block)
+      ''
     end
 
     def describe(description, *args, &block)
@@ -325,8 +381,44 @@ module PageFor
       else
         self.description = description
       end
-      ""
+      ''
     end
+
+    #############################################################################
+    ## Sub-Builders
+    #############################################################################
+
+    def definition_list_for(resource, &block)
+        builder = DefinitionListFor::DefinitionListBuilder.new(resource, self)
+        yield(builder) if block_given?
+        self.context.render_page_for(partial: "definition_list", locals: { builder: builder, page: self })
+    end
+
+    def action_sheet_for(klass=nil)
+      self.action_sheet_id+=1
+      builder = ActionSheetFor::ActionSheetBuilder.new(self, klass, self.action_sheet_id)
+      yield(builder) if block_given?
+      self.context.render_page_for(partial: "action_sheet", locals: { builder: builder, page: self})
+    end
+
+    def table_for(resources, *args, &block)
+      self.table_id += 1
+      # no need to render the table if we don't have any items
+      if resources.length == 0
+        builder = nil
+      else
+        options = args.extract_options!
+        options[:ransack_obj] ||= eval("@q_#{resources.first.class.name.demodulize.underscore}")
+        builder = TableFor::TableBuilder.new(self, resources, options, self.table_id)
+        yield(builder) if block_given?
+      end
+
+      self.context.render_page_for(partial: "table", locals: { table_builder: builder, resources: resources, page: self })
+    end
+
+    #############################################################################
+    ## Deprecated
+    #############################################################################
 
     def render_page
       self.context.render_page_for(partial: "page", locals: { page_builder: self })

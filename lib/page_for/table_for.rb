@@ -1,19 +1,20 @@
 module TableFor
   class TableBuilder
 
-    attr_accessor :context, :columns, :resources, :table_options,
+    attr_accessor :page, :context, :columns, :resources, :table_options,
                   :content_columns, :column_names,
                   :actions,
                   :paginate, :page_size, :kaminari_key,
                   :searchable, :search, :filters, :ransack_key,
                   :current_ability, :apply_abilities, :filtered_resources,
                   :belongs_to, :belongs_to_names,
-                  :klass, :klass_name, :freeze_header
+                  :klass, :klass_name, :freeze_header, :table_id
 
-    def initialize(context, resources, options)
-      self.context = context
+  def initialize(page, resources, options, table_id)
+      self.page = page
+      self.context = page.context
+      self.table_id = table_id
       self.resources = resources
-
       self.filtered_resources = resources
       self.columns = []
       self.table_options = options
@@ -55,6 +56,10 @@ module TableFor
 
     end
 
+    def resource_action_sheet_id(resource)
+      "ActionSheet_T#{self.table_id}_R#{resource.id}"
+    end
+
     # initialization
 
     def setup_abilities
@@ -87,6 +92,7 @@ module TableFor
       return nil if self.filtered_resources.length == 0
 
       column_options = args.extract_options!
+      column_options[:hidden]= false
       c = ColumnBuilder.new(self, attribute, column_options, table_options, block)
       self.columns.append(c)
 
@@ -108,6 +114,7 @@ module TableFor
 
       column_options = args.extract_options!
       column_options[:class]= 'hidden-phone'
+      column_options[:hidden]= true
       c = ColumnBuilder.new(self, attribute, column_options, table_options, block)
       self.columns.append(c)
 
@@ -170,7 +177,7 @@ module TableFor
 
     def render_pagination
       return '' unless self.paginate
-      self.context.paginate self.filtered_resources, param_name: kaminari_key
+      self.context.paginate self.filtered_resources, param_name: kaminari_key, :theme => PageFor.configuration.theme
     end
 
   end
@@ -302,7 +309,8 @@ module TableFor
   class ColumnBuilder
     attr_accessor :table_builder, :attribute, :options, :block,
                   :content_type, :is_belongs_to, :is_content_column,
-                  :cell_class, :header_class, :cell_options, :table_options
+                  :cell_class, :header_class, :cell_options, :table_options,
+                  :hidden
 
     def initialize(table_builder,attribute,cell_options, table_options,block)
       self.table_options = table_options
@@ -313,6 +321,7 @@ module TableFor
       self.content_type = self.table_builder.content_type(attribute)
       self.block = block
       self.cell_options = cell_options
+      self.hidden = cell_options[:hidden]
       if cell_options[:class]
         self.cell_class = "tblfor_td_#{content_type} #{cell_options[:class]}"
         self.header_class = "tblfor_th_#{content_type} #{cell_options[:class]}"
@@ -320,7 +329,14 @@ module TableFor
         self.cell_class = "tblfor_td_#{content_type}"
         self.header_class = "tblfor_th_#{content_type}"
       end
+    end
 
+    def if_hidden(hidden_class)
+      if hidden
+        hidden_class
+      else
+        ''
+      end
     end
 
 
@@ -372,31 +388,8 @@ module TableFor
         return output
       end
       if is_content_column
-        case content_type
-        when :string
-          nested_send(resource)
-        when :decimal
-          if v=nested_send(resource)
-            return "%.2f"%(v)
-          else
-            return ''
-          end
-        when :text
-          return nested_send(resource)
-        when :datetime
-          self.name_reflect_datetime(resource)
-        when :date
-          nested_send(resource).try(:strftime, "%b %d, %Y")
-        when :integer
-          nested_send(resource)
-        when :float
-          begin
-            return "%.2f"%(nested_send(resource))
-          rescue
-            return nested_send(resource)
-          end
-        when :boolean
-          self.table_builder.context.check_icon(nested_send(resource))
+        if PageFor::Format.respond_to?(content_type)
+          PageFor::Format.send(content_type, nested_send(resource))
         else
           "Unhandled type in table_for_helper"
         end
@@ -424,7 +417,6 @@ module TableFor
       end
     end
 
-
     def paperclip_size(resource)
       self.table_builder.context.number_to_human_size(resource.send("#{attribute}_file_size"))
     end
@@ -437,13 +429,5 @@ module TableFor
         false
       end
     end
-
-    def name_reflect_datetime(resource)
-      if attribute.to_s["_on"]
-        d = nested_send(resource).try(:strftime, "%b %d, %Y")
-      end
-      d = nested_send(resource).try(:strftime, "%b %d, %Y %I:%M %p %Z")
-    end
-
   end
 end

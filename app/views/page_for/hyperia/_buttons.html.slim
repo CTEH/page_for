@@ -1,0 +1,4 @@
+- if page_builder.buttons and page_builder.buttons.count > 0
+  div class="buttons"
+    - page_builder.buttons.each do |button|
+      = button.render

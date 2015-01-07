@@ -1,0 +1,307 @@
+/**********************************************************************/
+/* OVERFLOW DISABLED
+/**********************************************************************/
+
+body {
+  overflow-x: visible;
+  background-color: white;
+  background: white;
+}
+
+section.content {
+  padding: 0px;
+}
+
+.skin-blue .right-side > .content-header {
+  box-shadow: none;
+  padding: 10px;
+}
+
+/**********************************************************************/
+/* CUSTOMIZE PHONE PADDING
+/**********************************************************************/
+
+@media (max-width: 768px) {
+  .content {
+    padding: 0px;
+  }
+}
+
+/**********************************************************************/
+/* HANDLE STYLE BUGS RESULTING FROM RESTRUCTURING THE NAVBAR INSIDE THE
+/* RIGHT ASIDE, AND REMOVING LOGO AREA
+/**********************************************************************/
+
+.navbar-title {
+  color: white;
+  font-size: 24px;
+  font-family: 'Source Sans Pro', sans-serif;
+  float: left;
+  margin-top: 7px;
+  margin-right: 0;
+  margin-bottom: 0px;
+  margin-left: 6px;
+  background-color: transparent;
+  background-image: none;
+  border: 1px solid transparent;
+  -webkit-border-radius: 0 !important;
+  -moz-border-radius: 0 !important;
+  border-radius: 0 !important;
+}
+
+.sidebar-toggle {
+  float: left;
+  padding: 9px 5px;
+  margin-top: 7px;
+  margin-right: 0;
+  margin-bottom: 0px;
+  margin-left: 5px;
+  background-color: transparent;
+  background-image: none;
+  border: 1px solid transparent;
+  -webkit-border-radius: 0 !important;
+  -moz-border-radius: 0 !important;
+  border-radius: 0 !important;
+}
+
+.navbar-actionsheet-button {
+  float: left;
+  padding: 9px 5px;
+  margin-top: 7px;
+  margin-right: 5px;
+  margin-bottom: 0px;
+  margin-left: 5px;
+  background-color: transparent;
+  background-image: none;
+  border: 1px solid transparent;
+  -webkit-border-radius: 0 !important;
+  -moz-border-radius: 0 !important;
+  border-radius: 0 !important;
+}
+
+
+.sidebar-toggle .icon-bar {
+  display: block;
+  width: 22px;
+  height: 2px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
+.skin-blue .navbar {
+  margin-bottom: 0px;
+}
+
+.left-side {
+  top: 0px;
+}
+
+/**********************************************************************/
+/* ADDITIONAL NAVBAR ELEMENT STYLES
+/**********************************************************************/
+
+
+.navbar-right .btn-group {
+  margin-top: 7px;
+  margin-right: 6px;
+}
+
+.navbar-right .btn-group .btn-default {
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+}
+
+.navbar-right .btn-group .btn-default a {
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+}
+
+/**********************************************************************/
+/* ADDITIONAL STYLES
+/**********************************************************************/
+
+.btn-group-nowrap {
+  white-space: nowrap;
+  font-size: 0; /* inline-block will show ALL whitespace between elements, so shrink it!*/
+}
+
+.btn-group-nowrap .btn {
+  display: inline-block;
+  font-size: 14px; /* restore font-size to whatever you are using for button text. */
+  float: none;
+  clear: none;
+}
+
+/**********************************************************************/
+/* USE BLACK SKIN'S SIDEBAR FOR THE "BLUE SKIN"                        */
+/**********************************************************************/
+
+.skin-blue .left-side {
+  background-color: #c4c4c4;
+}
+
+/*  USE THE BLACK SIDEBAR FOR THE BLUE SKIN */
+
+/* Skin-red user panel */
+.skin-blue  .user-panel > .image > img {
+  border: 1px solid #444;
+}
+.skin-blue  .user-panel > .info,
+.skin-blue  .user-panel > .info > a {
+  color: #eee;
+}
+
+/* skin-black sidebar */
+.skin-blue .sidebar {
+  border-bottom: 1px solid #333;
+}
+.skin-blue .sidebar > .sidebar-menu > li {
+  border-top: 1px solid #333;
+  border-bottom: 0px solid #444;
+}
+.skin-blue .sidebar > .sidebar-menu > li:first-of-type {
+  border-top: 1px solid #444;
+}
+.skin-blue .sidebar > .sidebar-menu > li:first-of-type > a {
+  border-top: 0px solid #333;
+}
+.skin-blue .sidebar > .sidebar-menu > li > a {
+  margin-right: 1px;
+}
+.skin-blue .sidebar > .sidebar-menu > li > a:hover,
+.skin-blue .sidebar > .sidebar-menu > li.active > a {
+  color: #f6f6f6;
+  background: #444;
+}
+.skin-blue .sidebar > .sidebar-menu > li > .treeview-menu {
+  margin: 0 1px;
+  background: #444;
+}
+.skin-blue .left-side {
+  background: #333;
+}
+.skin-blue .sidebar a {
+  color: #eee;
+}
+.skin-blue .sidebar a:hover {
+  text-decoration: none;
+}
+.skin-blue .treeview-menu > li > a {
+  color: #ccc;
+}
+.skin-blue .treeview-menu > li.active > a,
+.skin-blue .treeview-menu > li > a:hover {
+  color: #fff;
+}
+.skin-blue .sidebar-form {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  border: 0px solid #555;
+  margin: 10px 10px;
+}
+.skin-blue .sidebar-form input[type="text"],
+.skin-blue .sidebar-form .btn {
+  box-shadow: none;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 0 solid rgba(255, 255, 255, 0.1);
+  height: 35px;
+  outline: none;
+}
+.skin-blue .sidebar-form input[type="text"] {
+  color: #666;
+  -webkit-border-top-left-radius: 2px !important;
+  -webkit-border-top-right-radius: 0 !important;
+  -webkit-border-bottom-right-radius: 0 !important;
+  -webkit-border-bottom-left-radius: 2px !important;
+  -moz-border-radius-topleft: 2px !important;
+  -moz-border-radius-topright: 0 !important;
+  -moz-border-radius-bottomright: 0 !important;
+  -moz-border-radius-bottomleft: 2px !important;
+  border-top-left-radius: 2px !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-bottom-left-radius: 2px !important;
+}
+.skin-blue .sidebar-form input[type="text"]:focus,
+.skin-blue .sidebar-form input[type="text"]:focus + .input-group-btn .btn {
+  background-color: #444;
+  border: 0;
+}
+.skin-blue .sidebar-form input[type="text"]:focus + .input-group-btn .btn {
+  border-left: 0;
+}
+.skin-blue .sidebar-form .btn {
+  color: #999;
+  -webkit-border-top-left-radius: 0 !important;
+  -webkit-border-top-right-radius: 2px !important;
+  -webkit-border-bottom-right-radius: 2px !important;
+  -webkit-border-bottom-left-radius: 0 !important;
+  -moz-border-radius-topleft: 0 !important;
+  -moz-border-radius-topright: 2px !important;
+  -moz-border-radius-bottomright: 2px !important;
+  -moz-border-radius-bottomleft: 0 !important;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 2px !important;
+  border-bottom-right-radius: 2px !important;
+  border-bottom-left-radius: 0 !important;
+  border-left: 0;
+}
+
+
+/******************************************************************/
+/* CUSTOMIZE SHADING AND FLAGNESS                                 */
+/******************************************************************/
+
+.nav-tabs > li > a {
+  border: 0px;
+}
+
+.nav-tabs-custom > .nav-tabs > li {
+  margin-left: 0px;
+  margin-right: 0px;
+  background-color: #f7f8f9;
+  border-bottom-color: #d2d4d8;
+  border-right: 1px solid #d2d4d8;
+}
+
+.nav-tabs-custom > .nav-tabs > li a {
+  color: black;
+}
+
+.nav-tabs-custom > .nav-tabs > li.active {
+  background-color: white;
+  border-bottom-color: white;
+  border-top-color: white;
+}
+
+.nav-tab-flat {
+  box-shadow: none;
+  border-left: 0px;
+  border-right: 0px;
+  border-top: 1px solid #d2d4d8;
+}
+
+.box-flat {
+  box-shadow: none;
+  border: 1px solid #d2d4d8;
+}
+
+.nav-tabs-custom > .tab-content {
+  border-top: 1px solid #d2d4d8;
+  margin-top: 0px;
+  padding-top: 1.5em;
+}
+
+.nav-tabs {
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+}
+
+.nav-tabs-custom {
+  background-color: #f7f8f9;
+}

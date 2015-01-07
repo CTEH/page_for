@@ -1,0 +1,7 @@
+.navbar-title.visible-xs
+  = truncate(page_builder.build_xs_title, length: 18, separator: '...')
+
+.navbar-right.visible-xs
+  = page_builder.action_sheet_for('navbar-btn sidebar-toggle') do |action_sheet|
+    - page_builder.buttons.each do |button|
+      - action_sheet.link_to button.label, button.url, method: button.method, remote: button.remote

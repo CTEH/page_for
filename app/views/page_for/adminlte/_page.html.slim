@@ -1,0 +1,74 @@
+/! Use render_page_for and partials instead of do blocks to avoid weirdness
+- if not page_builder.context.content_for? :navbar
+  - page_builder.context.content_for :navbar, render_page_for(partial: "page/content_for_navbar", locals: { page_builder: page_builder })
+
+/! Use render_page_for and partials instead of do blocks to avoid weirdness
+- if not page_builder.context.content_for? :title
+  - page_builder.context.content_for :title, render_page_for(partial: "page/content_for_title", locals: { page_builder: page_builder })
+
+/! Content Header (Page header)
+section.content-header.hidden-xs
+  h1
+    = page_builder.title
+  small
+    = page_builder.description
+
+  - if page_builder.buttons and page_builder.buttons.count > 0
+    div style="margin-top: 5px;"
+      - page_builder.buttons.each do |button|
+        div style="display: inline; margin-right: 5px;"
+          = link_to button.label, button.url, method: button.method, class: button.css_class('btn btn-default'), remote: button.remote
+
+
+  -if false
+    ol.breadcrumb
+      li
+        a href="#"
+          i.fa.fa-dashboard
+          | Home
+      li.active Dashboard
+
+
+section.content
+  - if page_builder.sections and page_builder.sections.count > 0
+    - page_builder.sections.each do |section|
+      div.box.box-solid
+        - if section.title.present?
+          div.box-header
+            h3.box-title
+              = section.title
+        div.box-body.box-flat
+          = section.content
+
+
+  - [page_builder.top_tab_section_builder, page_builder.tab_section_builder].select {|x|x.tab_contents.length > 0}.each do |tab_section_builder|
+    div.nav-tabs-custom.nav-tab-flat
+      ul.nav.nav-tabs
+        - tab_section_builder.tab_titles.each_with_index do |t, index|
+          - if tab_section_builder.active_tab == index
+            - tab_class = "active"
+          - else
+            - tab_class = ""
+
+          li class="#{tab_class}"
+            a data-toggle='tab' href='##{tab_section_builder.tab_id(index)}'
+              span class="visible-md visible-lg"
+                = tab_section_builder.tab_titles[index]
+              span class="visible-xs visible-sm"
+                = tab_section_builder.acronym(tab_section_builder.tab_titles[index])
+
+      div class='tab-content'
+        - tab_section_builder.tab_contents.each_with_index do |tc, index|
+
+          - if tab_section_builder.active_tab == index
+            - tab_class = "active in"
+          - else
+            - tab_class = ""
+
+          div id="#{tab_section_builder.tab_id(index)}" class="tab-pane fade #{tab_class}"
+            dl class="visible-xs visible-sm"
+              dt #{tab_section_builder.tab_titles[index]}
+
+            = tc.to_s.html_safe
+
+
