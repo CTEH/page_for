@@ -199,7 +199,7 @@ module LayoutFor
       # https://github.com/codeplant/simple-navigation/blob/master/lib/simple_navigation/helpers.rb
       self.contextual_nav_title = title
       self.contextual_nav_options = args.extract_options!
-      self.contextual_navigation_container = self.context.active_navigation_item_container(options, &block)
+      self.contextual_nav_container = self.context.active_navigation_item_container(options, &block)
       self.navigation_renderer = SimpleNavigation::Renderer::Base.new(options)
     end
 

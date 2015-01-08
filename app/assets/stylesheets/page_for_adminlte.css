@@ -70,14 +70,70 @@ section.content {
   height: 100px;
 }
 
-
 /**********************************************************************/
-/* SECTIONS
+/* SIDEBAR SECTIONS
 /**********************************************************************/
 
 .sidebar h3 {
+  font-size: 1.2em;
   color: white;
+  padding: 8px 3px 0px 10px;
 }
+
+.sidebar .sidebar-menu > li > a {
+  /* padding: 12px 5px 12px 15px; */
+  padding: 8px 3px 8px 15px;
+  display: block;
+}
+
+/**********************************************************************/
+/* PAGE NAVIGATION
+/**********************************************************************/
+
+.page_navigation {
+  padding: 0 15px 0 15px;
+  float: right;
+  width: 220px;
+  background-color: #f4f4f4;
+  z-index: 1000;
+  color: #666;
+}
+
+.right-side > .content-header {
+  position: inherit;
+  padding: 15px 15px 10px 20px;
+  border-right: 1px solid #ddd;
+  overflow: auto;
+}
+
+.right-side > .content {
+  position: inherit;
+  background-color: white;
+  border-right: 1px solid #ddd;
+}
+
+.compensate_for_page_navigation {
+  overflow: auto;
+}
+
+table .enable_page_navigation {
+  overflow: auto;
+  width: 100%;
+}
+
+.page_for_page_actions {
+  float: right;
+}
+
+.page_for_page_actions a {
+  float: right;
+  text-decoration: underline;
+  margin-left: 1em;
+}
+
+/**********************************************************************/
+/* Nevermind Boxes
+/**********************************************************************/
 
 
 /**********************************************************************/

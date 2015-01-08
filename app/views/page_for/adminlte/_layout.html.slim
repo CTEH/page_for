@@ -36,11 +36,11 @@ html
           h3
             = builder.contextual_nav_title
           ul.sidebar-menu
-            = render partial: 'page_for/adminlte/layout/simple_navigation_list', locals: {renderer: builder.navigation_renderer, container: builder.contextual_navigation_container}
+            = render partial: 'page_for/adminlte/layout/simple_navigation_list', locals: {renderer: builder.navigation_renderer, container: builder.contextual_nav_container}
           h3
             = builder.global_nav_title
           ul.sidebar-menu
-            = render partial: 'page_for/adminlte/layout/simple_navigation_list', locals: {renderer: builder.navigation_renderer, container: builder.global_navigation_container}
+            = render partial: 'page_for/adminlte/layout/simple_navigation_list', locals: {renderer: builder.navigation_renderer, container: builder.global_nav_container}
 
 
       aside.right-side
