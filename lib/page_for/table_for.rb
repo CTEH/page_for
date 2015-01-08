@@ -138,6 +138,7 @@ module TableFor
         'string'
       else
         aname = attribute.to_s
+        return :enumerize if self.klass.respond_to?(:enumerized_attributes) && self.klass.enumerized_attributes[aname]
         self.content_columns.select { |c| c.name.to_s == aname} .first.try(:type) || "reference"
       end
     end

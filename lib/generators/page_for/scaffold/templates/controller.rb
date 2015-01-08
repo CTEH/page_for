@@ -56,7 +56,7 @@ class <%=class_name.pluralize%>Controller < ApplicationController
   protected
 
   def nesters
-    [:organization, :project]
+    [<%=belongs_to_associations.map{|c|":#{c}"}.join(', ')%>]
   end
 
   def <%=singular_table_name%>_params

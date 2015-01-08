@@ -44,16 +44,17 @@ module DefinitionListFor
   class DefinitionListBuilder
 
     attr_accessor :resource, :content_columns, :belongs_to, :column_names, :bt_names, :context,
-                  :klass_name, :is_more, :definitions, :more_definitions, :page
+                  :klass, :klass_name, :is_more, :definitions, :more_definitions, :page
 
     def initialize(resource, page)
       self.page = page
       self.context = page.context
       self.resource = resource
-      self.klass_name = resource.class.name.underscore
-      self.content_columns = resource.class.content_columns
+      self.klass = resource.class
+      self.klass_name = self.klass.name.underscore
+      self.content_columns = self.klass.content_columns
       self.column_names = self.content_columns.map {|x|x.name.to_s}
-      self.belongs_to = resource.class.reflect_on_all_associations(:belongs_to)
+      self.belongs_to = self.klass.reflect_on_all_associations(:belongs_to)
       self.bt_names = self.belongs_to.map {|x|x.name.to_s}
       self.context = context
       self.is_more = false
@@ -164,6 +165,7 @@ module DefinitionListFor
 
     def content_type(attribute)
       aname = attribute.to_s
+      return :enumerize if self.klass.respond_to?(:enumerized_attributes) && self.klass.enumerized_attributes[aname]
       begin
         self.content_columns.select {|c| c.name.to_s == aname}.first.type
       rescue

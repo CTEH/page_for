@@ -204,18 +204,20 @@ module PageFor
 
 
   class TabSectionBuilder
-    attr_accessor :page, :context, :tab_titles, :tab_contents, :unique, :tab_ids
+    attr_accessor :page, :context, :tab_titles, :tab_contents, :unique, :tab_options, :tab_ids
 
     def initialize(page)
       self.page = page
       self.context = page.context
       self.tab_titles = []
       self.tab_contents = []
+      self.tab_options = []
       self.tab_ids = []
     end
 
-    def tab(title, tab_id, &block)
+    def tab(title, tab_id, options, &block)
       self.tab_ids << tab_id
+      self.tab_options.append(options)
       self.tab_titles.append(title)
 
       # SET CURRENT TAB OF PAGE PRIOR TO CAPTURING
@@ -371,17 +373,19 @@ module PageFor
       ''
     end
 
-    def tab(title, &block)
+    def tab(title, *args, &block)
+      options = args.extract_options!
       self.tab_id += 1
       self.current_tab_id = self.tab_id
-      self.tab_section_builder.tab(title, self.tab_id, &block)
+      self.tab_section_builder.tab(title, self.tab_id, options, &block)
       ''
     end
 
-    def top_tab(title, &block)
+    def top_tab(title, *args, &block)
+      options = args.extract_options!
       self.tab_id += 1
       self.current_tab_id = self.tab_id
-      self.top_tab_section_builder.tab(title, self.tab_id, &block)
+      self.top_tab_section_builder.tab(title, self.tab_id, options, &block)
       ''
     end
 
@@ -469,3 +473,4 @@ module PageFor
     end
   end
 end
+
