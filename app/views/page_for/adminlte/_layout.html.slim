@@ -9,7 +9,7 @@ html
     = stylesheet_link_tag "application", media: :all
     = javascript_include_tag "application"
 
-  body class="#{layout_builder.skin}"
+  body class="#{builder.skin}"
     /! Sidebar
     .wrapper.row-offcanvas.row-offcanvas-left
       /! Left side column. contains the logo and sidebar
@@ -19,22 +19,29 @@ html
             /! Sidebar user panel
             .user-panel
               .pull-left.image
-                img.img-circle alt=("User Image") src="#{layout_builder.usermenu.avatar}" /
+                img.img-circle alt=("User Image") src="#{builder.usermenu.avatar}" /
               .pull-left.info
                 p
-                  =layout_builder.usermenu.name
-                = layout_builder.usermenu.title
+                  =builder.usermenu.name
+                = builder.usermenu.title
 
-          -if layout_builder.search_path
-            form.sidebar-form action="#{layout_builder.search_path}" method="get"
+          -if builder.search_path
+            form.sidebar-form action="#{builder.search_path}" method="get"
               .input-group
                 input.form-control name="search_phrase" placeholder="Search..." type="text" /
                 span.input-group-btn
                   button#search-btn.btn.btn-flat name="seach" type="submit"
                     i.fa.fa-search
 
+          h3
+            = builder.contextual_nav_title
           ul.sidebar-menu
-            = render partial: 'page_for/adminlte/layout/simple_navigation_list', locals: {renderer: layout_builder.navigation_renderer, container: layout_builder.navigation_item_container}
+            = render partial: 'page_for/adminlte/layout/simple_navigation_list', locals: {renderer: builder.navigation_renderer, container: builder.contextual_navigation_container}
+          h3
+            = builder.global_nav_title
+          ul.sidebar-menu
+            = render partial: 'page_for/adminlte/layout/simple_navigation_list', locals: {renderer: builder.navigation_renderer, container: builder.global_navigation_container}
+
 
       aside.right-side
         /! Header Navbar START
@@ -46,14 +53,14 @@ html
             span.icon-bar
 
           .navbar-title.hidden-xs
-            = layout_builder.title
+            = builder.title
 
           = yield_proc.call(:navbar)
 
           -# HIDE STANDARD DROP DOWNS ON XS
           .navbar-right.hidden-xs
             ul.nav.navbar-nav
-              - layout_builder.message_menus.each do |nb|
+              - builder.message_menus.each do |nb|
                 /! Notifications: style can be found in dropdown.less
                 li.dropdown.notifications-menu
                   a.dropdown-toggle data-toggle="dropdown" href="#"
@@ -82,31 +89,31 @@ html
                 a.dropdown-toggle.hidden-xs data-toggle="dropdown" href="#"
                   i.glyphicon.glyphicon-user
                   span
-                    = layout_builder.usermenu.name
+                    = builder.usermenu.name
                     i.caret
                 ul.dropdown-menu
                   /! User image
                   li.user-header.bg-light-blue
-                    img.img-circle alt=("User Image") src="#{layout_builder.usermenu.avatar}" /
+                    img.img-circle alt=("User Image") src="#{builder.usermenu.avatar}" /
                     p
-                      = "#{layout_builder.usermenu.name} - #{layout_builder.usermenu.title}"
+                      = "#{builder.usermenu.name} - #{builder.usermenu.title}"
                       small
-                        = layout_builder.usermenu.tagline
-                  - if layout_builder.usermenu.links.length > 0
+                        = builder.usermenu.tagline
+                  - if builder.usermenu.links.length > 0
                     /! Menu Body
                     li.user-body
-                      - layout_builder.usermenu.links.each do |l|
+                      - builder.usermenu.links.each do |l|
                         .col-xs-4.text-center
                           = link_to *l
                   /! Menu Footer
                   li.user-footer
-                    -if layout_builder.usermenu.profile_link_args
+                    -if builder.usermenu.profile_link_args
                       .pull-left
-                        = classed_link_to 'btn btn-default btn-flat', *layout_builder.usermenu.profile_link_args
+                        = classed_link_to 'btn btn-default btn-flat', *builder.usermenu.profile_link_args
                         -# a.btn.btn-default.btn-flat href="#"  Profile
-                    -if layout_builder.usermenu.signout_link_args
+                    -if builder.usermenu.signout_link_args
                       .pull-right
-                        = classed_link_to 'btn btn-default btn-flat', *layout_builder.usermenu.signout_link_args
+                        = classed_link_to 'btn btn-default btn-flat', *builder.usermenu.signout_link_args
 
           -# SHOW CONDENSED DROP DOWNS ON XS
           .navbar-right.visible-xs
@@ -115,10 +122,9 @@ html
                 a.dropdown-toggle data-toggle="dropdown" href="#"
                   i.glyphicon.glyphicon-user
                   span class="label label-success"
-                    = layout_builder.message_menus.sum {|m| m.qty}
-
-              - layout_builder.message_menus.each do |nb|
-                ul.dropdown-menu
+                    = builder.message_menus.sum {|m| m.qty}
+              ul.dropdown-menu
+                - builder.message_menus.each do |nb|
                   li.header
                     = nb.header
                   li
@@ -133,38 +139,38 @@ html
                     a href="#"  View all
 
               /! User Account: style can be found in dropdown.less
-              li.dropdown.user.user-menu
+              li.dropdown.user.user-menu.hidden-xs
 
                 a.dropdown-toggle.visible-xs data-toggle="dropdown" href="#"
                   i.glyphicon.glyphicon-user
                 a.dropdown-toggle.hidden-xs data-toggle="dropdown" href="#"
                   i.glyphicon.glyphicon-user
                   span
-                    = layout_builder.usermenu.name
+                    = builder.usermenu.name
                     i.caret
                 ul.dropdown-menu
                   /! User image
                   li.user-header.bg-light-blue
-                    img.img-circle alt=("User Image") src="#{layout_builder.usermenu.avatar}" /
+                    img.img-circle alt=("User Image") src="#{builder.usermenu.avatar}" /
                     p
-                      = "#{layout_builder.usermenu.name} - #{layout_builder.usermenu.title}"
+                      = "#{builder.usermenu.name} - #{builder.usermenu.title}"
                       small
-                        = layout_builder.usermenu.tagline
-                  - if layout_builder.usermenu.links.length > 0
+                        = builder.usermenu.tagline
+                  - if builder.usermenu.links.length > 0
                     /! Menu Body
                     li.user-body
-                      - layout_builder.usermenu.links.each do |l|
+                      - builder.usermenu.links.each do |l|
                         .col-xs-4.text-center
                           = link_to *l
                   /! Menu Footer
                   li.user-footer
-                    -if layout_builder.usermenu.profile_link_args
+                    -if builder.usermenu.profile_link_args
                       .pull-left
-                        = classed_link_to 'btn btn-default btn-flat', *layout_builder.usermenu.profile_link_args
+                        = classed_link_to 'btn btn-default btn-flat', *builder.usermenu.profile_link_args
                         -# a.btn.btn-default.btn-flat href="#"  Profile
-                    -if layout_builder.usermenu.signout_link_args
+                    -if builder.usermenu.signout_link_args
                       .pull-right
-                        = classed_link_to 'btn btn-default btn-flat', *layout_builder.usermenu.signout_link_args
+                        = classed_link_to 'btn btn-default btn-flat', *builder.usermenu.signout_link_args
 
 
         = yield_proc.call(nil)

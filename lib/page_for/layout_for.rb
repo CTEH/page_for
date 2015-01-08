@@ -119,9 +119,11 @@ module LayoutFor
   # OPTIONS:
   #   skin: skin-blue, skin-black
   class LayoutBuilder
-    attr_accessor :context, :options, :navigation_item_container, :message_menus, :usermenu,
+    attr_accessor :context, :options, :contextual_nav_container, :message_menus, :usermenu,
                   :name, :skin, :navigation_renderer, :content_block, :search_path,
-                  :navbar_block, :content_blocks
+                  :navbar_block, :content_blocks, :global_nav_container,
+                  :contextual_nav_options, :global_nav_options, :contextual_nav_title,
+                  :global_nav_title
 
     def initialize(context, name, options)
       self.name = name
@@ -136,6 +138,9 @@ module LayoutFor
       end
       self.search_path = nil
       self.content_blocks={}
+      self.contextual_nav_container = nil
+      self.global_nav_container = nil
+
     end
 
     def title
@@ -180,10 +185,21 @@ module LayoutFor
     #     menu.item :posts, "Posts", posts_path
     #   end
     #
-    def navigation(options={}, &block)
+    def global_navigation(title, *args, &block)
       # Creates an active navigation_item_container much like render_navigation does from
       # https://github.com/codeplant/simple-navigation/blob/master/lib/simple_navigation/helpers.rb
-      self.navigation_item_container = self.context.active_navigation_item_container(options, &block)
+      self.global_nav_options = args.extract_options!
+      self.global_nav_title = title
+      self.global_nav_container = self.context.active_navigation_item_container(options, &block)
+      self.navigation_renderer = SimpleNavigation::Renderer::Base.new(options)
+    end
+
+    def contextual_navigation(title, *args, &block)
+      # Creates an active navigation_item_container much like render_navigation does from
+      # https://github.com/codeplant/simple-navigation/blob/master/lib/simple_navigation/helpers.rb
+      self.contextual_nav_title = title
+      self.contextual_nav_options = args.extract_options!
+      self.contextual_navigation_container = self.context.active_navigation_item_container(options, &block)
       self.navigation_renderer = SimpleNavigation::Renderer::Base.new(options)
     end
 

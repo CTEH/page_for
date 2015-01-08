@@ -25,6 +25,7 @@ To change the theme for your application, create an initializer that follows the
 
     PageFor.configure do |config|
       config.theme = 'theme-name-here'
+      config.simple_form_for :theme-name-here
     end
 
 

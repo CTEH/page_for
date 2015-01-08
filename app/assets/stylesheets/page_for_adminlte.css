@@ -18,6 +18,69 @@ section.content {
 }
 
 /**********************************************************************/
+/* CUSTOMIZE SIMPLE FORM FOR
+/**********************************************************************/
+
+@media (min-width: 768px) {
+  .form-vertical .control-group+.control-group {
+    border-top: 1px solid #f2f4f6;
+    margin-top: 10px;
+    padding-top: 10px;
+  }
+
+  .control-group {
+    display: table;
+    line-height: 0;
+    content: "";
+    border-top: 1px solid #f2f4f6;
+    margin-top: 5px;
+    padding-top: 5px;
+  }
+
+  .control-label {
+    float: left;
+    width: 140px;
+    padding-top: 5px;
+    text-align: left;
+  }
+
+  .controls {
+    display: block;
+    color: #747678;
+    font-size: 13px;
+    font-family: 'Roboto', Arial, sans-serif;
+    font-weight: 300;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.0004);
+    margin-left: 150px;
+    margin-top: -2px;
+  }
+}
+
+.controls input, select, textarea {
+  border: 1px solid #ddd;
+  padding: 3px;
+}
+
+.controls input.btn {
+  margin-top: 5px;
+}
+
+.controls textarea {
+  width: 300px;
+  height: 100px;
+}
+
+
+/**********************************************************************/
+/* SECTIONS
+/**********************************************************************/
+
+.sidebar h3 {
+  color: white;
+}
+
+
+/**********************************************************************/
 /* CUSTOMIZE PHONE PADDING
 /**********************************************************************/
 
@@ -288,7 +351,12 @@ section.content {
 
 .box-flat {
   box-shadow: none;
-  border: 1px solid #d2d4d8;
+  /* border: 1px solid #d2d4d8; */
+  border: 0px;
+}
+
+.box {
+  box-shadow: none;
 }
 
 .nav-tabs-custom > .tab-content {

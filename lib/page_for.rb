@@ -8,6 +8,12 @@ require 'page_for/pivot_for'
 require 'page_for/routes_for'
 require 'page_for/layout_for'
 
+
+require 'simple_form_for/adminlte'
+require 'simple_form_for/hyperia'
+require 'simple_form_for/libero'
+
+
 # require 'page_for/engine'
 
 module PageFor
@@ -29,6 +35,10 @@ module PageFor
 
     def initialize
       @theme = 'hyperia'
+    end
+
+    def simple_form_for(theme)
+      eval("initialize_#{theme}_simple_form_for()")
     end
   end
 
