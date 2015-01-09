@@ -3,7 +3,7 @@
   - page.add_button :<%=singular_table_name%>, nester: @nester
 
   - page.section do
-    = table_for @<%=plural_table_name%> do |t|
+    = page.table_for @<%=plural_table_name%> do |t|
       - t.action :view
 <%belongs_to_associations.each do |attribute| -%>
       - t.column :<%=attribute%>, sort: '<%=attribute%>_<%=guess_sort_column(attribute)%>'

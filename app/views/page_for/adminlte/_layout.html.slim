@@ -15,14 +15,14 @@ html
       /! Left side column. contains the logo and sidebar
       aside.left-side.sidebar-offcanvas
         section.sidebar
-          -if true
+          - if builder.usermenu
             /! Sidebar user panel
             .user-panel
               .pull-left.image
                 img.img-circle alt=("User Image") src="#{builder.usermenu.avatar}" /
               .pull-left.info
                 p
-                  =builder.usermenu.name
+                  = builder.usermenu.name
                 = builder.usermenu.title
 
           -if builder.search_path
@@ -33,14 +33,17 @@ html
                   button#search-btn.btn.btn-flat name="seach" type="submit"
                     i.fa.fa-search
 
-          h3
-            = builder.contextual_nav_title
-          ul.sidebar-menu
-            = render partial: 'page_for/adminlte/layout/simple_navigation_list', locals: {renderer: builder.navigation_renderer, container: builder.contextual_nav_container}
-          h3
-            = builder.global_nav_title
-          ul.sidebar-menu
-            = render partial: 'page_for/adminlte/layout/simple_navigation_list', locals: {renderer: builder.navigation_renderer, container: builder.global_nav_container}
+          - if builder.contextual_nav_container
+            h3
+              = builder.contextual_nav_title
+            ul.sidebar-menu
+                = render partial: 'page_for/adminlte/layout/simple_navigation_list', locals: {renderer: builder.navigation_renderer, container: builder.contextual_nav_container}
+
+          - if builder.global_nav_container
+            h3
+              = builder.global_nav_title
+            ul.sidebar-menu
+              = render partial: 'page_for/adminlte/layout/simple_navigation_list', locals: {renderer: builder.navigation_renderer, container: builder.global_nav_container}
 
 
       aside.right-side
@@ -81,39 +84,40 @@ html
                     li.footer
                       a href="#"  View all
 
-              /! User Account: style can be found in dropdown.less
-              li.dropdown.user.user-menu
+              - if builder.usermenu
+                /! User Account: style can be found in dropdown.less
+                li.dropdown.user.user-menu
 
-                a.dropdown-toggle.visible-xs data-toggle="dropdown" href="#"
-                  i.glyphicon.glyphicon-user
-                a.dropdown-toggle.hidden-xs data-toggle="dropdown" href="#"
-                  i.glyphicon.glyphicon-user
-                  span
-                    = builder.usermenu.name
-                    i.caret
-                ul.dropdown-menu
-                  /! User image
-                  li.user-header.bg-light-blue
-                    img.img-circle alt=("User Image") src="#{builder.usermenu.avatar}" /
-                    p
-                      = "#{builder.usermenu.name} - #{builder.usermenu.title}"
-                      small
-                        = builder.usermenu.tagline
-                  - if builder.usermenu.links.length > 0
-                    /! Menu Body
-                    li.user-body
-                      - builder.usermenu.links.each do |l|
-                        .col-xs-4.text-center
-                          = link_to *l
-                  /! Menu Footer
-                  li.user-footer
-                    -if builder.usermenu.profile_link_args
-                      .pull-left
-                        = classed_link_to 'btn btn-default btn-flat', *builder.usermenu.profile_link_args
-                        -# a.btn.btn-default.btn-flat href="#"  Profile
-                    -if builder.usermenu.signout_link_args
-                      .pull-right
-                        = classed_link_to 'btn btn-default btn-flat', *builder.usermenu.signout_link_args
+                  a.dropdown-toggle.visible-xs data-toggle="dropdown" href="#"
+                    i.glyphicon.glyphicon-user
+                  a.dropdown-toggle.hidden-xs data-toggle="dropdown" href="#"
+                    i.glyphicon.glyphicon-user
+                    span
+                      = builder.usermenu.name
+                      i.caret
+                  ul.dropdown-menu
+                    /! User image
+                    li.user-header.bg-light-blue
+                      img.img-circle alt=("User Image") src="#{builder.usermenu.avatar}" /
+                      p
+                        = "#{builder.usermenu.name} - #{builder.usermenu.title}"
+                        small
+                          = builder.usermenu.tagline
+                    - if builder.usermenu.links.length > 0
+                      /! Menu Body
+                      li.user-body
+                        - builder.usermenu.links.each do |l|
+                          .col-xs-4.text-center
+                            = link_to *l
+                    /! Menu Footer
+                    li.user-footer
+                      -if builder.usermenu.profile_link_args
+                        .pull-left
+                          = classed_link_to 'btn btn-default btn-flat', *builder.usermenu.profile_link_args
+                          -# a.btn.btn-default.btn-flat href="#"  Profile
+                      -if builder.usermenu.signout_link_args
+                        .pull-right
+                          = classed_link_to 'btn btn-default btn-flat', *builder.usermenu.signout_link_args
 
           -# SHOW CONDENSED DROP DOWNS ON XS
           .navbar-right.visible-xs
@@ -138,39 +142,40 @@ html
                   li.footer
                     a href="#"  View all
 
-              /! User Account: style can be found in dropdown.less
-              li.dropdown.user.user-menu.hidden-xs
+              -if builder.usermenu
+                /! User Account: style can be found in dropdown.less
+                li.dropdown.user.user-menu.hidden-xs
 
-                a.dropdown-toggle.visible-xs data-toggle="dropdown" href="#"
-                  i.glyphicon.glyphicon-user
-                a.dropdown-toggle.hidden-xs data-toggle="dropdown" href="#"
-                  i.glyphicon.glyphicon-user
-                  span
-                    = builder.usermenu.name
-                    i.caret
-                ul.dropdown-menu
-                  /! User image
-                  li.user-header.bg-light-blue
-                    img.img-circle alt=("User Image") src="#{builder.usermenu.avatar}" /
-                    p
-                      = "#{builder.usermenu.name} - #{builder.usermenu.title}"
-                      small
-                        = builder.usermenu.tagline
-                  - if builder.usermenu.links.length > 0
-                    /! Menu Body
-                    li.user-body
-                      - builder.usermenu.links.each do |l|
-                        .col-xs-4.text-center
-                          = link_to *l
-                  /! Menu Footer
-                  li.user-footer
-                    -if builder.usermenu.profile_link_args
-                      .pull-left
-                        = classed_link_to 'btn btn-default btn-flat', *builder.usermenu.profile_link_args
-                        -# a.btn.btn-default.btn-flat href="#"  Profile
-                    -if builder.usermenu.signout_link_args
-                      .pull-right
-                        = classed_link_to 'btn btn-default btn-flat', *builder.usermenu.signout_link_args
+                  a.dropdown-toggle.visible-xs data-toggle="dropdown" href="#"
+                    i.glyphicon.glyphicon-user
+                  a.dropdown-toggle.hidden-xs data-toggle="dropdown" href="#"
+                    i.glyphicon.glyphicon-user
+                    span
+                      = builder.usermenu.name
+                      i.caret
+                  ul.dropdown-menu
+                    /! User image
+                    li.user-header.bg-light-blue
+                      img.img-circle alt=("User Image") src="#{builder.usermenu.avatar}" /
+                      p
+                        = "#{builder.usermenu.name} - #{builder.usermenu.title}"
+                        small
+                          = builder.usermenu.tagline
+                    - if builder.usermenu.links.length > 0
+                      /! Menu Body
+                      li.user-body
+                        - builder.usermenu.links.each do |l|
+                          .col-xs-4.text-center
+                            = link_to *l
+                    /! Menu Footer
+                    li.user-footer
+                      -if builder.usermenu.profile_link_args
+                        .pull-left
+                          = classed_link_to 'btn btn-default btn-flat', *builder.usermenu.profile_link_args
+                          -# a.btn.btn-default.btn-flat href="#"  Profile
+                      -if builder.usermenu.signout_link_args
+                        .pull-right
+                          = classed_link_to 'btn btn-default btn-flat', *builder.usermenu.signout_link_args
 
 
         = yield_proc.call(nil)
