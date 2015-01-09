@@ -89,6 +89,16 @@ section.content {
 /**********************************************************************/
 /* PAGE NAVIGATION
 /**********************************************************************/
+@media screen and (min-width: 992px) {
+  .overflow {
+    overflow: auto;
+  }
+
+  .viewport {
+    overflow: auto;
+  }
+
+}
 
 .page_navigation {
   padding: 0 15px 0 15px;
@@ -112,15 +122,6 @@ section.content {
   border-right: 1px solid #ddd;
 }
 
-.compensate_for_page_navigation {
-  overflow: auto;
-}
-
-table .enable_page_navigation {
-  overflow: auto;
-  width: 100%;
-}
-
 .page_for_page_actions {
   float: right;
 }
@@ -130,6 +131,14 @@ table .enable_page_navigation {
   text-decoration: underline;
   margin-left: 1em;
 }
+
+.pagination {
+  margin: 0px;
+  padding-top: 10px;
+  float: right;
+}
+
+
 
 /**********************************************************************/
 /* Nevermind Boxes
@@ -430,7 +439,9 @@ table .enable_page_navigation {
 .nav-tabs-custom > .tab-content {
   border-top: 1px solid #d2d4d8;
   margin-top: 0px;
-  padding-top: 1.5em;
+  padding-top: 1em;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
 }
 
 .nav-tabs {
@@ -440,4 +451,5 @@ table .enable_page_navigation {
 
 .nav-tabs-custom {
   background-color: #f7f8f9;
+  margin-bottom: 0px;
 }
