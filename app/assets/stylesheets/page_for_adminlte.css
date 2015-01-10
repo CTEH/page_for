@@ -98,6 +98,11 @@ section.content {
     overflow: auto;
   }
 
+  .chosen_drop {
+    border: 1px solid green;
+
+  }
+
 }
 
 .page_navigation {
@@ -107,19 +112,20 @@ section.content {
   background-color: #f4f4f4;
   z-index: 1000;
   color: #666;
+  border-left: 1px solid #ddd;
 }
 
 .right-side > .content-header {
   position: inherit;
   padding: 15px 15px 10px 20px;
-  border-right: 1px solid #ddd;
+
   overflow: auto;
 }
 
 .right-side > .content {
   position: inherit;
   background-color: white;
-  border-right: 1px solid #ddd;
+
 }
 
 .page_for_page_actions {
@@ -155,6 +161,7 @@ section.content {
 .table > .btn {
   padding: 0px;
 }
+
 
 
 /**********************************************************************/
@@ -441,6 +448,8 @@ section.content {
   margin-top: 0px;
   padding-top: 1em;
   padding-bottom: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
   margin-bottom: 0px;
 }
 

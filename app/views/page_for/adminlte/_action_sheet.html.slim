@@ -2,7 +2,7 @@
   - # An action sheet visible on extra small devices when needed
   - if builder.needs_action_sheet?
     div class="btn-group visible-xs"
-      button.btn.btn-default.dropdown-toggle actionSheetOpen=builder.action_sheet_id
+      button class="btn btn-default dropdown-toggle #{builder.css_class}" actionSheetOpen=builder.action_sheet_id
         span.caret
         span.sr-only
           | Open ActionSheet
@@ -22,9 +22,9 @@
 
   - # A button which is hidden on extra small devices when action sheet is needed
   div class="btn-group btn-group-nowrap #{'hidden-xs' if builder.needs_action_sheet?}"
-    = classed_link_to "button btn btn-default", *builder.primary_action.args, builder.primary_action.block
+    = classed_link_to "button btn btn-default #{builder.css_class}", *builder.primary_action.args, builder.primary_action.block
     - if builder.multiple_actions?
-      button.btn.btn-default.dropdown-toggle data-toggle="dropdown"
+      button class="btn btn-default dropdown-toggle #{builder.css_class}" data-toggle="dropdown"
         span.caret
         span.sr-only
           | Toggle Dropdown

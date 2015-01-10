@@ -24,11 +24,11 @@ function fitViewPortsOnPage() {
     var nextElement = $(v.next());
     var paginationHeight = 0;
     if(nextElement.hasClass('pagination')) {
-      paginationHeight = nextElement.height();
+      paginationHeight = nextElement.height()+15;
     }
 
     if(offset.top != 0) {
-      newHeight = $(window).height() - offset.top - paginationHeight - 15;
+      newHeight = $(window).height() - offset.top - paginationHeight;
     }
     if(newHeight > 400) {
       v.css('height', ''+newHeight+'px');

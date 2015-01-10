@@ -6,11 +6,16 @@
 - if not page_builder.context.content_for? :title
   - page_builder.context.content_for :title, render_page_for(partial: "page/content_for_title", locals: { page_builder: page_builder })
 
-.page_navigation.hidden-xs.hidden-sm
-  h2
-    | HELLO WORLD
-  p
-    | "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."
+-if page_builder.secondary_items.length > 0
+  .page_navigation.hidden-xs.hidden-sm.viewport
+    - page_builder.secondary_items.each do |item|
+      - if item.type == "navigation"
+        h3
+          = item.title
+        ul.sidebar-menu
+          = render partial: 'page_for/adminlte/layout/simple_navigation_list', locals: {renderer: page_builder.navigation_renderer, container: item.nav_container}
+      - if item.type == "content"
+        = item.content
 
 
 /! Content Header (Page header)
@@ -26,8 +31,6 @@ section.content-header.hidden-xs
   small
     = page_builder.description
 
-
-
   -if false
     ol.breadcrumb
       li
@@ -37,7 +40,7 @@ section.content-header.hidden-xs
       li.active Dashboard
 
 
-section.content.overflow
+section class="content #{'overflow' if page_builder.secondary_items.length > 0}"
   - if page_builder.sections and page_builder.sections.count > 0
     - page_builder.sections.each do |section|
       .page_for_section
@@ -47,7 +50,6 @@ section.content.overflow
               = section.title
         .page_for_section_content
           = section.content
-
 
   - [page_builder.top_tab_section_builder, page_builder.tab_section_builder].select {|x|x.tab_contents.length > 0}.each do |tab_section_builder|
     div.nav-tabs-custom.nav-tab-flat

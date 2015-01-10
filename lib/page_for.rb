@@ -47,6 +47,33 @@ module PageFor
   class Engine < ::Rails::Engine
   end
 
+  # A page has secondary content that is a mixture of HTML blocks
+  # and structured navigation.
+  # The assumption is that a desktop would render in order tree navigation
+  # and context intermixed.
+  # A 'phone' may choose to omit the HTML content or present it in a modal
+  # when the user clicks on a title.
+
+  class SecondaryContent
+    attr_accessor :page_builder, :title, :type, :block,
+                  :nav_container, :id, :content
+
+    def initialize(page_builder, title, type, id, block)
+      self.page_builder = page_builder
+      if type=='navigation'
+        self.nav_container = self.page_builder.context.active_navigation_item_container({}, &block)
+      end
+      if type == 'content'
+        self.content = self.page_builder.context.capture &block
+      end
+      self.type = type
+      self.title = title
+      self.id = id
+    end
+
+  end
+
+
   class AddButtonBuilder
     attr_accessor :page_builder, :label, :url_options,
                   :child_klass, :method,
@@ -285,10 +312,10 @@ module PageFor
   class PageBuilder
     attr_accessor :context, :buttons, :title, :description,
                   :page_options, :sections, :tab_section_builder,
-                  :resource, :top_tab_section_builder
+                  :resource, :top_tab_section_builder, :secondary_items
 
     attr_accessor :action_sheet_id, :tab_id, :section_id, :table_id,
-                  :current_tab_id
+                  :current_tab_id, :secondary_item_id, :navigation_renderer
 
     def initialize(context, resource, options)
       self.page_options = options
@@ -299,6 +326,8 @@ module PageFor
       self.top_tab_section_builder = TabSectionBuilder.new(self)
       self.tab_section_builder =  TabSectionBuilder.new(self)
       self.buttons = []
+      self.secondary_items = []
+      self.navigation_renderer = SimpleNavigation::Renderer::Base.new({})
 
       # Initialize ID Incs
       self.action_sheet_id = 0
@@ -306,6 +335,9 @@ module PageFor
       self.section_id = 0
       self.table_id = 0
       self.current_tab_id = nil
+      self.secondary_item_id = 0
+
+      # secondary_items
     end
 
     def build_title
@@ -371,6 +403,16 @@ module PageFor
     def section(title=nil, &block)
       self.sections << SectionBuilder.new(self, title, block)
       ''
+    end
+
+    def secondary_content(title, &block)
+      self.secondary_item_id+=1
+      self.secondary_items << SecondaryContent.new(self, title, "content", self.secondary_item_id, block)
+    end
+
+    def secondary_navigation(title, &block)
+      self.secondary_item_id+=1
+      self.secondary_items << SecondaryContent.new(self, title, "navigation", self.secondary_item_id, block)
     end
 
     def tab(title, *args, &block)

@@ -24,6 +24,7 @@ module ActionSheetFor
     attr_accessor :context, :actions, :action_sheet_id, :klass,
                   :max_xs_length
 
+    # klass: btn-xs
     def initialize(context, klass, id)
       self.context = context
       self.actions = []
@@ -32,7 +33,8 @@ module ActionSheetFor
       self.max_xs_length = 4
     end
 
-    def css_class(default)
+    # Class for 'Launch Button'
+    def css_class(default='')
       if self.klass
         self.klass
       else

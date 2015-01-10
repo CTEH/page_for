@@ -7,8 +7,9 @@
           = f.text_field table_builder.ransack_cont_fields.to_sym, class: "form-control input-sm pull-right", placeholder: "Search #{table_builder.klass_name.titleize.pluralize}..."
           div.input-group-btn
             = f.button "<i class='fa fa-search'></i>".html_safe, class: "btn btn-sm btn-default"
-  .viewport
-    table class="table table-striped #{table_builder.table_class}"
+
+  div class="#{'viewport' if table_builder.page.secondary_items.length>0}"
+    table class="table table-striped table-condensed #{table_builder.table_class}"
       thead
         tr
           th
@@ -23,7 +24,7 @@
         - table_builder.filtered_resources.each do |resource|
           tr
             td
-              = page.action_sheet_for do |sheet|
+              = page.action_sheet_for "btn-xs" do |sheet|
                 - table_builder.actions.each do |action|
                   - sheet.link_to(action.label, action.url(resource)) if action.can?(resource)
             - table_builder.columns.each do |column_builder|
