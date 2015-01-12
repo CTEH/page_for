@@ -281,18 +281,16 @@ module PageFor
 
 
   class SectionBuilder
-    attr_accessor :page_helper, :title, :block, :nowrap
+    attr_accessor :page_helper, :title, :block, :nowrap, :content
 
     def initialize(page_helper, title, block, nowrap=false)
       self.page_helper = page_helper
       self.title = title
       self.block = block
       self.nowrap = nowrap
+      self.content = self.page_helper.context.capture(&block).to_s
     end
 
-    def content
-      self.page_helper.context.capture(&block).to_s
-    end
 
     def render
       if self.nowrap
@@ -373,7 +371,10 @@ module PageFor
       end
     end
 
-    def add_button(child_class, *args, &block)
+
+
+
+      def add_button(child_class, *args, &block)
       options = args.extract_options!
       b = AddButtonBuilder.new(self, child_class, options, block)
       self.buttons << b if b.can?
@@ -457,7 +458,24 @@ module PageFor
       self.context.render_page_for(partial: "action_sheet", locals: { builder: builder, page: self})
     end
 
+    # Options
+    # viewport: true,false
+    # ransack_obj
+    # ransack_key
     def table_for(resources, *args, &block)
+      self.table_id += 1
+      # no need to render the table if we don't have any items
+      if resources.length == 0
+        builder = nil
+      else
+        options = args.extract_options!
+        builder = TableFor::TableBuilder.new(self, resources, options, self.table_id)
+        yield(builder) if block_given?
+      end
+      self.context.render_page_for(partial: "table", locals: { table_builder: builder, resources: resources, page: self })
+    end
+
+    def table_builder(resources, *args, &block)
       self.table_id += 1
       # no need to render the table if we don't have any items
       if resources.length == 0
@@ -468,8 +486,11 @@ module PageFor
         builder = TableFor::TableBuilder.new(self, resources, options, self.table_id)
         yield(builder) if block_given?
       end
+      return builder
+    end
 
-      self.context.render_page_for(partial: "table", locals: { table_builder: builder, resources: resources, page: self })
+    def table_render(builder)
+      self.context.render_page_for(partial: "table", locals: { table_builder: builder, resources: builder.resources, page: self })
     end
 
     #############################################################################

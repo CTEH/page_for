@@ -5,10 +5,11 @@ module TableFor
                   :content_columns, :column_names,
                   :actions,
                   :paginate, :page_size, :kaminari_key,
-                  :searchable, :search, :filters, :ransack_key,
+                  :searchable, :search, :filters, :ransack_key, :ransack_obj,
                   :current_ability, :apply_abilities, :filtered_resources,
                   :belongs_to, :belongs_to_names,
-                  :klass, :klass_name, :freeze_header, :table_id
+                  :klass, :klass_name, :freeze_header, :table_id,
+                  :viewport
 
   def initialize(page, resources, options, table_id)
       self.page = page
@@ -34,6 +35,13 @@ module TableFor
       self.searchable = true
       self.searchable = options[:searchable] if options[:searchable] != nil
 
+      self.viewport = true
+      self.viewport = options[:viewport] if options[:viewport] != nil
+
+      self.ransack_key = options[:ransack_key] ||= "q_#{self.table_id}"
+      self.ransack_obj = options[:ransack_obj] ||= eval("@#{ransack_key}")
+      self.kaminari_key = "p_#{self.table_id}"
+
       if self.resources.length > 0
         resource = resources.first
 
@@ -46,14 +54,16 @@ module TableFor
         self.belongs_to = self.klass.reflect_on_all_associations(:belongs_to)
         self.belongs_to_names = self.belongs_to.map {|x|x.name.to_s}
 
-        self.ransack_key = "q_#{self.klass_name}"
-        self.kaminari_key = "page_#{self.klass_name}"
       end
 
       self.setup_abilities if self.apply_abilities
       self.setup_ransack unless options[:ransack_obj]
       self.setup_kaminari
 
+    end
+
+    def html
+      self.context.render_page_for(partial: "table", locals: { table_builder: self, resources: self.resources, page: self.page })
     end
 
     def resource_action_sheet_id(resource)
@@ -67,8 +77,8 @@ module TableFor
     end
 
     def setup_ransack
-      self.table_options[:ransack_obj] = self.filtered_resources.search(self.context.params[self.ransack_key.to_sym], search_key: self.ransack_key.to_sym)
-      self.filtered_resources = self.table_options[:ransack_obj].result(distinct: true)
+      self.ransack_obj = self.filtered_resources.search(self.context.params[self.ransack_key.to_sym], search_key: self.ransack_key.to_sym)
+      self.filtered_resources = self.ransack_obj.result(distinct: true)
     end
 
     def setup_kaminari
@@ -76,6 +86,11 @@ module TableFor
         self.filtered_resources = self.filtered_resources.page(self.context.params[self.kaminari_key.to_sym])
         self.filtered_resources = self.filtered_resources.per(self.page_size) if self.page_size
       end
+    end
+
+    # Useful for creating params for filters on the table
+    def ransack_params(field, value)
+      {self.ransack_key=> {"#{field}_eq"=>value}}
     end
 
     def filter(attribute, *args, &block)
@@ -350,8 +365,8 @@ module TableFor
     end
 
     def sort_link
-      if table_options[:ransack_obj]
-        self.table_builder.context.sort_link(self.table_options[:ransack_obj], self.sort_link_attribute, self.sort_link_title)
+      if table_builder.ransack_obj
+        self.table_builder.context.sort_link(self.table_builder.ransack_obj, self.sort_link_attribute, self.sort_link_title)
       end
     end
 

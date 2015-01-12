@@ -10,10 +10,40 @@ html
     = javascript_include_tag "application"
 
   body class="#{builder.skin}"
+    nav.navbar.navbar-default.navbar-black.hidden-xs.navbar-xs role="navigation"
+      /! Brand and toggle get grouped for better mobile display
+      .navbar-header
+        a.navbar-brand href="javascript:void(0)"
+          = builder.global_nav_title
+
+      nav.collapse.navbar-collapse.bs-navbar-collapse
+        -if builder.global_nav_container
+          = render partial: 'page_for/adminlte/layout/top_bar_simple_navigation.html', locals: {builder: builder.navigation_renderer, container: builder.global_nav_container}
+
+        ul.nav.navbar-nav.navbar-right
+          li
+            a href="javascript:void(0)"  Link
+          li.dropdown
+            a.dropdown-toggle data-toggle="dropdown" href="javascript:void(0)"
+              | Dropdown
+              b.caret
+            ul.dropdown-menu
+              li
+                a href="javascript:void(0)"  Action
+              li
+                a href="javascript:void(0)"  Another action
+              li
+                a href="javascript:void(0)"  Something else here
+              li.divider
+              li
+                a href="javascript:void(0)"  Separated link
+
+
+
     /! Sidebar
     .wrapper.row-offcanvas.row-offcanvas-left
       /! Left side column. contains the logo and sidebar
-      aside.left-side.sidebar-offcanvas
+      aside.left-side.sidebar-offcanvas.visible-xs
         section.sidebar
           - if builder.usermenu
             /! Sidebar user panel
@@ -48,7 +78,7 @@ html
 
       aside.right-side
         /! Header Navbar START
-        nav.navbar.navbar-static-top role="navigation"
+        nav.navbar.navbar-static-top.visible-xs role="navigation"
           a.navbar-btn.sidebar-toggle data-toggle="offcanvas" href="#" role="button"
             span.sr-only Toggle navigation
             span.icon-bar

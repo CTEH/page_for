@@ -15,6 +15,7 @@ body {
   font-family: 'Source Sans Pro', sans-serif;
   -webkit-font-smoothing: antialiased;
   min-height: 100%;
+  background: #f9f9f9;
 }
 a {
   color: #3c8dbc;

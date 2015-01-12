@@ -22,6 +22,13 @@ section.content {
 /**********************************************************************/
 
 @media (min-width: 768px) {
+
+  .primary_items {
+    padding-top: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
   .form-vertical .control-group+.control-group {
     border-top: 1px solid #f2f4f6;
     margin-top: 10px;
@@ -56,6 +63,7 @@ section.content {
   }
 }
 
+
 .controls input, select, textarea {
   border: 1px solid #ddd;
   padding: 3px;
@@ -87,7 +95,7 @@ section.content {
 }
 
 /**********************************************************************/
-/* PAGE NAVIGATION
+/* (RIGHT SIDE BAR) SECONDARY PAGE NAVIGATION AND SECONDARY CONTENT
 /**********************************************************************/
 @media screen and (min-width: 992px) {
   .overflow {
@@ -98,21 +106,110 @@ section.content {
     overflow: auto;
   }
 
-  .chosen_drop {
-    border: 1px solid green;
-
-  }
-
 }
 
-.page_navigation {
-  padding: 0 15px 0 15px;
+
+.primary_items {
+  background-color: white;
+}
+
+.primary_items > .content-header {
+  margin-bottom: 5px;
+}
+
+.primary_items > .content-header > h1 {
+  margin-top: 0;
+  padding-top: 0;
+  font-size: 25px;
+  font-weight: bold;
+  margin-bottom: .2em;
+  padding-bottom: 0px;
+}
+
+.primary_items > .content {
+  background-color: white;
+}
+
+.secondary_items > ul.sidebar-menu {
+  padding-left: 0;
+}
+
+.secondary_items > ul.sidebar-menu > li {
+  -webkit-font-smoothing: antialiased;
+  color: rgb(61, 69, 76);
+  display: list-item;
+  font-family: 'helvetica neue', helvetica, arial, sans-serif;
+  font-size: 14px;
+  height: 18px;
+  line-height: 18.2px;
+  list-style-type: none;
+  margin-bottom: 0px;
+  margin-left: 0px;
+  margin-right: 2px;
+  margin-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-top: 0px;
+  text-align: left;
+}
+
+
+.secondary_items {
   float: right;
-  width: 220px;
+  width: 25%;
   background-color: #f4f4f4;
-  z-index: 1000;
-  color: #666;
   border-left: 1px solid #ddd;
+  -webkit-font-smoothing: antialiased;
+  color: rgb(61, 69, 76);
+  display: block;
+  font-family: 'helvetica neue', helvetica, arial, sans-serif;
+  font-size: 14px;
+  height: 756px;
+  line-height: 18px;
+  margin-bottom: 0px;
+  margin-left: 0px;
+  margin-right: 0px;
+  margin-top: 0px;
+  padding-right: 10px;
+  padding-left: 20px;
+  position: relative;
+  z-index: 9;
+}
+
+.secondary_items a {
+  -webkit-font-smoothing: antialiased;
+  color: rgb(41, 150, 204);
+  cursor: auto;
+  display: inline;
+  font-family: 'helvetica neue', helvetica, arial, sans-serif;
+  font-size: 14px;
+  height: auto;
+  line-height: 18.2000007629395px;
+  list-style-type: none;
+  text-align: left;
+  text-decoration: none;
+  width: auto;
+}
+
+.secondary_items h3 {
+  -webkit-font-smoothing: antialiased;
+  color: rgb(102, 102, 102);
+  display: block;
+  font-family: 'Trebuchet MS', Verdana, sans-serif;
+  font-size: 16px;
+  font-weight: normal;
+  height: 20px;
+  line-height: 20.7999992370605px;
+  margin-bottom: 5px;
+  margin-left: 0px;
+  margin-right: 0px;
+  margin-top: 20px;
+  padding-bottom: 1px;
+  padding-left: 0px;
+  padding-right: 10px;
+  padding-top: 2px;
+  width: 210.21875px;
 }
 
 .right-side > .content-header {
@@ -145,6 +242,10 @@ section.content {
 }
 
 
+.table_search_box {
+  padding-top: 5px;
+  padding-bottom: 10px;
+}
 
 /**********************************************************************/
 /* Nevermind Boxes
@@ -461,4 +562,88 @@ section.content {
 .nav-tabs-custom {
   background-color: #f7f8f9;
   margin-bottom: 0px;
+}
+
+
+
+/*****************************************************************************************************/
+/** Redmine style headers **/
+/*****************************************************************************************************/
+
+
+/* Disable sidebar on desktop */
+.right-side {
+  margin-left: 0px;
+}
+
+@media (min-width: 768px) {
+  .navbar {
+    border-radius: 0px;
+  }
+}
+
+.navbar-xs { min-height:29px; height: 29px; }
+.navbar-xs .navbar-brand{ padding: 0px 12px 0px 20px; font-size: 16px;line-height: 28px; }
+.navbar-xs .navbar-nav > li > a {  padding-top: 0px; padding-bottom: 0px; line-height: 28px; }
+.navbar-xs .navbar-nav > .active > a {  padding-top: 0px; padding-bottom: 0px; line-height: 28px; }
+.navbar-xs .navbar-nav > li.active {  border: 0px; }
+
+.skin-blue > .navbar-black {
+  background-color: rgb(51, 51, 51);
+  border-color: #444444;
+}
+.skin-blue > .navbar-black .navbar-brand {
+  color: #ecf0f1;
+}
+.skin-blue > .navbar-black .navbar-brand:hover, .skin-blue > .navbar-black .navbar-brand:focus {
+  color: #ecdbff;
+}
+.skin-blue > .navbar-black .navbar-text {
+  color: #ecf0f1;
+}
+.skin-blue > .navbar-black .navbar-nav > li > a {
+  color: #ecf0f1;
+}
+.skin-blue > .navbar-black .navbar-nav > li > a:hover, .skin-blue > .navbar-black .navbar-nav > li > a:focus {
+  color: #ecdbff;
+}
+.skin-blue > .navbar-black .navbar-nav > .active > a, .skin-blue > .navbar-black .navbar-nav > .active > a:hover, .skin-blue > .navbar-black .navbar-nav > .active > a:focus {
+  color: #ecdbff;
+  background-color: #444444;
+}
+.skin-blue > .navbar-black .navbar-nav > .open > a, .skin-blue > .navbar-black .navbar-nav > .open > a:hover, .skin-blue > .navbar-black .navbar-nav > .open > a:focus {
+  color: #ecdbff;
+  background-color: #444444;
+}
+.skin-blue > .navbar-black .navbar-toggle {
+  border-color: #444444;
+}
+.skin-blue > .navbar-black .navbar-toggle:hover, .skin-blue > .navbar-black .navbar-toggle:focus {
+  background-color: #444444;
+}
+.skin-blue > .navbar-black .navbar-toggle .icon-bar {
+  background-color: #ecf0f1;
+}
+.skin-blue > .navbar-black .navbar-collapse,
+.skin-blue > .navbar-black .navbar-form {
+  border-color: #ecf0f1;
+}
+.skin-blue > .navbar-black .navbar-link {
+  color: #ecf0f1;
+}
+.skin-blue > .navbar-black .navbar-link:hover {
+  color: #ecdbff;
+}
+
+@media (max-width: 767px) {
+  .skin-blue > .navbar-black .navbar-nav .open .dropdown-menu > li > a {
+    color: #ecf0f1;
+  }
+  .skin-blue > .navbar-black .navbar-nav .open .dropdown-menu > li > a:hover, .skin-blue > .navbar-black .navbar-nav .open .dropdown-menu > li > a:focus {
+    color: #ecdbff;
+  }
+  .skin-blue > .navbar-black .navbar-nav .open .dropdown-menu > .active > a, .skin-blue > .navbar-black .navbar-nav .open .dropdown-menu > .active > a:hover, .skin-blue > .navbar-black .navbar-nav .open .dropdown-menu > .active > a:focus {
+    color: #ecdbff;
+    background-color: #444444;
+  }
 }

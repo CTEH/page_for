@@ -1,24 +1,26 @@
 - if resources.length > 0
 
   -if table_builder.searchable
-    .page_for_content
-      = search_form_for table_builder.table_options[:ransack_obj], as: table_builder.ransack_key.to_sym, url: table_builder.context.request.url, html: { class: 'form-absolute' } do |f|
+    .table_search_box
+      = search_form_for table_builder.ransack_obj, as: table_builder.ransack_key.to_sym, url: table_builder.context.request.url, html: { class: 'form-absolute' } do |f|
         div.input-group
-          = f.text_field table_builder.ransack_cont_fields.to_sym, class: "form-control input-sm pull-right", placeholder: "Search #{table_builder.klass_name.titleize.pluralize}..."
+          = f.text_field table_builder.ransack_cont_fields.to_sym, class: "form-control pull-right", placeholder: "Search #{table_builder.klass_name.titleize.pluralize}..."
           div.input-group-btn
-            = f.button "<i class='fa fa-search'></i>".html_safe, class: "btn btn-sm btn-default"
+            = f.button "<i class='fa fa-search'></i>".html_safe, class: "btn btn-default"
 
-  div class="#{'viewport' if table_builder.page.secondary_items.length>0}"
+  div class="#{'viewport' if table_builder.viewport}"
     table class="table table-striped table-condensed #{table_builder.table_class}"
       thead
         tr
           th
-          - table_builder.columns.each do |column_builder|
-            th class="#{ column_builder.header_class } #{column_builder.if_hidden('hidden-xs')}"
-              - if column_builder.sort_link.present?
+          - if table_builder.ransack_obj
+            - table_builder.columns.each do |column_builder|
+              th class="#{ column_builder.header_class } #{column_builder.if_hidden('hidden-xs')}"
                 = column_builder.sort_link
-              - else
-                = column_builder.attribute.to_s.titleize
+          - else
+            - table_builder.columns.each do |column_builder|
+              th class="#{ column_builder.header_class } #{column_builder.if_hidden('hidden-xs')}"
+                = column_builder.sort_link_title
 
       tbody
         - table_builder.filtered_resources.each do |resource|
