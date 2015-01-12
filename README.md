@@ -12,8 +12,6 @@
 
 * gem 'polywag'
 
-* gem 'bootstrap-kaminari-views'
-
 ## Skin Dependencies
 
 * gem 'adminlte-rails'
