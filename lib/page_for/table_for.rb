@@ -230,10 +230,10 @@ module TableFor
       trgt = [self.nester, resource].compact
 
       if self.path
-        self.url = self.table_builder.context.send(self.path, [trgt], self.params)
+        self.url = self.table_builder.context.send(self.path, [trgt].flatten, self.params)
       else
         if self.action == :show
-          self.url = self.table_builder.context.polymorphic_path([trgt], self.params)
+          self.url = self.table_builder.context.polymorphic_path([trgt].flatten, self.params)
         else
           self.url = self.table_builder.context.polymorphic_path([action.to_sym, trgt].flatten, self.params)
         end

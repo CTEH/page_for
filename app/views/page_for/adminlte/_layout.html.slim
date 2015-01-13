@@ -38,7 +38,21 @@ html
               li
                 a href="javascript:void(0)"  Separated link
 
+    .context-bar.hidden-xs
+      .context-bar-icon
+        i.fa.fa-tachometer
+      ol.breadcrumb
+        li
+          a href="#"
+            | TERP Report Writing Process
+        li
+          a href="#"
+            | 2.1
 
+    nav.navbar.navbar-default.navbar-grey.hidden-xs.navbar-sm role="navigation"
+      nav.collapse.navbar-collapse.bs-navbar-collapse style="margin-left: -10px;"
+        -if builder.contextual_nav_container
+          = render partial: 'page_for/adminlte/layout/top_bar_simple_navigation.html', locals: {builder: builder.navigation_renderer, container: builder.contextual_nav_container}
 
     /! Sidebar
     .wrapper.row-offcanvas.row-offcanvas-left
