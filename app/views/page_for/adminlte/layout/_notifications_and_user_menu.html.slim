@@ -1,0 +1,54 @@
+ul.nav.navbar-nav.navbar-right
+  - builder.message_menus.each do |nb|
+    /! Notifications: style can be found in dropdown.less
+    li.dropdown.notifications-menu
+      a.dropdown-toggle data-toggle="dropdown" href="#"
+        i class="#{nb.icon}"
+        span class="label label-#{nb.label}"
+          = nb.qty
+      ul.dropdown-menu
+        li.header
+          = nb.header
+        li
+          /! inner menu: contains the actual data
+          ul.menu
+            - nb.entries.each do |e|
+              li
+                a href="#{e[:path]}"
+                  i class="#{e[:icon]} #{e[:entry_type]}"
+                  = e[:message]
+        li.footer
+          a href="#"  View all
+
+  - if builder.usermenu
+    /! User Account: style can be found in dropdown.less
+    li.dropdown.user.user-menu
+
+      a.dropdown-toggle.hidden-xs data-toggle="dropdown" href="#"
+        i.glyphicon.glyphicon-user style='margin-right: 5px;'
+        span
+          = builder.usermenu.name
+          i.caret
+      ul.dropdown-menu
+        /! User image
+        li.user-header.bg-light-blue
+          img.img-circle alt=("User Image") src="#{builder.usermenu.avatar}" /
+          p
+            = "#{builder.usermenu.name} - #{builder.usermenu.title}"
+            small
+              = builder.usermenu.tagline
+        - if builder.usermenu.links.length > 0
+          /! Menu Body
+          li.user-body
+            - builder.usermenu.links.each do |l|
+              .col-xs-4.text-center
+                = link_to *l
+        /! Menu Footer
+        li.user-footer
+          -if builder.usermenu.profile_link_args
+            .pull-left
+              = classed_link_to 'btn btn-default btn-flat', *builder.usermenu.profile_link_args
+              -# a.btn.btn-default.btn-flat href="#"  Profile
+          -if builder.usermenu.signout_link_args
+            .pull-right
+              = classed_link_to 'btn btn-default btn-flat', *builder.usermenu.signout_link_args

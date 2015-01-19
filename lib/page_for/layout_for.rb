@@ -1,5 +1,58 @@
 module LayoutFor
 
+
+  # THIS COULD BE USED IN A LOT OF PLACES
+  class LinkBuilder
+    attr_accessor :context, :args, :block
+
+    def initialize(context, args, block)
+      self.context = context
+      self.args = args
+      self.block = block
+    end
+
+    def render(klass=nil)
+      classed_link_to(klass, *args, &block)
+    end
+
+    def classed_link_to(klass=nil, name = nil, options = nil, html_options = nil, block=nil)
+      html_options, options, name = options, name, block if block
+      options ||= {}
+
+      html_options = convert_options_to_data_attributes(options, html_options)
+
+      url = context.url_for(options)
+      html_options['href'] ||= url
+      html_options['class'] = klass
+
+      self.context.content_tag(:a, name || url, html_options, &block)
+    end
+
+    # ActionViewHelper made this private so I'm remaking it myself
+    def convert_options_to_data_attributes(options, html_options)
+      if html_options
+        html_options = html_options.stringify_keys
+        html_options['data-remote'] = 'true' if self.link_to_remote_options?(options) || link_to_remote_options?(html_options)
+
+        method  = html_options.delete('method')
+
+        add_method_to_attributes!(html_options, method) if method
+
+        html_options
+      else
+        self.link_to_remote_options?(options) ? {'data-remote' => 'true'} : {}
+      end
+    end
+
+    # ActionViewHelper made this private so I'm remaking it myself
+    def link_to_remote_options?(options)
+      if options.is_a?(Hash)
+        options.delete('remote') || options.delete(:remote)
+      end
+    end
+
+  end
+
   class UserMenuBuilder
     attr_accessor :context, :name, :title, :tagline, :avatar,
                   :links, :profile_link_args, :signout_link_args
@@ -123,7 +176,7 @@ module LayoutFor
                   :name, :skin, :navigation_renderer, :content_block, :search_path,
                   :navbar_block, :content_blocks, :global_nav_container,
                   :contextual_nav_options, :global_nav_options, :contextual_nav_title,
-                  :global_nav_title
+                  :global_nav_title, :bread_crumbs, :layout_icon
 
     def initialize(context, name, options)
       self.name = name
@@ -140,7 +193,7 @@ module LayoutFor
       self.content_blocks={}
       self.contextual_nav_container = nil
       self.global_nav_container = nil
-
+      self.bread_crumbs = []
     end
 
     def title
@@ -201,6 +254,14 @@ module LayoutFor
       self.contextual_nav_options = args.extract_options!
       self.contextual_nav_container = self.context.active_navigation_item_container(options, &block)
       self.navigation_renderer = SimpleNavigation::Renderer::Base.new(options)
+    end
+
+    def icon(i)
+      self.layout_icon = i
+    end
+
+    def breadcrumb(*args, &block)
+      self.bread_crumbs << LinkBuilder.new(self.context, args, block)
     end
 
     def message_menu(*args)

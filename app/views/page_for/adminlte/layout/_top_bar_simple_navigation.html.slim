@@ -9,16 +9,16 @@ ul.nav.navbar-nav
           - item.sub_navigation.items.each do |sub_item|
             - if sub_item.sub_navigation
               li
-                a href="javascript:void(0)"
+                a href=sub_item.url
                   = sub_item.name
               - sub_item.sub_navigation.items.each do |sub2_item|
                 li
-                  a href="javascript:void(0)"
-                    =sub2_item.name
+                  a href=sub2_item.url
+                    = sub2_item.name
             - else
               li
-                a href="javascript:void(0)"
-                  =sub_item.name
+                a href=sub_item.url
+                  = sub_item.name
     - else
       li
         a href=item.url

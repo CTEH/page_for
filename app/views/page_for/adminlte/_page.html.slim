@@ -6,6 +6,11 @@
 - if not page_builder.context.content_for? :title
   - page_builder.context.content_for :title, render_page_for(partial: "page/content_for_title", locals: { page_builder: page_builder })
 
+/! Use render_page_for and partials instead of do blocks to avoid weirdness
+- if not page_builder.context.content_for? :navbar_secondary_navigation
+  - page_builder.context.content_for :navbar_secondary_navigation, render_page_for(partial: "page/navbar_secondary_navigation", locals: { page_builder: page_builder })
+
+
 -if page_builder.secondary_items.length > 0
   .secondary_items.hidden-xs.hidden-sm.viewport
     - page_builder.secondary_items.each do |item|

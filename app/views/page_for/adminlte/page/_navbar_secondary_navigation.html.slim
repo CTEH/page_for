@@ -1,0 +1,12 @@
+- page_builder.secondary_items.each do |item|
+  - if item.type=='navigation'
+    li.treeview
+      a href="#"
+        i.fa.fa-angle-double-right
+        span
+          = item.title
+        i.fa.fa-angle-left.pull-right
+      ul.treeview-menu
+        = render partial: 'page_for/adminlte/layout/simple_navigation_list', locals: {container: item.nav_container, renderer: page_builder.navigation_renderer}
+
+

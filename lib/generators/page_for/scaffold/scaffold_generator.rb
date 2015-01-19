@@ -9,6 +9,7 @@ module PageFor
       source_root File.expand_path("../templates", __FILE__)
 
       def view_templates
+        template "_layout.html.slim", "app/views/#{plural_file_name}/_layout.html.slim"
         template "_form.html.slim", "app/views/#{plural_file_name}/_form.html.slim"
         template "edit.html.slim", "app/views/#{plural_file_name}/edit.html.slim"
         template "index.html.slim", "app/views/#{plural_file_name}/index.html.slim"

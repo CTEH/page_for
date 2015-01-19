@@ -19,55 +19,38 @@ html
       nav.collapse.navbar-collapse.bs-navbar-collapse
         -if builder.global_nav_container
           = render partial: 'page_for/adminlte/layout/top_bar_simple_navigation.html', locals: {builder: builder.navigation_renderer, container: builder.global_nav_container}
-
-        ul.nav.navbar-nav.navbar-right
-          li
-            a href="javascript:void(0)"  Link
-          li.dropdown
-            a.dropdown-toggle data-toggle="dropdown" href="javascript:void(0)"
-              | Dropdown
-              b.caret
-            ul.dropdown-menu
-              li
-                a href="javascript:void(0)"  Action
-              li
-                a href="javascript:void(0)"  Another action
-              li
-                a href="javascript:void(0)"  Something else here
-              li.divider
-              li
-                a href="javascript:void(0)"  Separated link
-
+        = render partial: 'page_for/adminlte/layout/notifications_and_user_menu', locals: {builder: builder}
     .context-bar.hidden-xs
-      .context-bar-icon
-        i.fa.fa-check-square
-      ol.breadcrumb
-        li
-          a href="#"
-            | TERP Report Writing Process
-        li
-          a href="#"
-            | 2.1
+      - if builder.layout_icon
+        .context-bar-icon
+          i class=builder.layout_icon
+      - if builder.bread_crumbs.length > 0
+        ol.breadcrumb
+          - builder.bread_crumbs.each do |link|
+            li
+              = link.render()
 
-    nav.navbar.navbar-default.navbar-grey.hidden-xs.navbar-sm role="navigation"
-      nav.collapse.navbar-collapse.bs-navbar-collapse style="margin-left: -10px;"
-        -if builder.contextual_nav_container
-          = render partial: 'page_for/adminlte/layout/top_bar_simple_navigation.html', locals: {builder: builder.navigation_renderer, container: builder.contextual_nav_container}
+    -if builder.contextual_nav_container
+      nav.navbar.navbar-default.navbar-grey.hidden-xs.navbar-xs role="navigation"
+        nav.collapse.navbar-collapse.bs-navbar-collapse style="margin-left: -10px;"
+          -if builder.contextual_nav_container
+            = render partial: 'page_for/adminlte/layout/top_bar_simple_navigation.html', locals: {builder: builder.navigation_renderer, container: builder.contextual_nav_container}
 
     /! Sidebar
     .wrapper.row-offcanvas.row-offcanvas-left
       /! Left side column. contains the logo and sidebar
       aside.left-side.sidebar-offcanvas.visible-xs
         section.sidebar
-          - if builder.usermenu
-            /! Sidebar user panel
-            .user-panel
-              .pull-left.image
-                img.img-circle alt=("User Image") src="#{builder.usermenu.avatar}" /
-              .pull-left.info
-                p
-                  = builder.usermenu.name
-                = builder.usermenu.title
+          -if false
+            - if builder.usermenu
+              /! Sidebar user panel
+              .user-panel
+                .pull-left.image
+                  img.img-circle alt=("User Image") src="#{builder.usermenu.avatar}" /
+                .pull-left.info
+                  p
+                    = builder.usermenu.name
+                  = builder.usermenu.title
 
           -if builder.search_path
             form.sidebar-form action="#{builder.search_path}" method="get"
@@ -78,10 +61,17 @@ html
                     i.fa.fa-search
 
           - if builder.contextual_nav_container
-            h3
-              = builder.contextual_nav_title
+            - if builder.bread_crumbs.length > 0
+              - builder.bread_crumbs.each do |link|
+                h3
+                  = link.render()
+            -else
+              h3
+                = builder.contextual_nav_title
             ul.sidebar-menu
-                = render partial: 'page_for/adminlte/layout/simple_navigation_list', locals: {renderer: builder.navigation_renderer, container: builder.contextual_nav_container}
+              = render partial: 'page_for/adminlte/layout/simple_navigation_list', locals: {renderer: builder.navigation_renderer, container: builder.contextual_nav_container}
+              = yield_proc.call(:navbar_secondary_navigation)
+
 
           - if builder.global_nav_container
             h3
@@ -103,65 +93,6 @@ html
             = builder.title
 
           = yield_proc.call(:navbar)
-
-          -# HIDE STANDARD DROP DOWNS ON XS
-          .navbar-right.hidden-xs
-            ul.nav.navbar-nav
-              - builder.message_menus.each do |nb|
-                /! Notifications: style can be found in dropdown.less
-                li.dropdown.notifications-menu
-                  a.dropdown-toggle data-toggle="dropdown" href="#"
-                    i class="#{nb.icon}"
-                    span class="label label-#{nb.label}"
-                      = nb.qty
-                  ul.dropdown-menu
-                    li.header
-                      = nb.header
-                    li
-                      /! inner menu: contains the actual data
-                      ul.menu
-                        - nb.entries.each do |e|
-                          li
-                            a href="#{e[:path]}"
-                              i class="#{e[:icon]} #{e[:entry_type]}"
-                              = e[:message]
-                    li.footer
-                      a href="#"  View all
-
-              - if builder.usermenu
-                /! User Account: style can be found in dropdown.less
-                li.dropdown.user.user-menu
-
-                  a.dropdown-toggle.visible-xs data-toggle="dropdown" href="#"
-                    i.glyphicon.glyphicon-user
-                  a.dropdown-toggle.hidden-xs data-toggle="dropdown" href="#"
-                    i.glyphicon.glyphicon-user
-                    span
-                      = builder.usermenu.name
-                      i.caret
-                  ul.dropdown-menu
-                    /! User image
-                    li.user-header.bg-light-blue
-                      img.img-circle alt=("User Image") src="#{builder.usermenu.avatar}" /
-                      p
-                        = "#{builder.usermenu.name} - #{builder.usermenu.title}"
-                        small
-                          = builder.usermenu.tagline
-                    - if builder.usermenu.links.length > 0
-                      /! Menu Body
-                      li.user-body
-                        - builder.usermenu.links.each do |l|
-                          .col-xs-4.text-center
-                            = link_to *l
-                    /! Menu Footer
-                    li.user-footer
-                      -if builder.usermenu.profile_link_args
-                        .pull-left
-                          = classed_link_to 'btn btn-default btn-flat', *builder.usermenu.profile_link_args
-                          -# a.btn.btn-default.btn-flat href="#"  Profile
-                      -if builder.usermenu.signout_link_args
-                        .pull-right
-                          = classed_link_to 'btn btn-default btn-flat', *builder.usermenu.signout_link_args
 
           -# SHOW CONDENSED DROP DOWNS ON XS
           .navbar-right.visible-xs
