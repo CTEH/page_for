@@ -14,5 +14,5 @@
     - nav.item :<%=hm.to_s.pluralize%>, '<%=hm.to_s.pluralize%>', polymorphic_path([@nester,<%=singular_table_name%>, <%=hm%>].compact)
   <%end -%>
 
-- if not @nester and not @<%=singular_table_name%>
+- unless @nester || @<%=singular_table_name%>
   - layout.breadcrumb <%=class_name.titleize.pluralize%>, <%=plural_table_name%>_path
