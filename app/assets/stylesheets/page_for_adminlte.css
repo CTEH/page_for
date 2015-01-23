@@ -777,3 +777,15 @@ section.content {
     background-color: #444444;
   }
 }
+
+
+.control-label {
+  line-height: 1em;
+  padding-top: 0;
+}
+
+.form-horizontal .control-label
+{
+  line-height: 1em;
+  padding-top: 0;
+}

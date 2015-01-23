@@ -17,5 +17,9 @@
           - if item.html_options[:danger]
             small.badge.pull-right.bg-red = item.html_options[:danger]
 
+      -if item.html_options[:description]
+        = ' - '
+        = item.html_options[:description]
+
 
 
