@@ -770,7 +770,7 @@ section.content {
     color: #ecf0f1;
   }
   .skin-blue > .navbar-grey .navbar-nav .open .dropdown-menu > li > a:hover, .skin-blue > .navbar-grey .navbar-nav .open .dropdown-menu > li > a:focus {
-    color: #white;
+    color: white;
   }
   .skin-blue > .navbar-grey .navbar-nav .open .dropdown-menu > .active > a, .skin-blue > .navbar-grey .navbar-nav .open .dropdown-menu > .active > a:hover, .skin-blue > .navbar-grey .navbar-nav .open .dropdown-menu > .active > a:focus {
     color: #ecdbff;
