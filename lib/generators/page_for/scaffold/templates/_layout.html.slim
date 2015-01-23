@@ -1,4 +1,4 @@
-- if @nester and not @<%=singular_table_name%>
+- if @nester && @<%=singular_table_name%>.nil?
   - render partial: "#{@nester.pluralize.underscore}/layout", locals: {context: context, layout: layout} rescue ActionView::MissingTemplate
 
 - if @<%=singular_table_name%>
@@ -9,10 +9,10 @@
   - layout.breadcrumb @<%=singular_table_name%>, @<%=singular_table_name%> if @<%=singular_table_name%>
 
   - layout.contextual_navigation '<%=class_name.titleize%>' do |nav|
-     - # CHILDREN
+    - # CHILDREN
   <%has_many_associations.each do |hm| -%>
-     - nav.item :<%=hm.to_s.pluralize%>, '<%=hm.to_s.pluralize%>', polymorphic_path([@nester,<%=singular_table_name%>, <%=hm%>].compact)
+    - nav.item :<%=hm.to_s.pluralize%>, '<%=hm.to_s.pluralize%>', polymorphic_path([@nester,<%=singular_table_name%>, <%=hm%>].compact)
   <%end -%>
 
-- if not @nester and not @<%=singular_table_name%>
+- unless @nester || @<%=singular_table_name%>
   - layout.breadcrumb <%=class_name.titleize.pluralize%>, <%=plural_table_name%>_path
