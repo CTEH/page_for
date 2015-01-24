@@ -6,7 +6,12 @@ module CsvForHelper
       return '<p>No items to list</p>'.html_safe
     end
     options = args.extract_options!
-    options[:ransack_obj] ||= eval("@q_#{resources.first.class.name.underscore}")
+    if options[:ransack_key]
+      options[:ransack_obj] ||= eval("@#{options[:ransack_key]}")
+    else
+      options[:ransack_obj] ||= eval("@q_#{resources.first.class.name.underscore}")
+    end
+
 
     builder = CsvBuilder.new(self, resources, options)
     yield(builder)
@@ -192,7 +197,7 @@ module CsvForHelper
     end
 
     def ransack_key
-      "q_#{resources.first.class.name.underscore}"
+      options[:ransack_key] || "q_#{resources.first.class.name.underscore}"
     end
 
     def setup_ransack
