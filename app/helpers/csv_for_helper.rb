@@ -197,7 +197,7 @@ module CsvForHelper
     end
 
     def ransack_key
-      options[:ransack_key] || "q_#{resources.first.class.name.underscore}"
+      table_options[:ransack_key] || "q_#{resources.first.class.name.underscore}"
     end
 
     def setup_ransack
