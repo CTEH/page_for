@@ -20,9 +20,6 @@
           if (d['#{builder.filter_matches}'] == v) {
             select.append('<option value='+d['_v']+'>'+d['_l']+'</option>');
           }
-          if (d['_v']==v) {
-            selected_d = d;
-          }
         }
         select.val(selected);
 
@@ -37,12 +34,15 @@
       $('##{builder.my_input_id}').bind("change paste keyup", function() {
         var v = this.value;
         var data = #{data};
+        var selected_d = null;
         for (i in data) {
           d=data[i];
           if (d['_v']==v) {
             selected_d = d;
           }
         }
-        #{builder.populates.map {|p| "$('##{builder.form.object_name}_#{p[:field]}').val(selected_d['#{p[:value]}']);"}.join('').html_safe}
+        if( selected_d ) {
+          #{builder.populates.map {|p| "$('##{builder.form.object_name}_#{p[:field]}').val(selected_d['#{p[:value]}']);"}.join('').html_safe}
+        }
       });
     });
