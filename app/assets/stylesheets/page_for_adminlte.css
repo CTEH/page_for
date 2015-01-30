@@ -45,7 +45,7 @@ section.content {
 
   .control-group {
     display: table;
-    line-height: 0;
+    line-height: 1;
     content: "";
     border-top: 1px solid #f2f4f6;
     margin-top: 5px;

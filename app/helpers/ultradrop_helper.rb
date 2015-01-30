@@ -37,8 +37,8 @@ module UltradropHelper
 
     end
 
-    def populate(field, value)
-      self.populates << {field: field, value: value}
+    def populate(field, value, proc=nil)
+      self.populates << {field: field, value: value, proc: proc}
     end
 
     def filter(field, matches_column, *args)
@@ -65,7 +65,13 @@ module UltradropHelper
       x={}
       x['_v'] = r.send(self.value_method)
       x['_l'] = r.send(self.label_method)
-      self.populates.each {|c| x[c[:value]]=r.send(c[:value])}
+      self.populates.each do |c|
+        if c[:proc]
+          x[c[:value]]=c[:proc].call(x)
+        else
+          x[c[:value]]=r.send(c[:value])
+        end
+      end
       if self.filter_field
         x[filter_matches] = r.send(self.filter_matches)
       end
