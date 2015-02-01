@@ -1,0 +1,26 @@
+ul.nav.navbar-nav
+  - container.items.each do |item|
+    - if item.sub_navigation
+      li.dropdown
+        a.dropdown-toggle data-toggle="dropdown" href="javascript:void(0)"
+          = item.name
+          b.caret
+        ul.dropdown-menu
+          - item.sub_navigation.items.each do |sub_item|
+            - if sub_item.sub_navigation
+              li
+                a href=sub_item.url
+                  = sub_item.name
+              - sub_item.sub_navigation.items.each do |sub2_item|
+                li
+                  a href=sub2_item.url
+                    = sub2_item.name
+            - else
+              li
+                a href=sub_item.url
+                  = sub_item.name
+    - else
+      li
+        a href=item.url
+          = item.name
+

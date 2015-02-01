@@ -1,0 +1,22 @@
+dl.dl-horizontal
+  - builder.definitions.each do |d|
+    dt dlmore=d.is_more.to_s class=('hidden-xs' if d.is_more)
+      = d.label
+    dd dlmore=d.is_more.to_s id=d.selector class=('hidden-xs' if d.is_more)
+      - if d.block_given
+        = d.block_contents
+      - else
+        - if d.link and not d.belongs_to?
+          = link_to d.format, d.value
+        - else
+          = d.format
+
+- if builder.is_more
+  = link_to("More Details...", "#", class: 'visible-xs btn', onclick:  "$(\"dt[dlmore='true']\").hide(); \
+                                                                        $(\"dd[dlmore='true']\").hide(); \
+                                                                        $(\"dt[dlmore='true']\").removeClass('hidden-xs'); \
+                                                                        $(\"dd[dlmore='true']\").removeClass('hidden-xs'); \
+                                                                        $(\"dt[dlmore='true']\").show('slow'); \
+                                                                        $(\"dd[dlmore='true']\").show('slow'); \
+                                                                        $(\"##{builder.dl_selector}\").hide('slow'); \
+                                                                        $(\"##{builder.dl_selector}\").removeClass('visible-xs'); return false", id: builder.dl_selector);

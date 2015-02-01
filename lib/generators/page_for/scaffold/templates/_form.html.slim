@@ -1,0 +1,13 @@
+= render 'errors', object: @<%= singular_table_name %>
+
+<% if belongs_to_associations.any? -%>
+<% belongs_to_associations.each do |attribute| -%>
+= f.association :<%=attribute%>
+<% end -%>
+
+<% end -%>
+<% if content_columns.any? -%>
+<% content_columns.each do |attribute| -%>
+= f.input :<%=attribute%>
+<% end -%>
+<% end -%>

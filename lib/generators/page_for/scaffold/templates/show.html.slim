@@ -1,0 +1,30 @@
+= page_for @<%=singular_table_name%> do |page|
+  - page.describe "Viewing <%=class_name%>"
+  - page.button :edit, nester: @nester
+<%has_many_associations.each do |hm| -%>
+  - page.add_button :<%=hm.to_s.singularize%>
+<%end -%>
+
+  - page.section do
+    = page.definition_list_for(@<%=singular_table_name%>) do |dl|
+<%belongs_to_associations.each do |attribute| -%>
+      = dl.define :<%=attribute%>
+<%end -%>
+<%content_columns.each do |attribute| -%>
+      = dl.define :<%=attribute%>
+<%end -%>
+
+
+<%has_many_associations.each do |hm| -%>
+  - page.tab(<%=hm.to_s.titleize.inspect%>) do
+    = table_for(@<%=singular_table_name%>.<%=hm%>) do |t|
+      - t.action :view, nester: @<%=singular_table_name%>
+
+<%belongs_to_associations(hm.to_s.camelcase.singularize).each do |attribute| -%>
+      - t.column :<%=attribute%>
+<%end -%>
+<%content_columns(hm.to_s.camelcase.singularize).each do |attribute| -%>
+      - t.column :<%=attribute%>
+<%end -%>
+<%end -%>
+

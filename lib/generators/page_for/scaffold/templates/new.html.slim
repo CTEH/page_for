@@ -1,0 +1,9 @@
+= page_for <%=class_name%> do |page|
+  - page.describe "Create a new <%=class_name.titleize%>"
+
+  - page.section do
+    = simple_form_for [@nester, @<%=singular_table_name%>], html: { class: 'form-horizontal' } do |f|
+      = render partial: 'form', locals: {f:f}
+      div class="form-group"
+        div class="col-sm-6"
+          = f.button :submit, "Create <%=class_name.titleize%>"

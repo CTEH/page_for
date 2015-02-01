@@ -1,0 +1,48 @@
+= builder.form.input builder.field, *builder.args
+- data = builder.json_data
+
+-if builder.filter_field
+  javascript:
+    $(function() {
+
+      $('##{builder.filter_input_id}').bind("change paste keyup", function() {
+        var data = #{data};
+        var i;
+        var d;
+        var select = $('##{builder.my_input_id}');
+        var selected = select.val();
+        var v = this.value;
+        var selected_d;
+        select.empty();
+        select.append('<option></option>');
+        for (i in data) {
+          d=data[i];
+          if (d['#{builder.filter_matches}'] == v) {
+            select.append('<option value='+d['_v']+'>'+d['_l']+'</option>');
+          }
+        }
+        select.val(selected);
+
+        #{builder.populates.map {|p| "$('##{builder.form.object_name}_#{p[:field]}').val(selected_d['_v']);"}.join('').html_safe}
+      });
+    });
+
+-if builder.populates.length > 0
+  javascript:
+    $(function() {
+
+      $('##{builder.my_input_id}').bind("change paste keyup", function() {
+        var v = this.value;
+        var data = #{data};
+        var selected_d = null;
+        for (i in data) {
+          d=data[i];
+          if (d['_v']==v) {
+            selected_d = d;
+          }
+        }
+        if( selected_d ) {
+          #{builder.populates.map {|p| "$('##{builder.form.object_name}_#{p[:field]}').val(selected_d['#{p[:value]}']);"}.join('').html_safe}
+        }
+      });
+    });

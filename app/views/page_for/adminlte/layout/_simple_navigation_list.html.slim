@@ -1,0 +1,35 @@
+- container.selected_class = 'active'
+
+- container.items.each do |item|
+  - if item.sub_navigation
+    li.treeview
+      a href="#"
+        -if item.html_options[:icon]
+          i class="#{item.html_options[:icon]}"
+        -else
+          | i.fa.fa-angle-double-right
+        span
+          = item.name
+        i.fa.fa-angle-left.pull-right
+      ul.treeview-menu
+        = render partial: 'page_for/adminlte/layout/simple_navigation_list', locals: {container: item.sub_navigation, renderer: renderer}
+  - else
+    li
+      a href=item.url
+        -if item.html_options[:icon]
+          i class="#{item.html_options[:icon]}"
+        -else
+          | i.fa.fa-angle-double-right
+        span
+          = item.name
+          - if item.html_options[:success]
+            small.badge.pull-right.bg-green = item.html_options[:success]
+          - if item.html_options[:info]
+            small.badge.pull-right.bg-blue = item.html_options[:info]
+          - if item.html_options[:warning]
+            small.badge.pull-right.bg-yellow = item.html_options[:warning]
+          - if item.html_options[:danger]
+            small.badge.pull-right.bg-red = item.html_options[:danger]
+
+
+

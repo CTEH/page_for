@@ -1,0 +1,91 @@
+/! Use render_page_for and partials instead of do blocks to avoid weirdness
+- if not page_builder.context.content_for? :navbar
+  - page_builder.context.content_for :navbar, render_page_for(partial: "page/content_for_navbar", locals: { page_builder: page_builder })
+
+/! Use render_page_for and partials instead of do blocks to avoid weirdness
+- if not page_builder.context.content_for? :title
+  - page_builder.context.content_for :title, render_page_for(partial: "page/content_for_title", locals: { page_builder: page_builder })
+
+/! Use render_page_for and partials instead of do blocks to avoid weirdness
+- if not page_builder.context.content_for? :navbar_secondary_navigation
+  - page_builder.context.content_for :navbar_secondary_navigation, render_page_for(partial: "page/navbar_secondary_navigation", locals: { page_builder: page_builder })
+
+
+-if page_builder.secondary_items.length > 0
+  .secondary_items.hidden-xs.hidden-sm.viewport
+    - page_builder.secondary_items.each do |item|
+      h3
+        = item.title
+      - if item.type == "navigation"
+        ul.sidebar-menu
+          = render partial: 'page_for/adminlte/page/secondary_items_navigation_list', locals: {renderer: page_builder.navigation_renderer, container: item.nav_container}
+      - if item.type == "content"
+        = item.content
+
+div class="primary_items #{'overflow' if page_builder.secondary_items.length > 0}"
+  /! Content Header (Page header)
+  section.content-header.hidden-xs
+    - if page_builder.buttons and page_builder.buttons.count > 0
+      .page_for_page_actions
+        - page_builder.buttons.reverse.each do |button|
+          div style="display: inline; margin-right: 5px;"
+            = link_to button.label, button.url, method: button.method, class: button.css_class(''), remote: button.remote
+
+    h1
+      = page_builder.title
+    small
+      = page_builder.description
+
+    -if false
+      ol.breadcrumb
+        li
+          a href="#"
+            i.fa.fa-dashboard
+            | Home
+        li.active Dashboard
+
+
+  section class="content"
+    - if page_builder.sections and page_builder.sections.count > 0
+      - page_builder.sections.each do |section|
+        .page_for_section
+          - if section.title.present?
+            .page_for_section_header
+              h3.box-title
+                = section.title
+          .page_for_section_content
+            = section.content
+
+    - [page_builder.top_tab_section_builder, page_builder.tab_section_builder].select {|x|x.tab_contents.length > 0}.each do |tab_section_builder|
+      div.nav-tabs-custom.nav-tab-flat
+        ul.nav.nav-tabs
+          - tab_section_builder.tab_titles.each_with_index do |t, index|
+            - if tab_section_builder.active_tab == index
+              - tab_class = "active"
+            - else
+              - tab_class = ""
+
+            li class="#{tab_class}"
+              a data-toggle='tab' href='##{tab_section_builder.tab_id(index)}'
+                span class="visible-md visible-lg"
+                  = tab_section_builder.tab_titles[index]
+                span class="visible-xs visible-sm"
+                  = tab_section_builder.acronym(tab_section_builder.tab_titles[index])
+
+        div class='tab-content'
+          - tab_section_builder.tab_contents.each_with_index do |tc, index|
+
+            - if tab_section_builder.active_tab == index
+              - tab_class = "active in"
+            - else
+              - tab_class = ""
+
+            div id="#{tab_section_builder.tab_id(index)}" class="tab-pane fade #{tab_class}"
+              dl class="visible-xs visible-sm"
+                dt #{tab_section_builder.tab_titles[index]}
+
+              = tc.to_s.html_safe
+
+
+
+
