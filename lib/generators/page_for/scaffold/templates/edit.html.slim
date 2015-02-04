@@ -2,7 +2,7 @@
   - page.describe "Edit a <%=class_name.titleize%>"
 
   - page.section do
-    = simple_form_for [@nester, @<%=singular_table_name%>].compact, html: { class: 'form-horizontal' } do |f|
+    = simple_nested_form_for [@nester, @<%=singular_table_name%>].compact, html: { class: 'form-horizontal' } do |f|
       = render partial: 'form', locals: {f:f}
       div class="form-group"
         div class="col-sm-6"

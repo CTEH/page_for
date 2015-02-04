@@ -9,8 +9,7 @@ require 'page_for/routes_for'
 require 'page_for/layout_for'
 
 require 'simple_form_for/adminlte'
-require 'simple_form_for/hyperia'
-require 'simple_form_for/libero'
+
 
 
 # require 'page_for/engine'
