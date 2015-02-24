@@ -1,0 +1,9 @@
+div class="container"
+
+  - if page_builder.sections and page_builder.sections.count > 0
+    - page_builder.sections.each do |section|
+      = section.render.html_safe
+
+  = page_builder.top_tab_section_builder.render.html_safe
+
+  = page_builder.tab_section_builder.render.html_safe

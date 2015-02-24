@@ -7,6 +7,8 @@
           = f.text_field table_builder.ransack_cont_fields.to_sym, class: "form-control pull-right", placeholder: "Search #{table_builder.klass_name.titleize.pluralize}..."
           div.input-group-btn
             = f.button "<i class='fa fa-search'></i>".html_safe, class: "btn btn-default"
+        -table_builder.filters.each do |filter|
+          = filter.render(f)
 
   div class="#{'viewport' if table_builder.viewport}"
     table class="table table-striped table-condensed #{table_builder.table_class}"
@@ -39,4 +41,3 @@
 
 - else
   p No items to list
-

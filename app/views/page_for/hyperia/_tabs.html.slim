@@ -1,0 +1,30 @@
+div class='panel panel-default'
+  div class='panel-heading'
+    ul class='nav nav-tabs'
+      - tab_section_builder.tab_titles.each_with_index do |t, index|
+        - if tab_section_builder.active_tab == index
+          - tab_class = "active"
+        - else
+          - tab_class = ""
+
+        li class="#{tab_class}"
+          a data-toggle='tab' href='##{tab_section_builder.tab_id(index)}'
+            span class='hidden-xs'
+              = tab_section_builder.tab_titles[index]
+            span class='visible-xs'
+              = tab_section_builder.acronym(tab_section_builder.tab_titles[index])
+
+  div class='panel-body'
+    div class='tab'
+      div class='tab-content'
+        - tab_section_builder.tab_contents.each_with_index do |tc, index|
+          - if tab_section_builder.active_tab == index
+            - tab_class = "active in"
+          - else
+            - tab_class = ""
+
+          div id="#{tab_section_builder.tab_id(index)}" class="tab-pane fade #{tab_class}"
+            dl class="visible-phone"
+              dt #{tab_section_builder.tab_titles[index]}
+
+            = tc.to_s.html_safe

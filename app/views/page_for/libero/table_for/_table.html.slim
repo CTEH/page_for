@@ -1,0 +1,39 @@
+table class="table table-striped #{table_builder.table_class}"
+  thead
+    tr
+      / action headers
+      - if table_builder.actions.length == 1
+        th
+      - else
+        - table_builder.actions.each do |action|
+          th class="hidden-phone"
+        th class="visible-phone"
+
+      / data headers
+      - table_builder.columns.each do |column|
+        = column.header_body
+
+  tbody
+    - table_builder.filtered_resources.each do |resource|
+      tr
+        / action columns
+        - if table_builder.actions.length == 1
+          td
+            = table_builder.actions.first.render(resource).html_safe
+        - else
+          - table_builder.actions.each do |action|
+            td class="hidden-phone"
+              = action.render(resource)
+
+          td class="visible-phone"
+
+            div class="btn-group"
+              button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown"
+                i class="fa fa-edit"
+              ul class="dropdown-menu" role="menu"
+                - table_builder.actions.each do |action|
+                  = action.render_dropdown(resource).html_safe
+
+        / data columns
+        - table_builder.columns.each do |column|
+          = column.cell_body(resource)
