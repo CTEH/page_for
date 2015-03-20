@@ -17,7 +17,7 @@
 
 <%has_many_associations.each do |hm| -%>
   - page.tab(<%=hm.to_s.titleize.inspect%>) do
-    = table_for(@<%=singular_table_name%>.<%=hm%>) do |t|
+    = page.table_for(@<%=singular_table_name%>.<%=hm%>) do |t|
       - t.action :view, nester: @<%=singular_table_name%>
 
 <%belongs_to_associations(hm.to_s.camelcase.singularize).each do |attribute| -%>
