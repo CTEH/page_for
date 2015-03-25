@@ -8,8 +8,6 @@ require 'page_for/pivot_for'
 require 'page_for/routes_for'
 require 'page_for/layout_for'
 
-<<<<<<< HEAD
-
 require 'simple_form_for/adminlte'
 
 # require 'page_for/engine'
@@ -533,4 +531,3 @@ module PageFor
     end
   end
 end
-
