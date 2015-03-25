@@ -1,7 +1,7 @@
 = page_for @<%=singular_table_name%> do |page|
   - page.describe "Viewing <%=class_name%>"
   - page.button :edit, nester: @nester
-<%has_many_associations.each do |hm| -%>
+<%has_many_associations.find_all{|hm| association_class_exists_with_this_name?(hm)}.each do |hm| -%>
   - page.add_button :<%=hm.to_s.singularize%>
 <%end -%>
 
@@ -16,11 +16,11 @@
 
 
 <%has_many_associations.each do |hm| -%>
-  - page.tab(<%=hm.to_s.titleize.inspect%>) do
-    = page.table_for(@<%=singular_table_name%>.<%=hm%>) do |t|
-      - t.action :view, nester: @<%=singular_table_name%>
+  - page.section(<%=hm.to_s.titleize.inspect%>) do
+    = page.table_for(@<%=singular_table_name%>.<%=hm%>, searchable: false, viewport: false) do |t|
+      - t.action :view
 
-<%belongs_to_associations(hm.to_s.camelcase.singularize).each do |attribute| -%>
+<%belongs_to_associations(hm.to_s.camelcase.singularize).find_all{|a| a.to_sym != singular_table_name.to_sym}.each do |attribute| -%>
       - t.column :<%=attribute%>
 <%end -%>
 <%content_columns(hm.to_s.camelcase.singularize).each do |attribute| -%>

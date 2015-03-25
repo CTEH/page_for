@@ -12,7 +12,8 @@
     table class="table table-striped table-condensed #{table_builder.table_class}"
       thead
         tr
-          th
+          - if table_builder.actions.present?
+            th.tblfor_actions
           - if table_builder.ransack_obj
             - table_builder.columns.each do |column_builder|
               th class="#{ column_builder.header_class } #{column_builder.if_hidden('hidden-xs')}"
@@ -21,17 +22,19 @@
             - table_builder.columns.each do |column_builder|
               th class="#{ column_builder.header_class } #{column_builder.if_hidden('hidden-xs')}"
                 = column_builder.sort_link_title
+          th.tblfor_buffer
 
       tbody
         - table_builder.filtered_resources.each do |resource|
           tr
-            td
+            td.tblfor_actions
               = page.action_sheet_for "btn-xs" do |sheet|
                 - table_builder.actions.each do |action|
                   - sheet.link_to(action.label, action.url(resource)) if action.can?(resource)
             - table_builder.columns.each do |column_builder|
               td id="#{column_builder.table_builder.klass_name}_#{resource.id}_#{column_builder.attribute}" class="#{column_builder.cell_class}  #{column_builder.if_hidden('hidden-xs')}"
                 = column_builder.format(resource).to_s.html_safe
+            td.tblfor_buffer
 
   = table_builder.render_pagination
 

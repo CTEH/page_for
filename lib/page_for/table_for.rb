@@ -338,13 +338,14 @@ module TableFor
       self.block = block
       self.cell_options = cell_options
       self.hidden = cell_options[:hidden]
-      if cell_options[:class]
-        self.cell_class = "tblfor_td_#{content_type} #{cell_options[:class]}"
-        self.header_class = "tblfor_th_#{content_type} #{cell_options[:class]}"
-      else
-        self.cell_class = "tblfor_td_#{content_type}"
-        self.header_class = "tblfor_th_#{content_type}"
-      end
+      cell_type_classes = [self.content_type]
+      cell_type_classes << 'number' if ['decimal', 'float', 'integer'].include?(content_type.to_s)
+      td_classes = cell_type_classes.map{|c| ["tblfor_#{c}", "tblfor_td_#{c}"]}.flatten
+      td_classes << cell_options[:class] if cell_options[:class].present?
+      th_classes = cell_type_classes.map{|c| ["tblfor_#{c}", "tblfor_th_#{c}"]}.flatten
+      th_classes << cell_options[:class] if cell_options[:class].present?
+      self.cell_class = td_classes.join(' ')
+      self.header_class = th_classes.join(' ')
     end
 
     def if_hidden(hidden_class)

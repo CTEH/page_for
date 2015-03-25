@@ -373,8 +373,7 @@ module PageFor
 
 
 
-
-      def add_button(child_class, *args, &block)
+    def add_button(child_class, *args, &block)
       options = args.extract_options!
       b = AddButtonBuilder.new(self, child_class, options, block)
       self.buttons << b if b.can?

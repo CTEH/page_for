@@ -69,6 +69,13 @@ module PageFor
         end
       end
 
+      def association_class_exists_with_this_name?(association_name)
+        klass = Module.const_get(association_name.to_s.singularize.classify)
+        return klass.is_a?(Class)
+      rescue NameError
+        return false
+      end
+
       def guess_sort_column(cname)
         begin
           n=cname.camelcase.singularize.constantize.content_columns.select {|c| c.name['name'] }.first.try(:name)
