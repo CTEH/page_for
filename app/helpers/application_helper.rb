@@ -1,7 +1,7 @@
 module PageFor
   module ApplicationHelper
     def page_for_theme
-      "hyperia"
+      "adminlte"
     end
   end
 end
