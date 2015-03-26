@@ -10,7 +10,7 @@
 
   - layout.contextual_navigation <%=class_name.titleize.inspect%> do |nav|
 <%has_many_associations.find_all{|hm| association_class_exists_with_this_name?(hm)}.each do |hm| -%>
-    - nav.item :<%=hm.to_s.pluralize%>, <%=hm.to_s.pluralize.inspect%>, polymorphic_path([@nester,@<%=singular_table_name%>, :<%=hm%>].compact)
+    - nav.item :<%=hm.to_s.pluralize%>, '<%=hm.to_s.pluralize.titleize%>', polymorphic_path([@nester,@<%=singular_table_name%>, :<%=hm%>].compact)
 <%end -%>
 
 - unless @nester || @<%=singular_table_name%>
