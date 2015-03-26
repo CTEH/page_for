@@ -121,7 +121,7 @@ module DefinitionListFor
       v = self.resource.send(attribute)
       type = content_type(attribute)
       if v == nil or v.blank? and type!=:boolean
-        return '<i>Blank</i>'
+        return '<i>Blank</i>'.html_safe
       end
       if content_column?(attribute)
         if PageFor::Format.respond_to?(type)
@@ -134,7 +134,7 @@ module DefinitionListFor
           if self.resource.send(attribute)
             self.context.link_to self.resource.send(attribute), self.resource.send(attribute)
           else
-            "<i>No #{attribute.to_s.titleize}</i>"
+            "<i>No #{attribute.to_s.titleize}</i>".html_safe
           end
         else
           if file_method?(attribute)
