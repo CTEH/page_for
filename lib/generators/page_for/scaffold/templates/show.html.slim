@@ -1,5 +1,6 @@
 = page_for @<%=singular_table_name%> do |page|
-  - page.describe "Viewing <%=class_name%>"
+  - render partial: 'secondary_content', locals: {page: page}
+  - page.describe "Viewing <%=class_name.titleize%>"
   - page.button :edit, nester: @nester
 <%has_many_associations.find_all{|hm| association_class_exists_with_this_name?(hm)}.each do |hm| -%>
   - page.add_button :<%=hm.to_s.singularize%>

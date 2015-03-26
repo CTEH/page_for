@@ -1,4 +1,5 @@
 = page_for @<%=singular_table_name%> do |page|
+  - render partial: 'secondary_content', locals: {page: page}
   - page.describe "Edit a <%=class_name.titleize%>"
 
   - page.section do
