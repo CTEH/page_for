@@ -25,7 +25,7 @@ module EditableTableForHelper
   class EditableTableBuilder
     attr_accessor :sort_args, :inputs, :f, :has_many_method, :options,
                   :unique_new_flag, :table_id, :tr_class, :delete_if_can,
-                  :context
+                  :context, :content_columns, :reflection
 
     def initialize(context, form, has_many_method, args)
       self.context, self.f, self.has_many_method, self.options = context, form, has_many_method, args.dup.extract_options!
@@ -33,18 +33,30 @@ module EditableTableForHelper
       self.unique_new_flag = SecureRandom.uuid.gsub('-','')
       self.table_id = SecureRandom.uuid.gsub('-','')
       self.tr_class = SecureRandom.uuid.gsub('-','')
+
+      self.reflection = form.object.class.reflect_on_all_associations(:has_many).find {|hm| hm.name == has_many_method.to_sym}
+      self.content_columns = reflection.try(:class_name).try(:constantize).try(:content_columns) || []
       self.delete_if_can = false
     end
+
 
     ##################################
     ## BUILDER METHODS
     ##################################
 
-    def input(field, *args)
+    # See simple form #input_field for args
+    
+    def input_column(field, *args)
       if args.length == 0
         args = [ {size: 25} ]
       end
-      self.inputs << {field: field, args: args}
+      # TODO Mixin class
+      column = content_columns.find {|c| c.name.to_s==field.to_s }
+      self.inputs << {field: field, args: args, column: column, class: "tblfor_#{column.try(:type)}"}
+    end
+
+    def input(field, *args)
+      raise "Deprication Error: Too confusing to use simple form api"
     end
 
     def sort_on(*args)

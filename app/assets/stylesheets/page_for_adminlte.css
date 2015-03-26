@@ -279,15 +279,18 @@ section.content {
 .table .tblfor_actions {
   width: 5em;
 }
-.table .tblfor_td_string
-, .table .tblfor_th_string
-, .table .tblfor_td_reference
-, .table .tblfor_th_reference {
+
+.table .tblfor_string
+, .table .tblfor_reference {
   width: 12em;
 }
-.table .tblfor_td_boolean
-, .table .tblfor_th_boolean {
+
+.table .tblfor_boolean  {
   width: 10em;
+}
+
+.table .tblfor_text  {
+  width: 100%;
 }
 
 
