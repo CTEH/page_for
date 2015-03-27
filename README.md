@@ -39,6 +39,7 @@ To change the theme for your application, create an initializer that follows the
     //= require adminlte-custom
     //= require actionsheet
     //= require page_for_adminlte
+    //= require numerous-2.1.1.min
 
 
 ## CSS

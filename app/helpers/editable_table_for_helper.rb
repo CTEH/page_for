@@ -82,7 +82,12 @@ module EditableTableForHelper
       if self.options[:data]
         self.options[:data]
       else
-        self.f.object.send(has_many_method).reorder(*sort_args)
+        d = self.f.object.send(has_many_method).reorder(*sort_args)
+        if d.length == 0
+          []
+        else
+          d
+        end
       end
     end
 

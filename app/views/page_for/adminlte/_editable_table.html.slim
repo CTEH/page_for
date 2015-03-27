@@ -8,11 +8,9 @@ table id=builder.table_id class="table table-condensed"
       th
         |
   tbody
-    - unless builder.options[:disable_add]
-      - 0.upto(30).each do |x|
-        - builder.f.object.send(builder.has_many_method).new
-    - builder.f.fields_for builder.has_many_method, builder.data, wrapper: false do |sf|
-      tr class="fields" data-etable="#{sf.object.try(:id) || builder.unique_new_flag}"
+    /- binding.pry
+    - builder.f.simple_fields_for builder.has_many_method, builder.data, wrapper: false do |sf|
+      tr class=builder.has_many_method
         - builder.inputs.each do |i|
           td class=i[:class]
             = sf.input_field i[:field], *i[:args]
@@ -25,14 +23,6 @@ table id=builder.table_id class="table table-condensed"
         td
           = sf.input_field :id, as: 'hidden'
 
-javascript:
-  function add_#{builder.table_id}() {
-    $('tr[style="display: none;"][data-etable="#{builder.unique_new_flag}"]:first').show();
-  }
-
-  $("tr[data-etable='#{builder.unique_new_flag}']").hide();
 
 - unless builder.options[:disable_add]
-  p
-    a href="javascript: add_#{builder.table_id}();" class="btn btn-default"
-      | Add #{builder.has_many_method.to_s.singularize.titleize}
+  - builder.f.link_to_add 'Add', builder.has_many_method

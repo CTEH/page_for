@@ -42,4 +42,3 @@ function fitViewPortsOnPage() {
 $(window).on('load resize orientationChanged shown.bs.tab', function(){
   adjustViewPorts();
 });
-
