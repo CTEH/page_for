@@ -11,20 +11,19 @@ table id=builder.table_id class="table table-condensed"
     - unless builder.options[:disable_add]
       - 0.upto(30).each do |x|
         - builder.f.object.send(builder.has_many_method).new
-    - builder.data.each do |child|
-      - builder.f.fields_for child, wrapper: false do |sf|
-        tr class="fields" data-etable="#{sf.object.try(:id) || builder.unique_new_flag}"
-          - builder.inputs.each do |i|
-            td class=i[:class]
-              = sf.input_field i[:field], *i[:args]
-          -if builder.delete_if_can
-            td
-              -if builder.context.can? :delete, sf.object
-                = sf.link_to_remove "Remove"
-              -else
-                | no delete
+    - builder.f.fields_for builder.has_many_method, builder.data, wrapper: false do |sf|
+      tr class="fields" data-etable="#{sf.object.try(:id) || builder.unique_new_flag}"
+        - builder.inputs.each do |i|
+          td class=i[:class]
+            = sf.input_field i[:field], *i[:args]
+        -if builder.delete_if_can
           td
-            |
+            -if builder.context.can? :delete, sf.object
+              = sf.link_to_remove "Remove"
+            -else
+              | no delete
+        td
+          = sf.input_field :id, as: 'hidden'
 
 javascript:
   function add_#{builder.table_id}() {
