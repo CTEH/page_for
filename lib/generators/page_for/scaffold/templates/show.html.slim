@@ -1,6 +1,10 @@
 = page_for @<%=singular_table_name%> do |page|
   - render partial: 'secondary_content', locals: {page: page}
+<% if content_columns(class_name).include?('description') -%>
+  - page.describe @<%=singular_table_name%>.description.presence || '<i>No description</i>'
+<% else -%>
   - page.describe "Viewing <%=class_name.titleize%>"
+<% end -%>
   - page.button :edit, nester: @nester
 <%has_many_associations.find_all{|hm| association_class_exists_with_this_name?(hm)}.each do |hm| -%>
   - page.add_button :<%=hm.to_s.singularize%>
