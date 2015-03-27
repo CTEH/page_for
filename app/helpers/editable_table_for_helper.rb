@@ -15,6 +15,12 @@ module EditableTableForHelper
   #     - t.input :is_closed
   #     - t.input :assign_to
   #     - t.input :restrict_to_assigned
+  #
+  #   options
+  #      limit: Pass an array of children you would like to restrict
+  #             has many to.
+  #
+  #      disable_add: Pass true if you don't want an add button
 
   def editable_table_for(form, has_many_method, *args)
     builder = EditableTableBuilder.new(self, form, has_many_method, args)
@@ -33,6 +39,7 @@ module EditableTableForHelper
       self.unique_new_flag = SecureRandom.uuid.gsub('-','')
       self.table_id = SecureRandom.uuid.gsub('-','')
       self.tr_class = SecureRandom.uuid.gsub('-','')
+      self.options = args.extract_options!
 
       self.reflection = form.object.class.reflect_on_all_associations(:has_many).find {|hm| hm.name == has_many_method.to_sym}
       self.content_columns = reflection.try(:class_name).try(:constantize).try(:content_columns) || []
@@ -45,7 +52,7 @@ module EditableTableForHelper
     ##################################
 
     # See simple form #input_field for args
-    
+
     def input_column(field, *args)
       if args.length == 0
         args = [ {size: 25} ]
@@ -72,7 +79,11 @@ module EditableTableForHelper
     #####################################
 
     def data
-      self.f.object.send(has_many_method).reorder(*sort_args)
+      if self.options[:limit]
+        self.f.object.send(has_many_method).where(id: self.options[:limit].pluck(:id)).reorder(*sort_args)
+      else
+        self.f.object.send(has_many_method).reorder(*sort_args)        
+      end
     end
 
 

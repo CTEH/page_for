@@ -8,8 +8,9 @@ table id=builder.table_id class="table table-condensed"
       th
         |
   tbody
-    - 0.upto(30).each do |x|
-      - builder.f.object.send(builder.has_many_method).new
+    - unless builder.options[:disable_add]
+      - 0.upto(30).each do |x|
+        - builder.f.object.send(builder.has_many_method).new
     - builder.data.each do |child|
       - builder.f.fields_for child, wrapper: false do |sf|
         tr class="fields" data-etable="#{sf.object.try(:id) || builder.unique_new_flag}"
@@ -32,6 +33,7 @@ javascript:
 
   $("tr[data-etable='#{builder.unique_new_flag}']").hide();
 
-p
-  a href="javascript: add_#{builder.table_id}();" class="btn btn-default"
-    | Add #{builder.has_many_method.to_s.singularize.titleize}
+- unless builder.options[:disable_add]
+  p
+    a href="javascript: add_#{builder.table_id}();" class="btn btn-default"
+      | Add #{builder.has_many_method.to_s.singularize.titleize}
