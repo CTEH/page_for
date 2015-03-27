@@ -8,10 +8,11 @@
   - layout.breadcrumb <%=class_name.titleize.pluralize.inspect%>, <%=plural_table_name%>_path
   - layout.breadcrumb @<%=singular_table_name%>, @<%=singular_table_name%> if @<%=singular_table_name%>
 
-  - layout.contextual_navigation <%=class_name.titleize.inspect%> do |nav|
-<%has_many_associations.find_all{|hm| association_class_exists_with_this_name?(hm)}.each do |hm| -%>
-    - nav.item :<%=hm.to_s.pluralize%>, '<%=hm.to_s.pluralize.titleize%>', polymorphic_path([@nester,@<%=singular_table_name%>, :<%=hm%>].compact)
-<%end -%>
+  - if @<%=singular_table_name%>.persisted?
+    - layout.contextual_navigation <%=class_name.titleize.inspect%> do |nav|
+  <%has_many_associations.find_all{|hm| association_class_exists_with_this_name?(hm)}.each do |hm| -%>
+      - nav.item :<%=hm.to_s.pluralize%>, <%=hm.to_s.pluralize.titleize.inspect%>, polymorphic_path([@nester,@<%=singular_table_name%>, :<%=hm%>].compact)
+  <%end -%>
 
 - unless @nester || @<%=singular_table_name%>
   - layout.breadcrumb <%=class_name.titleize.pluralize.inspect%>, <%=plural_table_name%>_path
