@@ -78,6 +78,13 @@ module EditableTableForHelper
     ## VIEW METHODS
     #####################################
 
+    def new_record
+      dd=DataDefinition.new
+      dd.model_definition_id = self.f.object.id
+      #self.f.object.data_definitions.build
+      dd
+    end
+
     def data
       if self.options[:data]
         self.options[:data]

@@ -1,14 +1,16 @@
 
-table id=builder.table_id class="table table-condensed"
+table class="table table-condensed"
   thead
     tr
       - builder.inputs.each do |i|
         th class=i[:class]
           = i[:field].to_s.titleize
-      th
+      -if builder.delete_if_can
+        th
+          |
+      th.empty_cell
         |
-  tbody
-    /- binding.pry
+  tbody id=builder.table_id
     - builder.f.simple_fields_for builder.has_many_method, builder.data, wrapper: false do |sf|
       tr class=builder.has_many_method
         - builder.inputs.each do |i|
@@ -22,7 +24,27 @@ table id=builder.table_id class="table table-condensed"
               | no delete
         td
           = sf.input_field :id, as: 'hidden'
+        td
+          |
 
+    -builder.f.simple_fields_for builder.has_many_method, builder.new_record, child_index: 'replace_this' do |sf|
+      tr id="fields_for_#{builder.table_id}"
+        - builder.inputs.each do |i|
+          td class=i[:class]
+            = sf.input_field i[:field], *i[:args]
+        -if builder.delete_if_can
+          td
+            -if builder.context.can? :delete, sf.object
+              = sf.link_to_remove "Remove"
+            -else
+              | no delete
+        td
+          = sf.input_field :id, as: 'hidden'
+
+        td.empty_cell
+          |
+
+h2 Add Links
 
 - unless builder.options[:disable_add]
-  - builder.f.link_to_add 'Add', builder.has_many_method
+  = link_to "Add #{builder.has_many_method.to_s.singularize.titleize}", '#', id: "add-to-#{builder.table_id}"
