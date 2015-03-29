@@ -31,7 +31,7 @@ module EditableTableForHelper
   class EditableTableBuilder
     attr_accessor :sort_args, :inputs, :f, :has_many_method, :options,
                   :unique_new_flag, :table_id, :tr_class, :delete_if_can,
-                  :context, :content_columns, :reflection, :numerous_id
+                  :context, :content_columns, :reflection, :numerous_id, :sorted
 
     def initialize(context, form, has_many_method, args)
       self.context, self.f, self.has_many_method, self.options = context, form, has_many_method, args.dup.extract_options!
@@ -41,6 +41,7 @@ module EditableTableForHelper
       self.tr_class = SecureRandom.uuid.gsub('-','')
       self.numerous_id = SecureRandom.uuid.gsub('-','')
       self.options = args.extract_options!
+      self.sorted = false
 
       self.reflection = form.object.class.reflect_on_all_associations(:has_many).find {|hm| hm.name == has_many_method.to_sym}
       self.content_columns = reflection.try(:class_name).try(:constantize).try(:content_columns) || []
@@ -68,6 +69,7 @@ module EditableTableForHelper
     end
 
     def sort_on(*args)
+      self.sorted = true
       self.sort_args = args
     end
 
@@ -88,14 +90,14 @@ module EditableTableForHelper
     end
 
     def data
+      #binding.pry
       if self.options[:data]
         self.options[:data]
       else
-        d = self.f.object.send(has_many_method).reorder(*sort_args)
-        if d.length == 0
-          []
+        if self.sorted
+          self.f.object.send(has_many_method).reorder(*sort_args)
         else
-          d
+          self.f.object.send(has_many_method)
         end
       end
     end

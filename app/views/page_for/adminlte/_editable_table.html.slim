@@ -34,6 +34,8 @@ table class="table table-condensed"
           - builder.inputs.each do |i|
             td class=i[:class]
               = sf.input_field i[:field], *i[:args]
+
+
           -if builder.delete_if_can
             td
               -if builder.context.can? :delete, sf.object
