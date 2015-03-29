@@ -31,7 +31,7 @@ module EditableTableForHelper
   class EditableTableBuilder
     attr_accessor :sort_args, :inputs, :f, :has_many_method, :options,
                   :unique_new_flag, :table_id, :tr_class, :delete_if_can,
-                  :context, :content_columns, :reflection
+                  :context, :content_columns, :reflection, :numerous_id
 
     def initialize(context, form, has_many_method, args)
       self.context, self.f, self.has_many_method, self.options = context, form, has_many_method, args.dup.extract_options!
@@ -39,6 +39,7 @@ module EditableTableForHelper
       self.unique_new_flag = SecureRandom.uuid.gsub('-','')
       self.table_id = SecureRandom.uuid.gsub('-','')
       self.tr_class = SecureRandom.uuid.gsub('-','')
+      self.numerous_id = SecureRandom.uuid.gsub('-','')
       self.options = args.extract_options!
 
       self.reflection = form.object.class.reflect_on_all_associations(:has_many).find {|hm| hm.name == has_many_method.to_sym}
@@ -79,10 +80,11 @@ module EditableTableForHelper
     #####################################
 
     def new_record
-      dd=DataDefinition.new
-      dd.model_definition_id = self.f.object.id
+      self.reflection.class_name.constantize.new
+      #dd=DataDefinition.new
+      #dd.model_definition_id = self.f.object.id
       #self.f.object.data_definitions.build
-      dd
+      #dd
     end
 
     def data

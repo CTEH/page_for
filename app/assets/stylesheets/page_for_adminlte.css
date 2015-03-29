@@ -815,3 +815,12 @@ section.content {
   opacity: 1;
   margin-left: 0;
 }
+
+/* ******************************************************************* */
+/* editable_table_for */
+/* ******************************************************************* */
+
+.editable_table_for_add {
+  padding-top: 1em;
+  padding-bottom: 1em;
+}

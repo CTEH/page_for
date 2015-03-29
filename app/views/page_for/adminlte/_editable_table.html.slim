@@ -8,43 +8,42 @@ table class="table table-condensed"
       -if builder.delete_if_can
         th
           |
-      th.empty_cell
-        |
-  tbody id=builder.table_id
-    - builder.f.simple_fields_for builder.has_many_method, builder.data, wrapper: false do |sf|
-      tr class=builder.has_many_method
-        - builder.inputs.each do |i|
-          td class=i[:class]
-            = sf.input_field i[:field], *i[:args]
-        -if builder.delete_if_can
+
+    tbody id=builder.numerous_id
+      - builder.f.simple_fields_for builder.has_many_method, builder.data, wrapper: false do |sf|
+        tr class=builder.has_many_method
+          - builder.inputs.each do |i|
+            td class=i[:class]
+              = sf.input_field i[:field], *i[:args]
+          -if builder.delete_if_can
+            td
+              -if builder.context.can? :delete, sf.object
+                = sf.link_to_remove "Remove"
+              -else
+                | no delete
           td
-            -if builder.context.can? :delete, sf.object
-              = sf.link_to_remove "Remove"
-            -else
-              | no delete
-        td
-          = sf.input_field :id, as: 'hidden'
-        td
-          |
+            = sf.input_field :id, as: 'hidden'
+            /= sf.input_field builder.reflection.foreign_key
 
-    -builder.f.simple_fields_for builder.has_many_method, builder.new_record, child_index: 'replace_this' do |sf|
-      tr id="fields_for_#{builder.table_id}"
-        - builder.inputs.each do |i|
-          td class=i[:class]
-            = sf.input_field i[:field], *i[:args]
-        -if builder.delete_if_can
-          td
-            -if builder.context.can? :delete, sf.object
-              = sf.link_to_remove "Remove"
-            -else
-              | no delete
-        td
-          = sf.input_field :id, as: 'hidden'
-
-        td.empty_cell
-          |
-
-h2 Add Links
-
+/- ---------- USES Numerous.js javascript library to copy template --------------
 - unless builder.options[:disable_add]
-  = link_to "Add #{builder.has_many_method.to_s.singularize.titleize}", '#', id: "add-to-#{builder.table_id}"
+  table
+    tbody
+      tr id="fields-for-#{builder.numerous_id}" class="numerous"
+        -builder.f.simple_fields_for builder.has_many_method, builder.new_record, child_index: 'replace_this', wrapper: false do |sf|
+          - builder.inputs.each do |i|
+            td class=i[:class]
+              = sf.input_field i[:field], *i[:args]
+          -if builder.delete_if_can
+            td
+              -if builder.context.can? :delete, sf.object
+                = sf.link_to_remove "Remove"
+              -else
+                | no delete
+          td
+            = sf.input_field :id, as: 'hidden'
+            /= sf.input_field builder.reflection.foreign_key, value: builder.f.object.id
+
+
+  div.editable_table_for_add
+    = link_to 'Add YYYY', '#null', id: "add-to-#{builder.numerous_id}"
