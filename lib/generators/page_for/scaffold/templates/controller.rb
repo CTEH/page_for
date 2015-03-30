@@ -52,6 +52,12 @@ class <%=class_name.pluralize%>Controller < ApplicationController
       render action: 'show', notice: 'Failed to delete <%=class_name.titleize.downcase%>'
     end
   end
+<% if has_many_associations.any? -%>
+
+  def self.default_params
+    [<%=(belongs_to_associations.map{|c|"#{c}_id"} + content_columns).map{|c| ":#{c}"}.join(', ')%>]
+   end
+<% end -%>
 
   protected
 
@@ -60,6 +66,11 @@ class <%=class_name.pluralize%>Controller < ApplicationController
   end
 
   def <%=singular_table_name%>_params
-    params.require(:<%=singular_table_name%>).permit(<%=(belongs_to_associations.map{|c|"#{c}_id"} + content_columns).map{|c| ":#{c}"}.join(', ')%>)
+    params.require(:<%=singular_table_name%>).permit(
+      <%=(belongs_to_associations.map{|c|"#{c}_id"} + content_columns).map{|c| ":#{c}"}.join(', ')%>,
+<% has_many_associations.each do |hm| -%>
+      <%=hm%>_attributes: <%=hm.to_s.classify.pluralize%>Controller.default_params + [:id, :_destroy],
+<% end -%>
+    )
   end
 end
