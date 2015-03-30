@@ -52,12 +52,10 @@ class <%=class_name.pluralize%>Controller < ApplicationController
       render action: 'show', notice: 'Failed to delete <%=class_name.titleize.downcase%>'
     end
   end
-<% if has_many_associations.any? -%>
 
   def self.default_params
     [<%=(belongs_to_associations.map{|c|"#{c}_id"} + content_columns).map{|c| ":#{c}"}.join(', ')%>]
-   end
-<% end -%>
+  end
 
   protected
 
