@@ -55,17 +55,14 @@ module PageFor
       def clean(c)
         c=c.to_s
 
-        if ['updated_at', 'created_at', 'deleted', 'deleted_at'].include?(c)
+        if ['updated_at', 'created_at', 'deleted', 'deleted_at'].include?(c) ||
+          c['_file_size'] || c['_updated_at'] || c['content_type']
           return nil
         else
           if c['_file_name']
             return c.to_s.gsub('_file_name','')
           else
-            if c['_file_size'] or c['_updated_at'] or c['content_type']
-              return nil
-            else
-              return c
-            end
+            return c
           end
         end
       end
@@ -90,6 +87,38 @@ module PageFor
         n
       end
 
+      # Get the grid size values for each column of a class for a multi-record form
+      def bootstrap_form_unit_map(cname)
+        klass = cname.to_s.classify.constantize
+        columns = klass.content_columns.find_all{|c| clean(c.name).present?}
+
+        size_sums = {}
+
+        belongs_to_array = belongs_to_associations(cname).map do |bt|
+          size_values = EditableTableForHelper::EditableTableBuilder.bootstrap_form_units_for_association
+
+          # sum up the total units for each size as we go
+          size_values.each do |size, value|
+            size_sums[size] = (size_sums[size] || 0) + value
+          end
+
+          [bt.to_sym, size_values]
+        end
+
+        columns_array = columns.map do |column|
+          size_values = EditableTableForHelper::EditableTableBuilder.bootstrap_form_units_for_column(cname, column)
+
+          # sum up the total units for each size as we go
+          size_values.each do |size, value|
+            size_sums[size] = (size_sums[size] || 0) + value
+          end
+
+          [column.name.to_sym, size_values]
+        end
+
+        result = OpenStruct.new({size_sums: size_sums, belongs_to_associations: Hash[belongs_to_array], columns: Hash[columns_array]})
+        result
+      end
     end
   end
 end

@@ -11,3 +11,21 @@
 = f.input :<%=attribute%>
 <% end -%>
 <% end -%>
+
+<%
+has_many_associations.each do |hm|
+  form_unit_map = bootstrap_form_unit_map(hm.to_s.classify.constantize)
+  if form_unit_map.size_sums.any?{|size, sum| sum <= 12}
+-%>
+= editable_table_for f, :<%= hm %> do |t|
+  - t.sort_on :id
+<% form_unit_map.belongs_to_associations.each do |attribute, form_units| -%>
+  - t.input_column :<%=attribute%>, wrapper_class: '<%= form_units.map{|size, value| "col-#{size}-#{value}"}.join(' ') %>'
+<% end -%>
+<% form_unit_map.columns.each do |attribute, form_units| -%>
+  - t.input_column :<%=attribute%>, wrapper_class: '<%= form_units.map{|size, value| "col-#{size}-#{value}"}.join(' ') %>'
+<% end -%>
+<%
+  end
+end
+-%>

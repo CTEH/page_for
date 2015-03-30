@@ -48,6 +48,26 @@ module EditableTableForHelper
       self.delete_if_can = false
     end
 
+    # Get the grid size values for a column
+    def self.bootstrap_form_units_for_column(cname, column)
+      klass = cname.to_s.classify.constantize
+      size_values = {
+        xs: column.type == :text ? 12 : 6,
+        sm: column.type == :text ? 8 : 4,
+        md: column.type == :text ? 4 : 2,
+      }
+      size_values
+    end
+
+    def self.bootstrap_form_units_for_association()
+      size_values = {
+        xs: 6,
+        sm: 4,
+        md: 2,
+      }
+      size_values
+    end
+
 
     ##################################
     ## BUILDER METHODS
@@ -59,13 +79,13 @@ module EditableTableForHelper
       if args.length == 0
         args = [ {size: 25} ]
       end
-      # TODO Mixin class
+      wrapper_class = args.delete(:wrapper_class)
       column = content_columns.find {|c| c.name.to_s==field.to_s }
-      self.inputs << {field: field, args: args, column: column, class: "tblfor_#{column.try(:type)}"}
+      self.inputs << {field: field, args: args, column: column, class: ["tblfor_#{column.try(:type)}", wrapper_class].compact.join(' ')}
     end
 
     def input(field, *args)
-      raise "Deprication Error: Too confusing to use simple form api"
+      raise "Deprecation Error: Too confusing to use simple form api"
     end
 
     def sort_on(*args)
@@ -101,8 +121,5 @@ module EditableTableForHelper
         end
       end
     end
-
-
   end
-
 end
