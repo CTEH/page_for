@@ -8,6 +8,8 @@ table class="table table-condensed"
       -if builder.delete_if_can
         th
           |
+      th
+        |
 
     tbody id=builder.numerous_id
       - builder.f.simple_fields_for builder.has_many_method, builder.data, wrapper: false do |sf|
@@ -24,6 +26,27 @@ table class="table table-condensed"
           td
             = sf.input_field :id, as: 'hidden'
             /= sf.input_field builder.reflection.foreign_key
+- if false
+  div.editable_table id=builder.table_id
+    .row.hidden_xs
+      - builder.inputs.each do |i|
+        div class="#{i[:field].to_s}"
+          = i[:field].to_s.titleize
+    - 0.upto(30).each do |x|
+      - builder.f.object.send(builder.has_many_method).new
+    - builder.data.each do |child|
+      - builder.f.fields_for child, wrapper: false do |sf|
+        .row.fields
+          - builder.inputs.each do |i|
+            div class="#{i.class}"
+              = sf.input_field i[:field], *i[:args]
+              = i[:field].to_s.titleize
+          -if builder.delete_if_can
+            .col_md_2
+              -if builder.context.can? :delete, sf.object
+                = sf.link_to_remove "Remove"
+              -else
+                | no delete
 
 /- ---------- USES Numerous.js javascript library to copy template --------------
 - unless builder.options[:disable_add]
@@ -48,4 +71,4 @@ table class="table table-condensed"
 
 
   div.editable_table_for_add
-    = link_to 'Add YYYY', '#null', id: "add-to-#{builder.numerous_id}"
+    = link_to "Add #{builder.reflection.class_name.to_s.titleize}", '#null', id: "add-to-#{builder.numerous_id}"

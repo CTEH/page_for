@@ -1,7 +1,7 @@
 = page_for @<%=singular_table_name%> do |page|
   - render partial: 'secondary_content', locals: {page: page}
 <% if content_columns(class_name).include?('description') -%>
-  - page.describe @<%=singular_table_name%>.description.presence || '<i>No description</i>'
+  - page.describe @<%=singular_table_name%>.description.presence || '<i>No description</i>'.html_safe
 <% else -%>
   - page.describe "Viewing <%=class_name.titleize%>"
 <% end -%>

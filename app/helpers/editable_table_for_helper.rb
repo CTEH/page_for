@@ -68,6 +68,46 @@ module EditableTableForHelper
       size_values
     end
 
+    # Get the grid size values for each column of a class for a multi-record form
+    def self.bootstrap_form_unit_map(cname)
+      klass = cname.to_s.classify.constantize
+
+      size_sums = {}
+
+      belongs_to_array = klass.reflect_on_all_associations(:belongs_to).map(&:name).map do |bt|
+        # currently all associations have same size_map, but still need to do the sums
+        size_values = EditableTableForHelper::EditableTableBuilder.bootstrap_form_units_for_association
+
+        # sum up the total units for each size as we go
+        size_values.each do |size, value|
+          size_sums[size] = (size_sums[size] || 0) + value
+        end
+
+        [bt.to_sym, size_values]
+      end
+
+      columns = klass.content_columns.find_all{|c| clean_content_column_names(c.name).present?}
+      columns_array = columns.map do |column|
+        size_values = EditableTableForHelper::EditableTableBuilder.bootstrap_form_units_for_column(cname, column)
+
+        # sum up the total units for each size as we go
+        size_values.each do |size, value|
+          size_sums[size] = (size_sums[size] || 0) + value
+        end
+
+        [column.name.to_sym, size_values]
+      end
+
+      result = OpenStruct.new({size_sums: size_sums, belongs_to_associations: Hash[belongs_to_array], columns: Hash[columns_array]})
+      result
+    end
+
+    def self.clean_content_column_names(c)
+      c = c.to_s
+      return nil if c.in?(%w(updated_at created_at deleted deleted_at)) || c =~ /_file_size|_updated_at|_content_type/
+      c.to_s.gsub('_file_name','')
+    end
+
 
     ##################################
     ## BUILDER METHODS

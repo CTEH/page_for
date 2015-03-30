@@ -51,6 +51,10 @@ To change the theme for your application, create an initializer that follows the
    *= require page_for_adminlte
    *= require action_sheet
 
+# Troubleshooting
+
+If you get an exception "undefined method `has_attribute?' for ...", you likely forgot to add accepts_nested_attributes_for to your model for the has_many relationships in your form.
+
 ## Change Log
 
 * 12/27/2014 - Kaminari looks for theme in subfolder.  For example.  app/views/kaminari/adminlte/*

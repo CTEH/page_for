@@ -53,18 +53,9 @@ module PageFor
       end
 
       def clean(c)
-        c=c.to_s
-
-        if ['updated_at', 'created_at', 'deleted', 'deleted_at'].include?(c) ||
-          c['_file_size'] || c['_updated_at'] || c['content_type']
-          return nil
-        else
-          if c['_file_name']
-            return c.to_s.gsub('_file_name','')
-          else
-            return c
-          end
-        end
+        c = c.to_s
+        return nil if c.in?(%w(updated_at created_at deleted deleted_at)) || c =~ /_file_size|_updated_at|_content_type/
+        c.to_s.gsub('_file_name','')
       end
 
       def association_class_exists_with_this_name?(association_name)
@@ -89,35 +80,7 @@ module PageFor
 
       # Get the grid size values for each column of a class for a multi-record form
       def bootstrap_form_unit_map(cname)
-        klass = cname.to_s.classify.constantize
-        columns = klass.content_columns.find_all{|c| clean(c.name).present?}
-
-        size_sums = {}
-
-        belongs_to_array = belongs_to_associations(cname).map do |bt|
-          size_values = EditableTableForHelper::EditableTableBuilder.bootstrap_form_units_for_association
-
-          # sum up the total units for each size as we go
-          size_values.each do |size, value|
-            size_sums[size] = (size_sums[size] || 0) + value
-          end
-
-          [bt.to_sym, size_values]
-        end
-
-        columns_array = columns.map do |column|
-          size_values = EditableTableForHelper::EditableTableBuilder.bootstrap_form_units_for_column(cname, column)
-
-          # sum up the total units for each size as we go
-          size_values.each do |size, value|
-            size_sums[size] = (size_sums[size] || 0) + value
-          end
-
-          [column.name.to_sym, size_values]
-        end
-
-        result = OpenStruct.new({size_sums: size_sums, belongs_to_associations: Hash[belongs_to_array], columns: Hash[columns_array]})
-        result
+        EditableTableForHelper::EditableTableBuilder.bootstrap_form_unit_map(cname)
       end
     end
   end

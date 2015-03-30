@@ -11,19 +11,23 @@
 = f.input :<%=attribute%>
 <% end -%>
 <% end -%>
-
 <%
-has_many_associations.each do |hm|
+has_many_associations.find_all{|hm| association_class_exists_with_this_name?(hm)}.each do |hm|
   form_unit_map = bootstrap_form_unit_map(hm.to_s.classify.constantize)
-  if form_unit_map.size_sums.any?{|size, sum| sum <= 12}
+  # remove the true below to enable checking of max form size
+  if true || form_unit_map.size_sums[:md] <= 12
 -%>
+
+/ Make sure you have accepts_nested_attributes_for in <%= class_name %>
+h3
+  | <%= hm.to_s.titleize %>
 = editable_table_for f, :<%= hm %> do |t|
   - t.sort_on :id
-<% form_unit_map.belongs_to_associations.each do |attribute, form_units| -%>
-  - t.input_column :<%=attribute%>, wrapper_class: '<%= form_units.map{|size, value| "col-#{size}-#{value}"}.join(' ') %>'
+<% form_unit_map.belongs_to_associations.reject{|bt| bt == singular_table_name.to_sym}.each do |attribute, form_units| -%>
+  - t.input_column :<%=attribute%>, collection: <%=attribute.to_s.classify%>.accessible_by(current_ability)
 <% end -%>
 <% form_unit_map.columns.each do |attribute, form_units| -%>
-  - t.input_column :<%=attribute%>, wrapper_class: '<%= form_units.map{|size, value| "col-#{size}-#{value}"}.join(' ') %>'
+  - t.input_column :<%=attribute%>
 <% end -%>
 <%
   end
