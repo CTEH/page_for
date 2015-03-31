@@ -31,5 +31,9 @@ module PageFor
     def self.integer(value)
       value
     end
+
+    def self.enumerize(value)
+      value.try(:text)
+    end
   end
 end

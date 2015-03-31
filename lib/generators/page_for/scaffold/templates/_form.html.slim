@@ -12,24 +12,24 @@
 <% end -%>
 <% end -%>
 <%
+
 has_many_associations.find_all{|hm| association_class_exists_with_this_name?(hm)}.each do |hm|
   form_unit_map = bootstrap_form_unit_map(hm.to_s.classify.constantize)
-  # remove the true below to enable checking of max form size
-  if true || form_unit_map.size_sums[:md] <= 12
+  belongs_tos = form_unit_map.belongs_to_associations
+  belongs_tos.delete singular_table_name.to_sym
 -%>
 
-/ Make sure you have accepts_nested_attributes_for in <%= class_name %>
-h3
-  | <%= hm.to_s.titleize %>
-= editable_table_for f, :<%= hm %> do |t|
-  - t.sort_on :id
-<% form_unit_map.belongs_to_associations.reject{|bt| bt == singular_table_name.to_sym}.each do |attribute, form_units| -%>
-  - t.input_column :<%=attribute%>, collection: <%=attribute.to_s.classify%>.accessible_by(current_ability)
+/ Make sure you have "accepts_nested_attributes_for :<%=hm%>" in <%= class_name %>
+<%='/' unless form_unit_map.size_sums[:md] <= 12%>div class="<%="editable_#{singular_table_name}_#{hm} editable_#{hm}"%>"
+  h3 <%= hm.to_s.titleize %>
+  = editable_table_for f, :<%= hm %> do |t|
+    - t.sort_on :id
+<% belongs_tos.each do |attribute, form_units| -%>
+    - t.input_column :<%=attribute%>_id, collection: <%=(form_units.association.options[:class_name] || attribute.to_s.classify)%>.accessible_by(current_ability)
 <% end -%>
 <% form_unit_map.columns.each do |attribute, form_units| -%>
-  - t.input_column :<%=attribute%>
+    - t.input_column :<%=attribute%>
 <% end -%>
 <%
   end
-end
 -%>

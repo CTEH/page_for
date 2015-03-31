@@ -74,7 +74,7 @@ module EditableTableForHelper
 
       size_sums = {}
 
-      belongs_to_array = klass.reflect_on_all_associations(:belongs_to).map(&:name).map do |bt|
+      belongs_to_array = klass.reflect_on_all_associations(:belongs_to).map do |bt|
         # currently all associations have same size_map, but still need to do the sums
         size_values = EditableTableForHelper::EditableTableBuilder.bootstrap_form_units_for_association
 
@@ -83,7 +83,7 @@ module EditableTableForHelper
           size_sums[size] = (size_sums[size] || 0) + value
         end
 
-        [bt.to_sym, size_values]
+        [bt.name.to_sym, OpenStruct.new(size_values: size_values, association: bt)]
       end
 
       columns = klass.content_columns.find_all{|c| clean_content_column_names(c.name).present?}
@@ -95,10 +95,10 @@ module EditableTableForHelper
           size_sums[size] = (size_sums[size] || 0) + value
         end
 
-        [column.name.to_sym, size_values]
+        [column.name.to_sym, {size_values: size_values, column: column}]
       end
 
-      result = OpenStruct.new({size_sums: size_sums, belongs_to_associations: Hash[belongs_to_array], columns: Hash[columns_array]})
+      result = OpenStruct.new(size_sums: size_sums, belongs_to_associations: Hash[belongs_to_array], columns: Hash[columns_array])
       result
     end
 
@@ -116,12 +116,9 @@ module EditableTableForHelper
     # See simple form #input_field for args
 
     def input_column(field, *args)
-      if args.length == 0
-        args = [ {size: 25} ]
-      end
       wrapper_class = args.delete(:wrapper_class)
       column = content_columns.find {|c| c.name.to_s==field.to_s }
-      self.inputs << {field: field, args: args, column: column, class: ["tblfor_#{column.try(:type)}", wrapper_class].compact.join(' ')}
+      self.inputs << {field: field, args: args, column: column, class: ["etblfor_#{column.try(:type)}", wrapper_class].compact.join(' ')}
     end
 
     def input(field, *args)

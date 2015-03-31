@@ -1,5 +1,4 @@
 module DefinitionListFor
-
   class DefinitionBuilder
     attr_accessor :label, :attribute, :link, :options, :block_given, :block, :is_more, :dl_builder
 
@@ -172,8 +171,5 @@ module DefinitionListFor
         :string
       end
     end
-
-
   end
-
 end

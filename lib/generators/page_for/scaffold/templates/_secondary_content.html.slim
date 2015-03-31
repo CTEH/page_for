@@ -1,1 +1,9 @@
 - page.secondary_navigation "<%= table_name.titleize %>" do |nav|
+= render partial: 'model_definitions/sidebar_docs', locals: {table_name: '<%=table_name%>', page: page}
+<%
+has_many_associations.find_all{|hm| association_class_exists_with_this_name?(hm)}.each do |hm|
+  if bootstrap_form_unit_map(hm.to_s.classify.constantize).size_sums[:md] <= 14
+-%>
+= render partial: 'model_definitions/sidebar_docs', locals: {table_name: '<%=hm%>', page: page}
+<% end -%>
+<% end -%>

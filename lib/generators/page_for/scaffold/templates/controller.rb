@@ -54,7 +54,7 @@ class <%=class_name.pluralize%>Controller < ApplicationController
   end
 
   def self.default_params
-    [<%=(belongs_to_associations.map{|c|"#{c}_id"} + content_columns).map{|c| ":#{c}"}.join(', ')%>]
+    [<%=(belongs_to_associations.map{|bt| "#{bt}_id"} + content_columns).map{|c| ":#{c}"}.join(', ')%>]
   end
 
   protected
@@ -65,8 +65,8 @@ class <%=class_name.pluralize%>Controller < ApplicationController
 
   def <%=singular_table_name%>_params
     params.require(:<%=singular_table_name%>).permit(
-      <%=(belongs_to_associations.map{|c|"#{c}_id"} + content_columns).map{|c| ":#{c}"}.join(', ')%>,
-<% has_many_associations.each do |hm| -%>
+      *self.class.default_params,
+<% has_many_associations.find_all{|hm| association_class_exists_with_this_name?(hm)}.each do |hm| -%>
       <%=hm%>_attributes: <%=hm.to_s.classify.pluralize%>Controller.default_params + [:id, :_destroy],
 <% end -%>
     )

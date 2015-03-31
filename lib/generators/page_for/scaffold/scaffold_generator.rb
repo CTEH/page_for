@@ -82,6 +82,11 @@ module PageFor
       def bootstrap_form_unit_map(cname)
         EditableTableForHelper::EditableTableBuilder.bootstrap_form_unit_map(cname)
       end
+
+      def deepest_common_ancestor(source, target, target_belongs_to_association)
+        source, target = source.to_s.classify, target.to_s.classify
+        # TODO finish this
+      end
     end
   end
 end

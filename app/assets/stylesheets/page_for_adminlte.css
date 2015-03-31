@@ -280,17 +280,16 @@ section.content {
   width: 5em;
 }
 
-.table .tblfor_string
-, .table .tblfor_reference {
+.table .etblfor_string
+, .table .etblfor_reference {
   width: 12em;
 }
 
-.table .tblfor_boolean  {
+.table .etblfor_boolean  {
   width: 10em;
 }
 
-.table .tblfor_text  {
-  width: 100%;
+.table .etblfor_text  {
 }
 
 
