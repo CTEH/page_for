@@ -799,17 +799,6 @@ section.content {
 }
 
 
-.control-label {
-  line-height: 1em;
-  padding-top: 0;
-}
-
-.form-horizontal .control-label
-{
-  line-height: 1em;
-  padding-top: 0;
-}
-
 .radio input[type="radio"], .radio-inline input[type="radio"], .checkbox input[type="checkbox"], .checkbox-inline input[type="checkbox"] {
   opacity: 1;
   margin-left: 0;
