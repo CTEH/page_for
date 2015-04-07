@@ -1,5 +1,7 @@
 task "route_tree" => :environment do
   Rails.application.eager_load!
+  puts "  actions_for_resources"
+  puts "  routes_for do |tree|"
   ActiveRecord::Base.descendants.each do |c|
     puts "    tree.add :#{c.name.pluralize.underscore}, ["
     has_manys = c.reflect_on_all_associations(:has_many).find_all do |hm|
@@ -11,4 +13,5 @@ task "route_tree" => :environment do
     end
     puts "    ]"
   end
+  puts "  end"
 end
