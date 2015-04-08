@@ -33,8 +33,9 @@ div class="primary_items #{'overflow' if page_builder.secondary_items.length > 0
 
     h1
       = page_builder.title
-    small
-      = page_builder.description
+    .row
+      .col-sm-8.col-md-6
+        p = page_builder.description
 
     -if false
       ol.breadcrumb
