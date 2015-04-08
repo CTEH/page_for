@@ -51,6 +51,10 @@ To change the theme for your application, create an initializer that follows the
    *= require page_for_adminlte
    *= require action_sheet
 
+# editable_table_for
+
+To add a 'Remove' button to editable_table_for instances, add '- t.delete_link_if_can'.
+
 # Troubleshooting
 
 If you get an exception "undefined method `has_attribute?' for ...", you likely forgot to add accepts_nested_attributes_for to your model for the has_many relationships in your form.

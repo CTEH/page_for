@@ -115,9 +115,34 @@ module EditableTableForHelper
 
     # See simple form #input_field for args
 
+    def fields_for_options
+      {
+        wrapper: :editable_table_form,
+        wrapper_mappings: {
+          check_boxes: :editable_table_boolean,
+          radio_buttons: :editable_table_radio_and_checkboxes,
+          file: :editable_table_file_input,
+          boolean: :editable_table_boolean,
+          select: :editable_table_form,
+          string: :editable_table_form,
+          decimal: :editable_table_form,
+          integer: :editable_table_form,
+          date: :editable_table_form,
+          datetime: :editable_table_form,
+          text: :editable_table_form,
+        },
+      }
+    end
+
     def input_column(field, *args)
       wrapper_class = args.delete(:wrapper_class)
       column = content_columns.find {|c| c.name.to_s==field.to_s }
+      if args.present?
+        args[0].reverse_merge!(fields_for_options)
+      else
+        args = [fields_for_options]
+      end
+
       self.inputs << {field: field, args: args, column: column, class: ["etblfor_#{column.try(:type)}", wrapper_class].compact.join(' ')}
     end
 

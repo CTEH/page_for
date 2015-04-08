@@ -12,11 +12,11 @@ table class="table table-condensed"
         |
 
     tbody id=builder.numerous_id
-      - builder.f.simple_fields_for builder.has_many_method, builder.data, wrapper: false do |sf|
-        tr class=builder.has_many_method
+      - builder.f.simple_fields_for builder.has_many_method, builder.data do |sf|
+        tr class=[builder.has_many_method, 'fields'].join(' ')
           - builder.inputs.each do |i|
             td class=i[:class]
-              = sf.input_field i[:field], *i[:args]
+              = sf.input i[:field], *i[:args]
           -if builder.delete_if_can
             td
               -if builder.context.can? :delete, sf.object
@@ -52,11 +52,11 @@ table class="table table-condensed"
 - unless builder.options[:disable_add]
   table
     tbody
-      tr id="fields-for-#{builder.numerous_id}" class="numerous"
+      tr id="fields-for-#{builder.numerous_id}" class="fields #{builder.has_many_method} numerous"
         -builder.f.simple_fields_for builder.has_many_method, builder.new_record, child_index: 'replace_this', wrapper: false do |sf|
           - builder.inputs.each do |i|
             td class=i[:class]
-              = sf.input_field i[:field], *i[:args]
+              = sf.input i[:field], *i[:args]
 
 
           -if builder.delete_if_can
