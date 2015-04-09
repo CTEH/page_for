@@ -180,7 +180,7 @@ module TableFor
 
     def render_search_bar
       if self.searchable
-        self.context.render_page_for(partial: "table_for/search", locals: { table_builder: self, placeholder: "Search #{self.klass_name.titleize.pluralize}...", filters: filters })
+        self.context.render_page_for(partial: "table_for/search", locals: { table_builder: self, placeholder: "Search #{self.klass_name.pluralize.titleize}...", filters: filters })
       end
     end
 

@@ -5,7 +5,7 @@
   - layout.icon "fa fa-check-square"
 
   - layout.breadcrumb @nester, @nester if @nester
-  - layout.breadcrumb <%=class_name.titleize.pluralize.inspect%>, <%=plural_table_name%>_path
+  - layout.breadcrumb <%=class_name.pluralize.titleize.inspect%>, <%=plural_table_name%>_path
   - layout.breadcrumb @<%=singular_table_name%>, @<%=singular_table_name%> if @<%=singular_table_name%>
 
   - if @<%=singular_table_name%>.persisted?
@@ -15,4 +15,4 @@
   <%end -%>
 
 - unless @nester || @<%=singular_table_name%>
-  - layout.breadcrumb <%=class_name.titleize.pluralize.inspect%>, <%=plural_table_name%>_path
+  - layout.breadcrumb <%=class_name.pluralize.titleize.inspect%>, <%=plural_table_name%>_path

@@ -339,7 +339,7 @@ module PageFor
         page_options[:title]
       else
         if resource.class == Class
-          resource.name.titleize.pluralize
+          resource.name.pluralize.titleize
         else
           if resource.id == nil
             "New #{resource.class.name.titleize}"
@@ -356,7 +356,7 @@ module PageFor
         page_options[:title]
       else
         if resource.class == Class
-          resource.name.titleize.pluralize
+          resource.name.pluralize.titleize
         else
           if resource.id == nil
             "New #{resource.class.name.titleize}"
