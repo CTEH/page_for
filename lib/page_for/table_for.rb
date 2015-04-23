@@ -78,7 +78,8 @@ module TableFor
 
     def setup_ransack
       self.ransack_obj = self.filtered_resources.search(self.context.params[self.ransack_key.to_sym], search_key: self.ransack_key.to_sym)
-      self.filtered_resources = self.ransack_obj.result(distinct: true)
+      #self.filtered_resources = self.ransack_obj.result(distinct: true)
+      self.filtered_resources = self.ransack_obj.result()
     end
 
     def setup_kaminari
@@ -308,7 +309,8 @@ module TableFor
       tb = self.table_builder
       c = tb.context
       reflection = tb.reflection(self.attribute)
-      unique_sql = tb.resources.select(reflection.foreign_key).distinct.to_sql
+       unique_sql = tb.resources.select(reflection.foreign_key).distinct.to_sql
+      #unique_sql = tb.resources.distinct.to_sql
       values = reflection.klass.where("#{reflection.klass.primary_key} in (#{unique_sql})")
 
       predicated_reflection = "#{reflection.foreign_key}_eq".to_sym

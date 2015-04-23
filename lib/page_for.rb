@@ -34,6 +34,7 @@ module PageFor
     end
 
     def simple_form_for(theme)
+      # Needs simple_form 3.1.0 (not 3.0.2)
       eval("initialize_#{theme}_simple_form_for()")
     end
   end

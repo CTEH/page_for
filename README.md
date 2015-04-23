@@ -12,6 +12,8 @@
 
 * gem 'polywag'
 
+* gem 'simple_form' >= 3.1.0
+
 ## Skin Dependencies
 
 * gem 'adminlte-rails'
