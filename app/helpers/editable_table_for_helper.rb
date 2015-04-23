@@ -147,7 +147,7 @@ module EditableTableForHelper
     end
 
     def input(field, *args)
-      raise "Deprecation Error: Too confusing to use simple form api"
+      raise "Deprecation Error: instead of t.input, please use t.input_column"
     end
 
     def sort_on(*args)
