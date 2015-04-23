@@ -41,6 +41,11 @@ section.content {
     margin-bottom: 0;
   }
 
+  /* for some reason adminlte eliminates this padding, and it doesn't look good */
+  .form-horizontal .radio, .form-horizontal .checkbox {
+    padding-left: 20px;
+  }
+
 }
 
 /**********************************************************************/

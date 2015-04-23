@@ -69,6 +69,5 @@ table class="table table-condensed"
             = sf.input_field :id, as: 'hidden'
             /= sf.input_field builder.reflection.foreign_key, value: builder.f.object.id
 
-
   div.editable_table_for_add
     = link_to "Add #{builder.reflection.class_name.to_s.titleize}", '#null', id: "add-to-#{builder.numerous_id}"
