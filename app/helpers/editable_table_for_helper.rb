@@ -177,7 +177,21 @@ module EditableTableForHelper
         self.options[:data]
       else
         if self.sorted
-          self.f.object.send(has_many_method).reorder(*sort_args)
+          sort_spec = sort_args[0]
+          sort_key, sort_dir = sort_spec.is_a?(Hash) ? sort_spec.first : [sort_spec, :asc]
+          sorted_collection = self.f.object.send(has_many_method).sort do |a, b|
+            av = a.send(sort_key)
+            bv = b.send(sort_key)
+            # don't know types of properties, can't allow nils. Let's put them at the end.
+            if av.nil? || bv.nil?
+              av.nil? ? -1 : 1
+            else
+              av <=> bv
+            end
+          end
+          sorted_collection.reverse! if sort_dir == :desc
+          # final sort to put new items at the end, preserving the previous sort otherwise
+          sorted_collection.sort_by.with_index {|o, idx| [o.persisted? ? 0 : 1, idx]}
         else
           self.f.object.send(has_many_method)
         end
