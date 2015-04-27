@@ -316,7 +316,7 @@ module PageFor
       self.page_options = options
       self.context = context
       self.resource = resource
-      self.title = build_title if self.title == nil
+      self.title = build_title
       self.sections = []
       self.top_tab_section_builder = TabSectionBuilder.new(self)
       self.tab_section_builder =  TabSectionBuilder.new(self)
@@ -345,7 +345,7 @@ module PageFor
           if resource.id == nil
             "New #{resource.class.name.titleize}"
           else
-            "#{resource.class.name.titleize} #{resource.to_s}".html_safe
+            resource.to_s
           end
         end
       end
