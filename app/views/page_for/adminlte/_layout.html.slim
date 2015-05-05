@@ -153,6 +153,13 @@ html
                           = classed_link_to 'btn btn-default btn-flat', *builder.usermenu.signout_link_args
 
 
+        section.flash_messages
+          - builder.context.flash.each do |name, msg|
+            div class="alert alert-#{name == :notice ? 'info' : 'warning' }"
+              button type="button" class="close" data-dismiss="alert" aria-hidden="true"
+                | &times;
+              .alert-message = msg.html_safe
+
         = yield_proc.call(nil)
 
       = yield_proc.call(:footer)
