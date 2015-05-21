@@ -33,7 +33,7 @@
               td.tblfor_actions
                 = page.action_sheet_for "btn-xs" do |sheet|
                   - table_builder.actions.each do |action|
-                    - sheet.link_to(action.label, action.url(resource)) if action.can?(resource)
+                    - sheet.link_to(action.label, action.url(resource), method: action.method, remote: action.remote) if action.can?(resource)
             - table_builder.columns.each do |column_builder|
               td id="#{column_builder.table_builder.klass_name}_#{resource.id}_#{column_builder.attribute}" class="#{column_builder.cell_class}  #{column_builder.if_hidden('hidden-xs')}"
                 = column_builder.format(resource).to_s.html_safe
