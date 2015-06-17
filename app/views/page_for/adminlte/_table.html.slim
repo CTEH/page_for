@@ -2,7 +2,7 @@
 
   -if table_builder.searchable
     .table_search_box
-      = search_form_for table_builder.ransack_obj, as: table_builder.ransack_key.to_sym, url: table_builder.context.request.url, html: { class: 'form-absolute' } do |f|
+      = search_form_for table_builder.ransack_obj, as: table_builder.ransack_key.to_sym, url: table_builder.context.request.fullpath, html: { class: 'form-absolute' } do |f|
         div.input-group
           = f.text_field table_builder.ransack_cont_fields.to_sym, class: "form-control pull-right", placeholder: "Search #{table_builder.klass_name.pluralize.titleize}..."
           div.input-group-btn

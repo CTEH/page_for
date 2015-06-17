@@ -11,7 +11,7 @@ module TableFor
                   :klass, :klass_name, :freeze_header, :table_id,
                   :viewport
 
-  def initialize(page, resources, options, table_id)
+    def initialize(page, resources, options, table_id)
       self.page = page
       self.context = page.context
       self.table_id = table_id
@@ -282,7 +282,7 @@ module TableFor
 
 
     def render_content_column(form)
-      if self.content_type = :string or self.content_type == :text
+      if self.content_type == :string or self.content_type == :text
         return render_cont(form)
       end
       if self.content_type == :datetime
@@ -378,7 +378,7 @@ module TableFor
     end
 
     def sort_link_title
-      cell_options[:header] || self.nested_title
+      cell_options[:header].to_s.presence || self.nested_title
     end
 
     def nested_title

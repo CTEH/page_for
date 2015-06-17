@@ -1,6 +1,6 @@
 
 div class="row"
-  = search_form_for table_builder.table_options[:ransack_obj], as: table_builder.ransack_key.to_sym, url: table_builder.context.request.url, html: { class: 'form-absolute' } do |f|
+  = search_form_for table_builder.table_options[:ransack_obj], as: table_builder.ransack_key.to_sym, url: table_builder.context.request.fullpath, html: { class: 'form-absolute' } do |f|
     div class="col-lg-12"
       div class="input-group"
         = f.text_field table_builder.ransack_cont_fields.to_sym, class: "form-control", placeholder: placeholder
