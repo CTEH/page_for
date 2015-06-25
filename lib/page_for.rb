@@ -28,9 +28,13 @@ module PageFor
 
   class Configuration
     attr_accessor :theme
+    attr_accessor :date_format
+    attr_accessor :datetime_format
 
     def initialize
       @theme = 'hyperia'
+      @date_format = '%b %d, %Y'
+      @datetime_format = '%b %d, %Y %I:%M %p %Z'
     end
 
     def simple_form_for(theme)
@@ -40,6 +44,24 @@ module PageFor
   end
 
   self.configure # Configure, with defaults if not explicitly called
+
+  def self.format_date(date)
+    format = PageFor.configuration.date_format
+    if format.is_a? Proc
+      format.call(date)
+    else
+      date.try(:strftime, format)
+    end
+  end
+
+  def self.format_datetime(datetime)
+    format = PageFor.configuration.datetime_format
+    if format.is_a? Proc
+      format.call(datetime)
+    else
+      datetime.try(:strftime, format)
+    end
+  end
 
   class Engine < ::Rails::Engine
   end
@@ -193,6 +215,7 @@ module PageFor
           else
             trgt = [self.nester, self.resource].compact
             self.url = self.page_builder.context.polymorphic_path(trgt, *self.params)
+            self.method = :delete
           end
         end
       else
@@ -201,7 +224,9 @@ module PageFor
 
       self.remote = options[:remote] || false
       self.label = options[:label] || self.label = action.to_s.titleize
-      self.method = options[:method] || 'get'
+      # Method may be set to :delete above.
+      # If for some reason the user wants to use another method with destroy, let it be overridden (options comes first)
+      self.method = options[:method] || self.method || 'get'
       self.options = options
     end
 

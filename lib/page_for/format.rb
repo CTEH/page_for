@@ -21,11 +21,11 @@ module PageFor
     end
 
     def self.datetime(value)
-      value.try(:strftime, "%b %d, %Y %I:%M %p %Z")
+      PageFor.format_datetime(value)
     end
 
     def self.date(value)
-      value.try(:strftime, "%b %d, %Y")
+      PageFor.format_date(value)
     end
 
     def self.integer(value)
