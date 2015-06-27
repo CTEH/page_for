@@ -485,28 +485,19 @@ module PageFor
     # ransack_key
     def table_for(resources, *args, &block)
       self.table_id += 1
-      # no need to render the table if we don't have any items
-      if resources.length == 0
-        builder = nil
-      else
-        options = args.extract_options!
-        builder = TableFor::TableBuilder.new(self, resources, options, self.table_id)
-        yield(builder) if block_given?
-      end
+      options = args.extract_options!
+      builder = TableFor::TableBuilder.new(self, resources, options, self.table_id)
+      yield(builder) if block_given?
+
       self.context.render_page_for(partial: "table", locals: { table_builder: builder, resources: resources, page: self })
     end
 
     def table_builder(resources, *args, &block)
       self.table_id += 1
-      # no need to render the table if we don't have any items
-      if resources.length == 0
-        builder = nil
-      else
-        options = args.extract_options!
-        options[:ransack_obj] ||= eval("@q_#{resources.first.class.name.demodulize.underscore}")
-        builder = TableFor::TableBuilder.new(self, resources, options, self.table_id)
-        yield(builder) if block_given?
-      end
+      options = args.extract_options!
+      options[:ransack_obj] ||= eval("@q_#{resources.klass.name.demodulize.underscore}")
+      builder = TableFor::TableBuilder.new(self, resources, options, self.table_id)
+      yield(builder) if block_given?
       return builder
     end
 

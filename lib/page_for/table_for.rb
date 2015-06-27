@@ -42,10 +42,15 @@ module TableFor
       self.ransack_obj = options[:ransack_obj] ||= eval("@#{ransack_key}")
       self.kaminari_key = "p_#{self.table_id}"
 
-      if self.resources.length > 0
-        resource = resources.first
+      self.setup_abilities if self.apply_abilities
+      self.setup_ransack unless options[:ransack_obj]
+      self.setup_kaminari
 
-        self.klass = resource.class
+      # Using filtered_resources.length instead of .size with the assumption that the full
+      # result will be used in rendering, so no need for a count query. If that ever changes, probably want to use .size instead
+      # note that this call is where the initial full load will happen
+      if self.filtered_resources.length > 0
+        self.klass = resources.klass
         self.klass_name = self.klass.name.demodulize.underscore
 
         self.content_columns = self.klass.content_columns || []
@@ -53,13 +58,7 @@ module TableFor
 
         self.belongs_to = self.klass.reflect_on_all_associations(:belongs_to)
         self.belongs_to_names = self.belongs_to.map {|x|x.name.to_s}
-
       end
-
-      self.setup_abilities if self.apply_abilities
-      self.setup_ransack unless options[:ransack_obj]
-      self.setup_kaminari
-
     end
 
     def html
@@ -95,7 +94,7 @@ module TableFor
     end
 
     def filter(attribute, *args, &block)
-      return nil if self.filtered_resources.length == 0
+      return nil if self.filtered_resources.size == 0
 
       filter_options = args.extract_options!
       f = FilterBuilder.new(self, attribute, filter_options, block)
@@ -105,7 +104,7 @@ module TableFor
     end
 
     def column(attribute, *args, &block)
-      return nil if self.filtered_resources.length == 0
+      return nil if self.filtered_resources.size == 0
 
       column_options = args.extract_options!
       column_options[:hidden]= false
@@ -116,7 +115,7 @@ module TableFor
     end
 
     def action(attribute, *args, &block)
-      return nil if self.filtered_resources.length == 0
+      return nil if self.filtered_resources.size == 0
 
       button_options = args.extract_options!
       c = ActionBuilder.new(self, attribute, button_options, block)
@@ -126,7 +125,7 @@ module TableFor
     end
 
     def hidden_phone_column(attribute, *args, &block)
-      return nil if self.filtered_resources.length == 0
+      return nil if self.filtered_resources.size == 0
 
       column_options = args.extract_options!
       column_options[:class]= 'hidden-phone'
@@ -172,7 +171,7 @@ module TableFor
     end
 
     def render_table
-      if self.filtered_resources.length == 0
+      if self.filtered_resources.size == 0
         self.context.render_page_for(partial: "table_for/no_items")
       else
         self.context.render_page_for(partial: "table_for/table", locals: { table_builder: self })
@@ -187,7 +186,7 @@ module TableFor
 
     def ransack_cont_fields
       fnames = self.columns.map {|c|c.attribute}
-      fields = self.resources.first.class.content_columns.select { |c| fnames.include?(c.name.to_sym) and c.type == :string || c.type == :text }.map { |c| c.name }
+      fields = self.resources.klass.content_columns.select { |c| fnames.include?(c.name.to_sym) and c.type == :string || c.type == :text }.map { |c| c.name }
       fields += self.columns.select {|c|c.attribute["."]}.map {|c|c.attribute.gsub(".","_")}
       fields.join("_or_") + "_cont"
     end
