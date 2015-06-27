@@ -46,19 +46,14 @@ module TableFor
       self.setup_ransack unless options[:ransack_obj]
       self.setup_kaminari
 
-      # Using filtered_resources.length instead of .size with the assumption that the full
-      # result will be used in rendering, so no need for a count query. If that ever changes, probably want to use .size instead
-      # note that this call is where the initial full load will happen
-      if self.filtered_resources.length > 0
-        self.klass = resources.klass
-        self.klass_name = self.klass.name.demodulize.underscore
+      self.klass = resources.klass
+      self.klass_name = self.klass.name.demodulize.underscore
 
-        self.content_columns = self.klass.content_columns || []
-        self.column_names = self.content_columns.map { |x| x.name.to_s } || []
+      self.content_columns = self.klass.content_columns || []
+      self.column_names = self.content_columns.map { |x| x.name.to_s } || []
 
-        self.belongs_to = self.klass.reflect_on_all_associations(:belongs_to)
-        self.belongs_to_names = self.belongs_to.map {|x|x.name.to_s}
-      end
+      self.belongs_to = self.klass.reflect_on_all_associations(:belongs_to)
+      self.belongs_to_names = self.belongs_to.map {|x|x.name.to_s}
     end
 
     def html
@@ -94,7 +89,8 @@ module TableFor
     end
 
     def filter(attribute, *args, &block)
-      return nil if self.filtered_resources.size == 0
+      # return nil if self.filtered_resources.size == 0
+      # need filters to show dropdowns, even if blank
 
       filter_options = args.extract_options!
       f = FilterBuilder.new(self, attribute, filter_options, block)
@@ -104,7 +100,8 @@ module TableFor
     end
 
     def column(attribute, *args, &block)
-      return nil if self.filtered_resources.size == 0
+      # return nil if self.filtered_resources.size == 0
+      # need filters to build default ransack, even if blank
 
       column_options = args.extract_options!
       column_options[:hidden]= false
@@ -125,7 +122,8 @@ module TableFor
     end
 
     def hidden_phone_column(attribute, *args, &block)
-      return nil if self.filtered_resources.size == 0
+      # return nil if self.filtered_resources.size == 0
+      # need filters to build default ransack, even if blank
 
       column_options = args.extract_options!
       column_options[:class]= 'hidden-phone'
