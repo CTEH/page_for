@@ -405,7 +405,7 @@ module TableFor
       end
       if is_content_column
         if PageFor::Format.respond_to?(content_type)
-          PageFor::Format.send(content_type, nested_send(resource))
+          PageFor::Format.send(content_type, nested_send(resource), table_options)
         else
           "Unhandled type in table_for_helper"
         end

@@ -43,9 +43,9 @@ module DefinitionListFor
   class DefinitionListBuilder
 
     attr_accessor :resource, :content_columns, :belongs_to, :column_names, :bt_names, :context,
-                  :klass, :klass_name, :is_more, :definitions, :more_definitions, :page
+                  :klass, :klass_name, :is_more, :definitions, :more_definitions, :page, :dl_options
 
-    def initialize(resource, page)
+    def initialize(resource, page, dl_options)
       self.page = page
       self.context = page.context
       self.resource = resource
@@ -59,6 +59,8 @@ module DefinitionListFor
       self.is_more = false
       self.definitions = []
       self.more_definitions = []
+      self.dl_options = dl_options
+
     end
 
     #
@@ -124,7 +126,7 @@ module DefinitionListFor
       end
       if content_column?(attribute)
         if PageFor::Format.respond_to?(type)
-          PageFor::Format.send(type, v)
+          PageFor::Format.send(type, v, self.dl_options)
         else
           "Unhandled type in definition_list_helper"
         end

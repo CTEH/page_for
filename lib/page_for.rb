@@ -466,8 +466,9 @@ module PageFor
     ## Sub-Builders
     #############################################################################
 
-    def definition_list_for(resource, &block)
-        builder = DefinitionListFor::DefinitionListBuilder.new(resource, self)
+    def definition_list_for(resource, *args, &block)
+        options = args.extract_options!
+        builder = DefinitionListFor::DefinitionListBuilder.new(resource, self, options)
         yield(builder) if block_given?
         self.context.render_page_for(partial: "definition_list", locals: { builder: builder, page: self })
     end
