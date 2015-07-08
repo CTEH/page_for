@@ -139,7 +139,7 @@ module DefinitionListFor
           end
         else
           if file_method?(attribute)
-            self.context.link_to "Download", self.resource.send(attribute).url
+            self.context.link_to self.resource.send("#{attribute}_file_name"), self.resource.send(attribute).url
           else
             self.resource.send(attribute)
           end
