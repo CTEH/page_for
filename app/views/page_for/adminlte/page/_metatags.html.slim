@@ -1,6 +1,4 @@
-/- Terminate an electronic
-/- session after a predetermined time of inactivity
-/- § 164.312(a)(2)(iii)
+/- § 164.312(a)(2)(iii) - Terminate an electronic session after a predetermined time of inactivity
 
--if Devise.timeout_in
+-if Devise.timeout_in && Devise.timeout_in.to_i > 0
   meta content=Devise.timeout_in.to_i  http-equiv="refresh" /
