@@ -157,7 +157,8 @@ html
 
         section.flash_messages
           - builder.context.flash.each do |name, msg|
-            div class="alert alert-dismissible alert-#{name == :notice ? 'info' : 'danger' }" role="alert"
+            - alert_class = ({notice: :info, error: :danger}[name.to_sym] || name).to_s
+            div class="alert alert-dismissible alert-#{alert_class}" role="alert"
               button type="button" class="close" data-dismiss="alert" aria-hidden="true"
                 | &times;
               .alert-message = msg.html_safe
