@@ -678,7 +678,7 @@ section.content {
   float: left;
   color: white;
   font-size: 35px;
-  margin-top: -15px;
+  margin-top: -0.2em;
   margin-right: 10px;
   opacity: 1;
 }
