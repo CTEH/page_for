@@ -12,20 +12,21 @@ table class="table table-condensed"
         |
 
     tbody id=builder.numerous_id
-      - builder.f.simple_fields_for builder.has_many_method, builder.data do |sf|
-        tr class=[builder.has_many_method, 'fields'].join(' ')
-          - builder.inputs.each do |i|
-            td class=i[:class]
-              = sf.input i[:field], *i[:args]
-          -if builder.delete_if_can
+      - builder.data.each do |child|
+        - builder.f.simple_fields_for builder.has_many_method, child do |sf|
+          tr class=[builder.has_many_method, 'fields'].join(' ')
+            - builder.inputs.each do |i|
+              td class=i[:class]
+                = sf.input i[:field], *i[:args]
+            -if builder.delete_if_can
+              td
+                -if builder.context.can? :delete, sf.object
+                  = sf.link_to_remove "Remove"
+                -else
+                  | no delete
             td
-              -if builder.context.can? :delete, sf.object
-                = sf.link_to_remove "Remove"
-              -else
-                | no delete
-          td
-            = sf.input_field :id, as: 'hidden'
-            /= sf.input_field builder.reflection.foreign_key
+              = sf.input_field :id, as: 'hidden'
+              /= sf.input_field builder.reflection.foreign_key
 - if false
   div.editable_table id=builder.table_id
     .row.hidden_xs
