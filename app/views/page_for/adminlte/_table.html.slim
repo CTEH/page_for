@@ -4,7 +4,7 @@
       div.input-group
         = f.text_field table_builder.ransack_cont_fields.to_sym, class: "form-control pull-right", placeholder: "Search #{table_builder.klass_name.pluralize.titleize}..."
         div.input-group-btn
-          = f.button "<i class='fa fa-search'></i>".html_safe, class: "btn btn-default"
+          = f.button "&nbsp;<i class='fa fa-search'></i>&nbsp;".html_safe, class: "btn btn-default"
       -table_builder.filters.each do |filter|
         = filter.render(f)
 

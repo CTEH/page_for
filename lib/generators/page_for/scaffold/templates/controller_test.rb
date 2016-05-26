@@ -8,8 +8,8 @@ class <%= controller_class_name %>ControllerTest < ActionController::TestCase
   let(:<%=singular_table_name%>) { FactoryGirl.create :<%=singular_table_name%> }
 
   def setup
-    @request.env['devise.mapping'] = Devise.mappings[:admin]
-    sign_in FactoryGirl.create(:admin)
+    @request.env['devise.mapping'] = Devise.mappings[:user]
+    sign_in FactoryGirl.create(:user)
   end
 
   test 'should get index' do

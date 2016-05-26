@@ -146,6 +146,12 @@ module EditableTableForHelper
       self.inputs << {field: field, args: args, column: column, class: ["etblfor_#{column.try(:type)}", wrapper_class].compact.join(' ')}
     end
 
+    def column(field, *args, &block)
+      column = content_columns.find {|c| c.name.to_s==field.to_s }
+
+      self.inputs << {field: field, display_only: true, args: args, column: column, class: ["etblfor_#{column.try(:type)}"].compact.join(' '), block: block}
+    end
+
     def input(field, *args)
       raise "Deprecation Error: instead of t.input, please use t.input_column"
     end

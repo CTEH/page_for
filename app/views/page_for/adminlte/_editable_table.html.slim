@@ -16,8 +16,15 @@ table class="table table-condensed"
         - builder.f.simple_fields_for builder.has_many_method, child do |sf|
           tr class=[builder.has_many_method, 'fields'].join(' ')
             - builder.inputs.each do |i|
-              td class=i[:class]
-                = sf.input i[:field], *i[:args]
+              - if i[:display_only]
+                td class=i[:class]
+                  - if i[:block]
+                    = i[:block].call(child)
+                  - else
+                    = child.send(i[:field])
+              - else
+                td class=i[:class]
+                  = sf.input i[:field], *i[:args]
             -if builder.delete_if_can
               td
                 -if builder.context.can? :delete, sf.object
@@ -40,8 +47,12 @@ table class="table table-condensed"
         .row.fields
           - builder.inputs.each do |i|
             div class="#{i.class}"
-              = sf.input_field i[:field], *i[:args]
-              = i[:field].to_s.titleize
+              - if i[:display_only]
+                = child.send(i[:field])
+                = i[:field].to_s.titleize
+              - else
+                = sf.input_field i[:field], *i[:args]
+                = i[:field].to_s.titleize
           -if builder.delete_if_can
             .col_md_2
               -if builder.context.can? :delete, sf.object
@@ -57,7 +68,10 @@ table class="table table-condensed"
         -builder.f.simple_fields_for builder.has_many_method, builder.new_record, child_index: 'replace_this', wrapper: false do |sf|
           - builder.inputs.each do |i|
             td class=i[:class]
-              = sf.input i[:field], *i[:args]
+              - if i[:display_only]
+                | &nbsp;
+              - else
+                = sf.input i[:field], *i[:args]
 
 
           -if builder.delete_if_can
