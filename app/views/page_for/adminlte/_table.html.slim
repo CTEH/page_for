@@ -27,7 +27,8 @@
 
       tbody
         - table_builder.filtered_resources.each do |resource|
-          tr
+          - row_attributes = table_builder.row_attributes(resource)
+          tr *row_attributes
             - if table_builder.actions.present?
               td.tblfor_actions
                 = page.action_sheet_for "btn-xs" do |sheet|

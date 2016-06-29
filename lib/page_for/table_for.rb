@@ -8,7 +8,7 @@ module TableFor
                   :searchable, :search, :filters, :ransack_key, :ransack_obj,
                   :current_ability, :apply_abilities, :filtered_resources,
                   :belongs_to, :belongs_to_names,
-                  :klass, :klass_name, :freeze_header, :table_id,
+                  :klass, :klass_name, :freeze_header, :table_id, :row_html_options,
                   :viewport
 
     def initialize(page, resources, options, table_id)
@@ -54,6 +54,7 @@ module TableFor
 
       self.belongs_to = self.klass.reflect_on_all_associations(:belongs_to)
       self.belongs_to_names = self.belongs_to.map {|x|x.name.to_s}
+      self.row_html_options = options[:row_html_options]
     end
 
     def html
@@ -173,6 +174,14 @@ module TableFor
         self.context.render_page_for(partial: "table_for/no_items")
       else
         self.context.render_page_for(partial: "table_for/table", locals: { table_builder: self })
+      end
+    end
+
+    def row_attributes(resource)
+      if row_html_options.is_a?(Proc)
+        self.row_html_options.call(resource)
+      else
+        self.row_html_options || {}
       end
     end
 
