@@ -340,11 +340,11 @@ module TableFor
       self.table_options = table_options
       self.table_builder = table_builder
       self.attribute = attribute
-      self.is_content_column = self.table_builder.content_column?(attribute)
+      self.is_content_column = cell_options[:content_type] ? true : self.table_builder.content_column?(attribute)
       self.is_belongs_to = self.table_builder.belongs_to?(attribute)
-      self.content_type = self.table_builder.content_type(attribute)
       self.block = block
       self.cell_options = cell_options
+      self.content_type = cell_options[:content_type] || self.table_builder.content_type(attribute)
       self.hidden = cell_options[:hidden]
       cell_type_classes = [self.content_type]
       cell_type_classes << 'number' if ['decimal', 'float', 'integer'].include?(content_type.to_s)
