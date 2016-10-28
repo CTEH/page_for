@@ -39,7 +39,7 @@ module TableFor
       self.viewport = options[:viewport] if options[:viewport] != nil
 
       self.ransack_key = options[:ransack_key] ||= "q_#{self.table_id}"
-      self.ransack_obj = options[:ransack_obj] ||= eval("@#{ransack_key}")
+      self.ransack_obj = options.has_key?(:ransack_obj) ? options[:ransack_obj] : (options[:ransack_obj] = eval("@#{ransack_key}"))
       self.kaminari_key = "p_#{self.table_id}"
 
       self.setup_abilities if self.apply_abilities
@@ -288,13 +288,13 @@ module TableFor
 
 
     def render_content_column(form)
-      if self.content_type == :string or self.content_type == :text
+      if self.content_type == :string || self.content_type == :text
         return render_cont(form)
       end
       if self.content_type == :datetime
         return render_datetime(form)
       end
-      if self.content_type == :decimal or self.content_type == :float or self.content_type == :integer
+      if self.content_type == :decimal || self.content_type == :float || self.content_type == :integer
         return render_numeric(form)
       end
     end
