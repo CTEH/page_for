@@ -121,12 +121,12 @@ $(function() {
     }
   }
   //Fire upon load
-  _fix();
+  //_fix();
   //Fire when wrapper is resized
-  $(".wrapper").resize(function() {
-    _fix();
-    fix_sidebar();
-  });
+  //$(".wrapper").resize(function() {
+  //  _fix();
+  //  fix_sidebar();
+  //});
 
   //Fix the fixed layout sidebar scroll bug
   fix_sidebar();
