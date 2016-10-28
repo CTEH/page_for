@@ -25,6 +25,7 @@ module TableFor
 
       self.paginate = true
       self.paginate = options[:paginate] unless options[:paginate] == nil
+      self.page_size = options[:page_size] unless options[:page_size] == nil
 
       self.freeze_header = true
       self.freeze_header = options[:freeze_header] if options[:freeze_header] != nil
