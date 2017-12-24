@@ -29,7 +29,7 @@ div class="primary_items #{'overflow' if page_builder.secondary_items.length > 0
       .page_for_page_actions
         - page_builder.buttons.reverse.each do |button|
           div style="display: inline; margin-right: 5px;"
-            = link_to button.label, button.url, method: button.method, class: button.css_class(''), remote: button.remote
+            = link_to button.label, button.url, method: button.method, class: button.css_class('btn'), remote: button.remote
 
     h1
       = page_builder.title
