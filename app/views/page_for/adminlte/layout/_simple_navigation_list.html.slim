@@ -7,7 +7,7 @@
         -if item.html_options[:icon]
           i class="#{item.html_options[:icon]}"
         -else
-          | i.fa.fa-angle-double-right
+          i.fa.fa-angle-double-right
         span
           = item.name
         i.fa.fa-angle-left.pull-right
@@ -30,6 +30,3 @@
             small.badge.pull-right.bg-yellow = item.html_options[:warning]
           - if item.html_options[:danger]
             small.badge.pull-right.bg-red = item.html_options[:danger]
-
-
-
