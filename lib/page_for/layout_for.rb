@@ -176,7 +176,7 @@ module LayoutFor
                   :name, :skin, :navigation_renderer, :content_block, :search_path,
                   :navbar_block, :content_blocks, :global_nav_container,
                   :contextual_nav_options, :global_nav_options, :contextual_nav_title,
-                  :global_nav_title, :bread_crumbs, :layout_icon
+                  :global_nav_title, :bread_crumbs, :layout_icon, :language
 
     def initialize(context, name, options)
       self.name = name
@@ -194,11 +194,17 @@ module LayoutFor
       self.contextual_nav_container = nil
       self.global_nav_container = nil
       self.bread_crumbs = []
+      self.language = 'en'
     end
 
     def title
       name
     end
+
+    def html_lang(l)
+      self.language = l
+    end
+
 
     # Renders the navigation according to the specified options-hash.
     #
