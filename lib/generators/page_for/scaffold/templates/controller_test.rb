@@ -3,13 +3,13 @@ require "test_helper"
 <% module_namespacing do -%>
 class <%= controller_class_name %>ControllerTest < ActionController::TestCase
 <% belongs_to_associations.each do |attribute| -%>
-  let(:<%=attribute%>) { FactoryGirl.create :<%=attribute%> }
+  let(:<%=attribute%>) { create :<%=attribute%> }
 <% end -%>
-  let(:<%=singular_table_name%>) { FactoryGirl.create :<%=singular_table_name%> }
+  let(:<%=singular_table_name%>) { create :<%=singular_table_name%> }
 
   def setup
     @request.env['devise.mapping'] = Devise.mappings[:user]
-    sign_in FactoryGirl.create(:user)
+    sign_in create(:user)
   end
 
   test 'should get index' do
@@ -26,7 +26,7 @@ class <%= controller_class_name %>ControllerTest < ActionController::TestCase
 
   test 'should create' do
     assert_difference('<%= class_name %>.count') do
-      post :create, <%= "#{singular_table_name}: FactoryGirl.attributes_for(:#{singular_table_name})" %>
+      post :create, <%= "#{singular_table_name}: attributes_for(:#{singular_table_name})" %>
     end
 
     assert_redirected_to <%= singular_table_name %>_path(assigns(:<%= singular_table_name %>))
