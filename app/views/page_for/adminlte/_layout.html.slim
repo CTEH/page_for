@@ -11,6 +11,9 @@ html lang=builder.language
     = stylesheet_link_tag "application", media: :all
     = javascript_include_tag "application"
 
+    = builder.context.csrf_meta_tag
+    = yield_proc.call(:head)
+
   body class="#{builder.skin}"
     nav.navbar.navbar-default.navbar-black.hidden-xs.navbar-xs role="navigation"
       /! Brand and toggle get grouped for better mobile display

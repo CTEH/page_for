@@ -45,8 +45,7 @@ class <%=class_name.pluralize%>Controller < ApplicationController
     @nester = find_and_authorize_nester(nesters)
     @<%=singular_table_name%> = load_and_authorize_member(@nester)
 
-    @<%=singular_table_name%>.deleted = true
-    if @<%=singular_table_name%>.save
+    if @<%=singular_table_name%>.destroy
       redirect_to (@nester || <%=table_name%>_path), notice: 'Deleted <%=singular_table_name.titleize.downcase%>'
     else
       render action: 'show', notice: 'Failed to delete <%=class_name.titleize.downcase%>'
