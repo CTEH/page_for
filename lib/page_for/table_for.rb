@@ -238,7 +238,11 @@ module TableFor
       trgt = [self.nester, resource].compact
 
       if self.path
-        self.url = self.table_builder.context.send(self.path, [trgt].flatten, self.params)
+        if path.is_a?(Proc)
+          self.url = path.call(resource)
+        else
+          self.url = self.table_builder.context.send(self.path, [trgt].flatten, self.params)
+        end
       else
         if self.action == :show
           self.url = self.table_builder.context.polymorphic_path([trgt].flatten, self.params)
