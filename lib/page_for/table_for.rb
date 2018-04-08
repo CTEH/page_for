@@ -40,12 +40,8 @@ module TableFor
       self.viewport = options[:viewport] if options[:viewport] != nil
 
       self.ransack_key = options[:ransack_key] ||= "q_#{self.table_id}"
-      self.ransack_obj = options.has_key?(:ransack_obj) ? options[:ransack_obj] : (options[:ransack_obj] = eval("@#{ransack_key}"))
+      self.ransack_obj = options.fetch(:ransack_obj, instance_variable_get("@#{ransack_key}"))
       self.kaminari_key = "p_#{self.table_id}"
-
-      self.setup_abilities if self.apply_abilities
-      self.setup_ransack unless options[:ransack_obj]
-      self.setup_kaminari
 
       self.klass = resources.klass
       self.klass_name = self.klass.name.demodulize.underscore
@@ -66,22 +62,52 @@ module TableFor
       "ActionSheet_T#{self.table_id}_R#{resource.id}"
     end
 
-    # initialization
+    def ransack_obj
+      # If @ransack_obj is passed in via options, we're not going to alter it
+      # If filtered_resources is called before ransack_obj, @ransack_obj will be created (relying on that here!)
+      # If ransack_obj is called before filtered_resources, go ahead and build the whole filtered_resources to ensure @ransack_obj is built
+      return @ransack_obj if @ransack_obj
+      setup_resources
+      @ransack_obj
+    end
+
+    def filtered_resources
+      # Only run setup once
+      return @filtered_resources if @filtered_resources
+      setup_resources
+    end
+
+    def setup_resources
+      @filtered_resources = resources
+      self.setup_abilities
+      self.setup_ransack
+      self.setup_kaminari
+      @filtered_resources
+    end
 
     def setup_abilities
-      self.filtered_resources = self.filtered_resources.accessible_by(self.current_ability)
+      return @filtered_resources unless apply_abilities
+      @filtered_resources = @filtered_resources.accessible_by(self.current_ability)
     end
 
     def setup_ransack
-      self.ransack_obj = self.filtered_resources.search(self.context.params[self.ransack_key.to_sym], search_key: self.ransack_key.to_sym)
-      #self.filtered_resources = self.ransack_obj.result(distinct: true)
-      self.filtered_resources = self.ransack_obj.result()
+      # passing @ransack_obj in options does 2 things:
+      #   1) provides the ransack_obj for later use
+      #   2) prevents filtering results by a default ransack obj
+      # make sure you don't change that behavior
+      return @filtered_resources if @ransack_obj
+      default_params = filters.reduce({}){|memo, f| memo.merge(f.ransack_default_params)}
+      # pp default_params
+      ransack_params = default_params.merge(context.params[ransack_key.to_sym] || {}).presence
+      # pp ransack_params
+      @ransack_obj = @filtered_resources.search(ransack_params, search_key: ransack_key.to_sym)
+      @filtered_resources = ransack_obj.result()
     end
 
     def setup_kaminari
-      if self.paginate
-        self.filtered_resources = self.filtered_resources.page(self.context.params[self.kaminari_key.to_sym])
-        self.filtered_resources = self.filtered_resources.per(self.page_size) if self.page_size
+      if paginate
+        @filtered_resources = @filtered_resources.page(self.context.params[self.kaminari_key.to_sym])
+        @filtered_resources = @filtered_resources.per(self.page_size) if self.page_size
       end
     end
 
@@ -217,7 +243,7 @@ module TableFor
     def initialize(table_builder, action, options, block)
       self.action = action.to_s.underscore.to_sym
       self.table_builder = table_builder
-      self.label = options[:label] || self.label = action.to_s.titleize
+      self.label = options[:label] || action.to_s.titleize
       self.remote = options[:remote] || false
       self.target = options[:target] || nil
       self.class = options[:class] || 'btn btn-sm btn-default'
@@ -269,7 +295,8 @@ module TableFor
 
   class FilterBuilder
     attr_accessor :table_builder, :attribute, :options, :block, :is_content_column, :is_belongs_to,
-                  :content_type, :block, :collection, :class, :ransack_obj, :custom_options, :ransack_clause, :default
+                  :content_type, :block, :collection, :class, :custom_options, :ransack_clause, :default,
+                  :prompt, :label
 
     def initialize(table_builder, attribute, options, block)
       self.table_builder = table_builder
@@ -278,9 +305,11 @@ module TableFor
       self.is_belongs_to = self.table_builder.belongs_to?(attribute)
       self.content_type = self.table_builder.content_type(attribute)
       self.block = block
+      self.label = options[:label] || self.attribute.to_s.titleize
       self.custom_options = options[:options]
-      self.ransack_clause = options[:ransack_clause]
+      self.ransack_clause = (options[:ransack_clause] || "#{self.attribute}_eq").to_s
       self.default = options[:default]
+      self.prompt = options[:prompt].presence || "-- #{self.label} --"
       self.class = options[:class]
     end
 
@@ -296,15 +325,18 @@ module TableFor
       end
     end
 
+    def ransack_default_params
+      default ? { ransack_clause => default } : {}
+    end
+
     def render_custom(form)
       tb = self.table_builder
       c = tb.context
-      ransack_clause = (self.ransack_clause || "#{self.attribute}_eq").to_sym
       values = custom_options
-      value = c.params[tb.ransack_key.to_sym].fetch(ransack_clause) { default }
+      value = (c.params[tb.ransack_key.to_sym] || {}).fetch(ransack_clause, default)
       options = c.options_for_select(values, value)
 
-      return c.select_tag "#{tb.ransack_key}[#{ransack_clause}]", options, { include_blank: true, prompt: "-- #{self.attribute.to_s.titleize} --" }
+      return c.select_tag "#{tb.ransack_key}[#{ransack_clause}]", options, { include_blank: true, prompt: prompt }
     end
 
     def render_content_column(form)
@@ -345,7 +377,7 @@ module TableFor
       rescue Exception=>e
       end
 
-      return c.select_tag "#{tb.ransack_key}[#{predicated_reflection}]", c.options_from_collection_for_select(values, reflection.klass.primary_key, :to_s, selected: value), { include_blank: true, prompt: "-- #{self.attribute.to_s.titleize} --" }
+      return c.select_tag "#{tb.ransack_key}[#{predicated_reflection}]", c.options_from_collection_for_select(values, reflection.klass.primary_key, :to_s, selected: value), { include_blank: true, prompt: prompt }
     end
 
   end
