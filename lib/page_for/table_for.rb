@@ -269,7 +269,7 @@ module TableFor
 
   class FilterBuilder
     attr_accessor :table_builder, :attribute, :options, :block, :is_content_column, :is_belongs_to,
-                  :content_type, :block, :collection, :class, :ransack_obj
+                  :content_type, :block, :collection, :class, :ransack_obj, :custom_options, :ransack_clause, :default
 
     def initialize(table_builder, attribute, options, block)
       self.table_builder = table_builder
@@ -278,19 +278,34 @@ module TableFor
       self.is_belongs_to = self.table_builder.belongs_to?(attribute)
       self.content_type = self.table_builder.content_type(attribute)
       self.block = block
-      self.collection = options['collections']
-      self.class = options['class']
+      self.custom_options = options[:options]
+      self.ransack_clause = options[:ransack_clause]
+      self.default = options[:default]
+      self.class = options[:class]
     end
 
     def render(form)
-      if self.is_content_column
+      if custom_options.present?
+        return render_custom(form)
+      end
+      if is_content_column
         return render_content_column(form)
       end
-      if self.is_belongs_to
+      if is_belongs_to
         return render_belongs_to(form)
       end
     end
 
+    def render_custom(form)
+      tb = self.table_builder
+      c = tb.context
+      ransack_clause = (self.ransack_clause || "#{self.attribute}_eq").to_sym
+      values = custom_options
+      value = c.params[tb.ransack_key.to_sym].fetch(ransack_clause) { default }
+      options = c.options_for_select(values, value)
+
+      return c.select_tag "#{tb.ransack_key}[#{ransack_clause}]", options, { include_blank: true, prompt: "-- #{self.attribute.to_s.titleize} --" }
+    end
 
     def render_content_column(form)
       if self.content_type == :string || self.content_type == :text
@@ -320,7 +335,7 @@ module TableFor
       tb = self.table_builder
       c = tb.context
       reflection = tb.reflection(self.attribute)
-       unique_sql = tb.resources.select(reflection.foreign_key).distinct.to_sql
+      unique_sql = tb.resources.all.tap{|r| r.select_values.clear}.select(reflection.foreign_key).distinct.to_sql
       #unique_sql = tb.resources.distinct.to_sql
       values = reflection.klass.where("#{reflection.klass.primary_key} in (#{unique_sql})")
 
