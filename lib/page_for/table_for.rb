@@ -367,9 +367,9 @@ module TableFor
       tb = self.table_builder
       c = tb.context
       reflection = tb.reflection(self.attribute)
-      unique_sql = tb.resources.all.tap{|r| r.select_values.clear}.select(reflection.foreign_key).distinct.to_sql
+      unique_sql = tb.resources.all.tap{|r| r.select_values.clear}.select(reflection.foreign_key).distinct
       #unique_sql = tb.resources.distinct.to_sql
-      values = reflection.klass.where("#{reflection.klass.primary_key} in (#{unique_sql})")
+      values = reflection.klass.where(reflection.klass.primary_key => unique_sql)
 
       predicated_reflection = "#{reflection.foreign_key}_eq".to_sym
       begin
