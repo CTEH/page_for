@@ -98,7 +98,12 @@ module TableFor
       return @filtered_resources if @ransack_obj
       default_params = filters.reduce({}){|memo, f| memo.merge(f.ransack_default_params)}
       # pp default_params
-      ransack_params = default_params.merge(context.params[ransack_key.to_sym] || {}).presence
+      if ::ActiveRecord::VERSION::MAJOR >= 5 && context.params.respond_to?(:to_unsafe_h)
+        extra_params = context.params.to_unsafe_h[ransack_key.to_sym] || {}
+      else
+        extra_params = context.params[ransack_key.to_sym] || {}
+      end
+      ransack_params = default_params.merge(extra_params).presence
       # pp ransack_params
       @ransack_obj = @filtered_resources.search(ransack_params, search_key: ransack_key.to_sym)
       @filtered_resources = ransack_obj.result()
