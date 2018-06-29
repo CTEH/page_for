@@ -6,8 +6,8 @@
   - page.describe "Viewing <%=class_name.titleize%>"
 <% end -%>
   - page.button :edit, nester: @nester
-<%has_many_associations.find_all{|hm| association_class_exists_with_this_name?(hm)}.each do |hm| -%>
-  - page.add_button :<%=hm.to_s.singularize%>
+<%has_many_association_details.map(&:class_name).uniq.each do |hm| -%>
+  / - page.add_button :<%=hm.to_s.singularize%>
 <%end -%>
 
   - page.section do
@@ -20,15 +20,15 @@
 <%end -%>
 
 
-<%has_many_associations.each do |hm| -%>
-  - page.section(<%=hm.to_s.titleize.inspect%>) do
-    = page.table_for(@<%=singular_table_name%>.<%=hm%>, searchable: false, viewport: false) do |t|
+<%has_many_association_details.each do |hm| -%>
+  - page.section(<%=hm.name.to_s.titleize.inspect%>) do
+    = page.table_for(@<%=singular_table_name%>.<%=hm.name%>, searchable: false, viewport: false) do |t|
       - t.action :view
 
-<%belongs_to_associations(hm.to_s.camelcase.singularize).find_all{|a| a.to_sym != singular_table_name.to_sym}.each do |attribute| -%>
+<%belongs_to_association_details(hm.class_name).find_all{|a| a.class_name.to_sym != singular_table_name.to_sym}.map(&:name).each do |attribute| -%>
       - t.column :<%=attribute%>
 <%end -%>
-<%content_columns(hm.to_s.camelcase.singularize).each do |attribute| -%>
+<%content_columns(hm.class_name).each do |attribute| -%>
       - t.column :<%=attribute%>
 <%end -%>
 <%end -%>

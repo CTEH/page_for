@@ -1,10 +1,12 @@
 require 'rails/generators/base'
 require 'rails/generators/resource_helpers'
+require 'generator_helpers/model_helpers'
 
 module PageFor
   module Generators
     class ScaffoldGenerator < Rails::Generators::NamedBase
       include ::Rails::Generators::ResourceHelpers
+      include PageFor::Generators::ModelHelpers
 
       source_root File.expand_path("../templates", __FILE__)
 
@@ -22,48 +24,6 @@ module PageFor
       end
 
       protected
-
-      def has_many_associations?(cname=nil)
-        cn = cname || class_name
-        cn.constantize.reflect_on_all_associations(:has_many).map(&:name).length > 0
-      end
-
-
-      def has_many_associations(cname=nil)
-        cn = cname || class_name
-        cn.constantize.reflect_on_all_associations(:has_many).map(&:name).select {|hm| hm.downcase != 'versions'}
-      end
-
-      def belongs_to_associations(cname=nil)
-        cn = cname || class_name
-        begin
-          cn.constantize.reflect_on_all_associations(:belongs_to).map(&:name)
-        rescue
-          []
-        end
-      end
-
-      def content_columns(cname=nil)
-        cn = cname || class_name
-        begin
-          cn.constantize.content_columns.map(&:name).map {|c|self.clean(c)}.compact
-        rescue
-          []
-        end
-      end
-
-      def clean(c)
-        c = c.to_s
-        return nil if c.in?(%w(updated_at created_at deleted deleted_at)) || c =~ /_file_size|_updated_at|_content_type/
-        c.to_s.gsub('_file_name','')
-      end
-
-      def association_class_exists_with_this_name?(association_name)
-        klass = Module.const_get(association_name.to_s.singularize.classify)
-        return klass.is_a?(Class)
-      rescue NameError
-        return false
-      end
 
       def guess_sort_column(cname)
         begin
