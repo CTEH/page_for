@@ -162,6 +162,7 @@ module TableFor
     end
 
     def ransack_cont_fields
+      return self.searchable if self.searchable.is_a?(String) && self.searchable.present?
       fnames = self.columns.map {|c|c.attribute}
       fields = self.resources.first.class.content_columns.select { |c| fnames.include?(c.name.to_sym) and c.type == :string || c.type == :text }.map { |c| c.name }
       fields += self.columns.select {|c|c.attribute["."]}.map {|c|c.attribute.gsub(".","_")}
