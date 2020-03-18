@@ -14,27 +14,27 @@ module DefinitionListFor
     end
 
     def value
-      self.dl_builder.resource.send(self.attribute)
+      dl_builder.resource.send(attribute)
     end
 
     def block_contents
-      self.dl_builder.context.capture(self.dl_builder.resource, &self.block)
+      dl_builder.context.capture(dl_builder.resource, &self.block)
     end
 
     def belongs_to?
-      self.dl_builder.belongs_to?(self.attribute)
+      dl_builder.belongs_to?(attribute)
     end
 
     def selector
-      self.dl_builder.selector(self.attribute)
+      dl_builder.selector(attribute)
     end
 
     def dl_selector
-      self.dl_builder.dl_selector(self.attribute)
+      dl_builder.dl_selector(attribute)
     end
 
     def format
-      self.dl_builder.format(self.attribute)
+      dl_builder.format(attribute)
     end
 
   end
@@ -55,7 +55,6 @@ module DefinitionListFor
       self.column_names = self.content_columns.map {|x|x.name.to_s}
       self.belongs_to = self.klass.reflect_on_all_associations(:belongs_to)
       self.bt_names = self.belongs_to.map {|x|x.name.to_s}
-      self.context = context
       self.is_more = false
       self.definitions = []
       self.more_definitions = []
@@ -72,7 +71,7 @@ module DefinitionListFor
       options[:is_more] = false
       options[:block_given] = block_given?
       d = DefinitionBuilder.new(self, attribute, options, block)
-      self.definitions.append(d)
+      definitions.append(d)
       ''
     end
 
@@ -93,7 +92,7 @@ module DefinitionListFor
 
     def render_more_button
       if self.is_more
-        self.context.link_to("More Details...", "#", class: 'visible-phone btn', onclick: "#{self.render_jquery} return false", id: "#{self.dl_selector}");
+        context.link_to("More Details...", "#", class: 'visible-phone btn', onclick: "#{render_jquery} return false", id: "#{dl_selector}");
       else
         ''.html_safe
       end
@@ -106,8 +105,8 @@ module DefinitionListFor
       $(\"dd[dlmore='true']\").removeClass('hidden-phone');
       $(\"dt[dlmore='true']\").show('slow');
       $(\"dd[dlmore='true']\").show('slow');
-      $(\"##{self.dl_selector}\").hide();
-      $(\"##{self.dl_selector}\").removeClass('visible-phone');"
+      $(\"##{dl_selector}\").hide();
+      $(\"##{dl_selector}\").removeClass('visible-phone');"
     end
 
     def dl_selector
@@ -119,36 +118,35 @@ module DefinitionListFor
     end
 
     def format(attribute)
-      v = self.resource.send(attribute)
+      v = resource.send(attribute)
       type = content_type(attribute)
-      if v == nil or v.blank? and type!=:boolean
+      if belongs_to?(attribute)
+        if v
+          if context.can?(:show, v)
+            context.link_to v, v
+          else
+            v.to_s
+          end
+        else
+          "<i>No #{attribute.to_s.titleize}</i>".html_safe
+        end
+      elsif v.blank? && type != :boolean
         return '<i>Blank</i>'.html_safe
-      end
-      if content_column?(attribute)
+      elsif content_column?(attribute)
         if PageFor::Format.respond_to?(type)
           PageFor::Format.send(type, v, self.dl_options)
         else
           "Unhandled type in definition_list_helper"
         end
+      elsif file_method?(attribute)
+        self.context.link_to resource.send("#{attribute}_file_name"), v.url
       else
-        if belongs_to?(attribute)
-          if self.resource.send(attribute)
-            self.context.link_to self.resource.send(attribute), self.resource.send(attribute)
-          else
-            "<i>No #{attribute.to_s.titleize}</i>".html_safe
-          end
-        else
-          if file_method?(attribute)
-            self.context.link_to self.resource.send("#{attribute}_file_name"), self.resource.send(attribute).url
-          else
-            self.resource.send(attribute)
-          end
-        end
+        v
       end
     end
 
     def file_method?(attribute_name)
-      file = self.resource.send(attribute_name) if self.resource.respond_to?(attribute_name)
+      file = resource.send(attribute_name) if resource.respond_to?(attribute_name)
       begin
         file && file.file?
       rescue
@@ -157,11 +155,11 @@ module DefinitionListFor
     end
 
     def content_column?(attribute)
-      self.column_names.include?(attribute.to_s)
+      column_names.include?(attribute.to_s)
     end
 
     def belongs_to?(attribute)
-      self.bt_names.include?(attribute.to_s)
+      bt_names.include?(attribute.to_s)
     end
 
     def content_type(attribute)
