@@ -179,6 +179,7 @@ module PivotFor
       html=''
       while true
         packages = self.pivot_tree.package_next_row
+        break if packages.blank?
         row_key = packages.last[:key]
         html += content_tag(:tr, render_header(packages)+ render_data(row_key) )
         break if self.pivot_tree.row_done
