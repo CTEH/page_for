@@ -157,8 +157,8 @@ module PivotFor
       ''
     end
 
-    def group(method, &block)
-      prg = PivotRowGroup.new(self, method, block)
+    def group(method, options = {}, &block)
+      prg = PivotRowGroup.new(self, method, options, block)
 
       # Setup Group Relationships
       prg.parent_group = self.groups.last
@@ -230,9 +230,10 @@ module PivotFor
 
   class PivotRowGroup
     attr_accessor :pivot_column, :value_key, :parent_group, :child_group, :row_span, :method, :block,
-                  :resources, :pivot_builder
+                  :resources, :pivot_builder, :header
 
-    def initialize(pivot_column, method, block)
+    def initialize(pivot_column, method, options, block)
+      self.header = options[:header]
       self.method = method
       self.pivot_column = pivot_column
       self.row_span = 0
@@ -301,7 +302,12 @@ module PivotFor
     def render_header_row(depth)
       group = self.groups[depth]
       packages = self.pivot_tree.contents_at(depth)
-      spacing = (content_tag(:th, '').html_safe*self.row_header_size).html_safe
+      row_group_header_class = "pivot_for_row_group_header"
+      if depth == pivot_builder.column_builder.groups.size - 1
+        row_group_headers = (pivot_builder.row_builder.groups.map{|g| content_tag(:th, g.header || '', class: row_group_header_class).html_safe}.join).html_safe
+      else
+        row_group_headers = (content_tag(:th, '', class: row_group_header_class).html_safe*self.row_header_size).html_safe
+      end
       if group.options[:vertical]==true
         html_class = 'rotate-45'
         html_style = ''
@@ -312,8 +318,7 @@ module PivotFor
 
       headings = packages.map{|p| content_tag(:th, content_tag('div',content_tag('span', p[:contents])), colspan: p[:spans], style: html_style, class: html_class)}.join.html_safe
 
-      content_tag(:tr, spacing + headings)
-
+      content_tag(:tr, row_group_headers + headings)
     end
 
     ######################################
