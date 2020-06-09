@@ -22,18 +22,19 @@ module PageFor
       end
 
       def has_many_associations?(cname=nil)
-        cn = cname || class_name
-        cn.constantize.reflect_on_all_associations(:has_many).map(&:name).length > 0
+        has_many_associations(cname).length > 0
       end
 
       def has_many_associations(cname=nil)
-        cn = cname || class_name
-        cn.constantize.reflect_on_all_associations(:has_many).map(&:name).select {|hm| hm.downcase != 'versions'}
+        has_many_association_details(cname).map(&:name)
       end
 
       def has_many_association_details(cname=nil)
         cn = cname || class_name
-        cn.constantize.reflect_on_all_associations(:has_many).select {|hm| hm.name.downcase != 'versions'}
+        cn.constantize.reflect_on_all_associations(:has_many).select {|hm|
+          hm.name.downcase != 'versions' &&
+           hm.class_name !~ /activestorage/i
+        }
       end
 
       def has_one_associations(cname=nil)
