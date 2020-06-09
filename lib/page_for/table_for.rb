@@ -4,7 +4,7 @@ module TableFor
     attr_accessor :page, :context, :columns, :resources, :table_options,
                   :content_columns, :column_names,
                   :actions,
-                  :paginate, :page_size, :kaminari_key,
+                  :paginate, :page_size, :page_remote, :kaminari_key, :anchors,
                   :searchable, :search, :filters, :ransack_key, :ransack_obj,
                   :current_ability, :apply_abilities, :filtered_resources,
                   :belongs_to, :belongs_to_names,
@@ -26,6 +26,9 @@ module TableFor
       self.paginate = true
       self.paginate = options[:paginate] unless options[:paginate] == nil
       self.page_size = options[:page_size] unless options[:page_size] == nil
+      self.page_remote = options[:page_remote]
+
+      self.anchors = options.fetch(:anchors, true)
 
       self.freeze_header = true
       self.freeze_header = options[:freeze_header] if options[:freeze_header] != nil
@@ -235,7 +238,9 @@ module TableFor
 
     def render_pagination
       return '' unless self.paginate
-      self.context.paginate self.filtered_resources, param_name: kaminari_key, :theme => PageFor.configuration.theme
+      pagination = self.context.paginate self.filtered_resources, param_name: kaminari_key, :theme => PageFor.configuration.theme, remote: page_remote
+      pagination = pagination.gsub(/href="([^"]+)"/, "href=\"\\1#t_#{table_id}\"").html_safe if anchors
+      pagination
     end
   end
 
