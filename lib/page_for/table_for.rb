@@ -226,7 +226,8 @@ module TableFor
     def ransack_cont_fields
       return self.searchable if self.searchable.is_a?(String) && self.searchable.present?
       fnames = self.columns.map {|c|c.attribute}
-      fields = self.resources.klass.content_columns.select { |c| fnames.include?(c.name.to_sym) and c.type == :string || c.type == :text }.map { |c| c.name }
+      fields = self.resources.klass.content_columns.select { |c| fnames.include?(c.name.to_sym) && (c.type == :string || c.type == :text) }.map { |c| c.name }
+      fields = fields.reject{|f| f =~ /_or_|_and_/} # fields with _or_ or _and_ are supposed to work, but don't
       fields += self.columns.select {|c|c.attribute["."]}.map {|c|c.attribute.gsub(".","_")}
       fields.join("_or_") + "_cont"
     end
