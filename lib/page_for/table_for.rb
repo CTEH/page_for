@@ -361,7 +361,17 @@ module TableFor
     end
 
     def render_cont(form)
-      ""
+      tb = self.table_builder
+      c = tb.context
+      values = tb.resources.all.unscope(:select).distinct.reorder(attribute).limit(1000).pluck(attribute)
+
+      predicated_reflection = "#{attribute}_eq".to_sym
+      begin
+        value = c.params[tb.ransack_key.to_sym][predicated_reflection]
+      rescue Exception=>e
+      end
+
+      c.select_tag "#{tb.ransack_key}[#{predicated_reflection}]", c.options_from_collection_for_select(values, :to_s, :to_s, selected: value), { include_blank: true, prompt: prompt, class: "table_for_filter table_for_filter_cont" }
     end
 
     def render_numeric(form)
@@ -376,7 +386,7 @@ module TableFor
       tb = self.table_builder
       c = tb.context
       reflection = tb.reflection(self.attribute)
-      unique_sql = tb.resources.all.tap{|r| r.select_values.clear}.select(reflection.foreign_key).distinct
+      unique_sql = tb.resources.all.unscope(:select).select(reflection.foreign_key).distinct
       #unique_sql = tb.resources.distinct.to_sql
       values = reflection.klass.where(reflection.klass.primary_key => unique_sql)
 
@@ -386,7 +396,7 @@ module TableFor
       rescue Exception=>e
       end
 
-      return c.select_tag "#{tb.ransack_key}[#{predicated_reflection}]", c.options_from_collection_for_select(values, reflection.klass.primary_key, :to_s, selected: value), { include_blank: true, prompt: prompt }
+      return c.select_tag "#{tb.ransack_key}[#{predicated_reflection}]", c.options_from_collection_for_select(values, reflection.klass.primary_key, :to_s, selected: value), { include_blank: true, prompt: prompt, class: "table_for_filter table_for_filter_bt" }
     end
 
   end
