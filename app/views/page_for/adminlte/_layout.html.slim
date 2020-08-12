@@ -23,7 +23,7 @@ html lang=builder.language
 
       nav.collapse.navbar-collapse.bs-navbar-collapse
         -if builder.global_nav_container
-          = render partial: 'page_for/adminlte/layout/top_bar_simple_navigation.html', locals: {builder: builder.navigation_renderer, container: builder.global_nav_container}
+          = render partial: 'page_for/adminlte/layout/top_bar_simple_navigation.html', locals: {builder: builder, container: builder.global_nav_container}
         = render partial: 'page_for/adminlte/layout/notifications_and_user_menu', locals: {builder: builder}
     .context-bar.hidden-xs
       - if builder.layout_icon
@@ -39,7 +39,7 @@ html lang=builder.language
       nav.navbar.navbar-default.navbar-grey.hidden-xs.navbar-xs role="navigation"
         nav.collapse.navbar-collapse.bs-navbar-collapse style="margin-left: -10px;"
           -if builder.contextual_nav_container
-            = render partial: 'page_for/adminlte/layout/top_bar_simple_navigation.html', locals: {builder: builder.navigation_renderer, container: builder.contextual_nav_container}
+            = render partial: 'page_for/adminlte/layout/top_bar_simple_navigation.html', locals: {builder: builder, container: builder.contextual_nav_container}
 
     /! Sidebar
     .wrapper.row-offcanvas.row-offcanvas-left
