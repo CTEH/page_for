@@ -86,6 +86,7 @@ module DefinitionListFor
       self.is_more = true
       d = DefinitionBuilder.new(self, attribute, options, block)
       self.definitions.append(d)
+
       ''
     end
 

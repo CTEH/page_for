@@ -25,7 +25,7 @@
 div class="primary_items #{'overflow' if page_builder.secondary_items.length > 0}"
   /! Content Header (Page header)
   section.content-header.hidden-xs
-    - if page_builder.buttons and page_builder.buttons.count > 0
+    - if page_builder.buttons && page_builder.buttons.count > 0
       .page_for_page_actions
         - page_builder.buttons.reverse.each do |button|
           div style="display: inline; margin-right: 5px;"
@@ -47,9 +47,9 @@ div class="primary_items #{'overflow' if page_builder.secondary_items.length > 0
 
 
   section class="content"
-    - if page_builder.sections and page_builder.sections.count > 0
+    - if page_builder.sections && page_builder.sections.count > 0
       - page_builder.sections.each do |section|
-        .page_for_section
+        div class=(["page_for_section", section.options&.[](:css_class).presence].compact.join(" "))
           - if section.title.present?
             .page_for_section_header
               h3.box-title

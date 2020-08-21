@@ -303,11 +303,12 @@ module PageFor
 
 
   class SectionBuilder
-    attr_accessor :page_helper, :title, :block, :nowrap, :content
+    attr_accessor :page_helper, :title, :options, :block, :nowrap, :content
 
-    def initialize(page_helper, title, block, nowrap=false)
+    def initialize(page_helper, title, nowrap: false, options: nil, &block)
       self.page_helper = page_helper
       self.title = title
+      self.options = options || {}
       self.block = block
       self.nowrap = nowrap
       self.content = self.page_helper.context.capture(&block).to_s
@@ -418,12 +419,12 @@ module PageFor
 
     def insert(&block)
       # ADD A RAW SECTION WITH NO WRAPPING HTML
-      self.sections << SectionBuilder.new(self,nil,block, true)
+      self.sections << SectionBuilder.new(self,nil, nowrap: true, options: options, &block)
       ''
     end
 
-    def section(title=nil, &block)
-      self.sections << SectionBuilder.new(self, title, block)
+    def section(title=nil, options=nil, &block)
+      self.sections << SectionBuilder.new(self, title, options: options, &block)
       ''
     end
 
