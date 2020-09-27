@@ -201,7 +201,7 @@ module CsvForHelper
     end
 
     def setup_ransack
-      self.table_options[:ransack_obj] = self.filtered_resources.search(self.context.params[self.ransack_key.to_sym], search_key: self.ransack_key.to_sym)
+      self.table_options[:ransack_obj] = self.filtered_resources.ransack(self.context.params[self.ransack_key.to_sym], search_key: self.ransack_key.to_sym)
       self.filtered_resources = self.table_options[:ransack_obj].result(distinct: true)
     end
 

@@ -107,8 +107,27 @@ module TableFor
         extra_params = context.params[ransack_key.to_sym] || {}
       end
       ransack_params = default_params.merge(extra_params).presence
-      # pp ransack_params
-      @ransack_obj = @filtered_resources.search(ransack_params, search_key: ransack_key.to_sym)
+      # pp({ransack_params:ransack_params})
+      ransack_params = ransack_params&.map{|k,v|
+        if v == FilterBuilder::NIL_BOOL
+          if k.to_s =~ /_(eq|in)\z/
+            [k.to_s.gsub(/_(eq|in)\z/, "_null").to_sym, true]
+          else
+            [k, nil]
+          end
+        elsif v.respond_to?(:each)
+          if k.to_s =~ /_in\z/ && v.size == 1 && v.include?(FilterBuilder::NIL_BOOL)
+            [k.to_s.gsub(/_in\z/, "_null").to_sym, true]
+          else
+            [k,v]
+          end
+        else
+          [k,v]
+        end
+      }.to_h.compact
+      # pp({ransack_params_after:ransack_params})
+      @ransack_obj = @filtered_resources.ransack(ransack_params, search_key: ransack_key.to_sym)
+      # pp({ransack_args: @ransack_obj.instance_variable_get(:@scope_args), base: @ransack_obj.base})
       @filtered_resources = ransack_obj.result()
     end
 
@@ -303,11 +322,12 @@ module TableFor
   end
 
   class FilterBuilder
-    attr_accessor :table_builder, :attribute, :options, :block, :is_content_column, :is_belongs_to,
-                  :content_type, :block, :collection, :class, :custom_options, :ransack_clause, :default,
-                  :prompt, :label
+    attr_accessor :filter_options, :table_builder, :attribute, :options, :block, :is_content_column, :is_belongs_to,
+                  :content_type, :block, :collection, :class, :html_options, :custom_options, :ransack_clause, :default,
+                  :prompt, :label, :multiple, :matcher
 
     def initialize(table_builder, attribute, options, block)
+      self.filter_options = options
       self.table_builder = table_builder
       self.attribute = attribute
       self.is_content_column = self.table_builder.content_column?(attribute)
@@ -316,10 +336,22 @@ module TableFor
       self.block = block
       self.label = options[:label] || self.attribute.to_s.titleize
       self.custom_options = options[:options]
-      self.ransack_clause = (options[:ransack_clause] || "#{self.attribute}_eq").to_s
+      self.multiple = !!options[:multiple]
+      self.matcher = options[:matcher] || :eq
+      if multiple
+        self.matcher = if self.matcher.to_sym == :eq
+          :in
+        elsif self.matcher.to_s["_any"]
+          self.matcher
+        else
+          "#{self.matcher}_any".to_sym
+        end
+      end
+      self.ransack_clause = (options[:ransack_clause] || "#{self.attribute}_#{self.matcher}").to_s
       self.default = options[:default]
-      self.prompt = options[:prompt].presence || "-- #{self.label} --"
+      self.prompt = options[:prompt] == false ? false : (options[:prompt].presence || "-- #{self.label} --")
       self.class = options[:class]
+      self.html_options = (options[:html_options] || {}).merge(class: options[:class])
     end
 
     def render(form)
@@ -345,7 +377,7 @@ module TableFor
       value = (c.params[tb.ransack_key.to_sym] || {}).fetch(ransack_clause, default)
       options = c.options_for_select(values, value)
 
-      return c.select_tag "#{tb.ransack_key}[#{ransack_clause}]", options, { include_blank: true, prompt: prompt }
+      return c.select_tag "#{tb.ransack_key}[#{ransack_clause}]", options, { include_blank: true, prompt: prompt, multiple: multiple }
     end
 
     def render_content_column(form)
@@ -358,6 +390,9 @@ module TableFor
       if self.content_type == :decimal || self.content_type == :float || self.content_type == :integer
         return render_numeric(form)
       end
+      if self.content_type == :boolean
+        return render_boolean(form)
+      end
     end
 
     def render_cont(form)
@@ -365,13 +400,14 @@ module TableFor
       c = tb.context
       values = tb.resources.all.unscope(:select).distinct.reorder(attribute).limit(1000).pluck(attribute)
 
-      predicated_reflection = "#{attribute}_eq".to_sym
+      predicated_reflection = ransack_clause.to_sym
       begin
         value = c.params[tb.ransack_key.to_sym][predicated_reflection]
       rescue Exception=>e
       end
-
-      c.select_tag "#{tb.ransack_key}[#{predicated_reflection}]", c.options_from_collection_for_select(values, :to_s, :to_s, selected: value), { include_blank: true, prompt: prompt, class: "table_for_filter table_for_filter_cont" }
+      
+      tag_options = { prompt: prompt, class: "table_for_filter table_for_filter_cont", multiple: multiple }.merge(html_options)
+      c.select_tag "#{tb.ransack_key}[#{predicated_reflection}]", c.options_from_collection_for_select(values, :to_s, :to_s, selected: value), tag_options
     end
 
     def render_numeric(form)
@@ -381,6 +417,8 @@ module TableFor
     def render_datetime(form)
 
     end
+
+    NIL_BOOL = "nilbool"
 
     def render_belongs_to(form)
       tb = self.table_builder
@@ -396,9 +434,31 @@ module TableFor
       rescue Exception=>e
       end
 
-      return c.select_tag "#{tb.ransack_key}[#{predicated_reflection}]", c.options_from_collection_for_select(values, reflection.klass.primary_key, :to_s, selected: value), { include_blank: true, prompt: prompt, class: "table_for_filter table_for_filter_bt" }
+      tag_options = { prompt: prompt, class: "table_for_filter table_for_filter_bt", multiple: multiple }.merge(html_options)
+      return c.select_tag "#{tb.ransack_key}[#{predicated_reflection}]", c.options_from_collection_for_select(values, reflection.klass.primary_key, :to_s, selected: value), tag_options
     end
 
+    def render_boolean(form)
+      tb = self.table_builder
+      c = tb.context
+      values = tb.resources.all.unscope(:select).distinct.reorder(attribute).limit(1000).pluck(attribute)
+      value_map = [
+        values.include?(nil) ? {db: nil, text: "Not Set", value: NIL_BOOL} : nil, # won't show as option if not nullable; nilbool is always converted to nil by TableBuilder
+        {db: true, text: "Yes", value: "t"},
+        {db: false, text: "No", value: "f"},
+      ].compact
+
+      predicated_reflection = ransack_clause.to_sym
+      begin
+        value = c.params[tb.ransack_key.to_sym][predicated_reflection]
+        db_value = value_map.find{|m| m[:value] == value}&.[](:db)
+      rescue Exception=>e
+      end
+
+      options = c.options_for_select(value_map.map{|m| [m[:text], m[:value]]}, value)
+      tag_options = { prompt: prompt, class: "table_for_filter table_for_filter_bool", multiple: multiple }.merge(html_options)
+      c.select_tag "#{tb.ransack_key}[#{predicated_reflection}]", options, tag_options
+    end
   end
 
   class ColumnBuilder
