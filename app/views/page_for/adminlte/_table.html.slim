@@ -4,6 +4,11 @@ div id="t_#{table_builder.table_id}" class="table_for_anchor"
     url = table_builder.context.request.fullpath
     url += "#t_#{table_builder.table_id}" if table_builder.anchors
 
+  - if table_builder.table_actions.present?
+    .table_actions
+      - table_builder.table_actions.each do |ta|
+        = ta.render
+
   .table_search_box
     = search_form_for table_builder.ransack_obj, as: table_builder.ransack_key.to_sym, url: url, html: { class: 'form-absolute' } do |f|
       div.input-group

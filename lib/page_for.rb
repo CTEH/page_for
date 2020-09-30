@@ -155,8 +155,6 @@ module PageFor
     end
   end
 
-
-
   class JavascriptButtonBuilder
     attr_accessor :page_builder, :label, :javascript, :phone_class, :class, :icon
 
@@ -189,7 +187,6 @@ module PageFor
     end
 
   end
-
 
   class ButtonBuilder
     attr_accessor :page_builder, :label, :url_options,
@@ -251,7 +248,6 @@ module PageFor
     end
   end
 
-
   class TabSectionBuilder
     attr_accessor :page, :context, :tab_titles, :tab_contents, :unique, :tab_options, :tab_ids
 
@@ -300,7 +296,6 @@ module PageFor
     end
 
   end
-
 
   class SectionBuilder
     attr_accessor :page_helper, :title, :options, :block, :nowrap, :content
