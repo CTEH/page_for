@@ -8,6 +8,8 @@ module CsvForHelper
     options = args.extract_options!
     if options[:ransack_key]
       options[:ransack_obj] ||= eval("@#{options[:ransack_key]}")
+    elsif options[:table_id]
+      # allow CsvBuilder to build ransack_obj from table_id and params
     else
       options[:ransack_obj] ||= eval("@q_#{resources.first.class.name.underscore}")
     end
@@ -120,9 +122,9 @@ module CsvForHelper
         else
           if paperclip_file?(resource,attribute)
             if nested_send(resource).exists?
-              return self.csv_builder.context.link_to "Download (#{paperclip_size(resource)})", nested_send(resource).url
+              return "#{nested_send(resource).original_filename} (#{paperclip_size(resource)})"
             else
-              return "<i>No #{attribute}</i>".html_safe
+              return nil
             end
           else
             nested_send(resource)
@@ -156,7 +158,7 @@ module CsvForHelper
 
   class CsvBuilder
 
-    attr_accessor :context, :columns, :resources, :table_options,
+    attr_accessor :context, :columns, :resources, :table_options, :table_id,
                   :content_columns, :belongs_to, :column_names, :bt_names,
                   :resource_klass, :actions, :paginate, :searchable, :filtered_resources,
                   :current_ability, :apply_abilities, :search, :page_size, :filters,
@@ -169,6 +171,7 @@ module CsvForHelper
       self.filtered_resources = resources
       self.columns = []
       self.table_options = options
+      self.table_id = options[:table_id]
       self.actions = []
       self.current_ability = context.current_ability
 
@@ -189,6 +192,7 @@ module CsvForHelper
         self.bt_names = self.belongs_to.map {|x|x.name.to_s}
       end
 
+      pp({table_id: table_id, ransack_key: ransack_key})
       ""
     end
 
@@ -197,10 +201,15 @@ module CsvForHelper
     end
 
     def ransack_key
-      table_options[:ransack_key] || "q_#{resources.first.class.name.underscore}"
+      if table_id
+        table_options[:ransack_key] || "q_#{self.table_id}"
+      else
+        table_options[:ransack_key] || "q_#{resources.first.class.name.underscore}"
+      end
     end
 
     def setup_ransack
+      pp({rk: ransack_key.to_sym})
       self.table_options[:ransack_obj] = self.filtered_resources.ransack(self.context.params[self.ransack_key.to_sym], search_key: self.ransack_key.to_sym)
       self.filtered_resources = self.table_options[:ransack_obj].result(distinct: true)
     end

@@ -39,7 +39,9 @@ module TableFor
         end
       else
         if action == :export_csv
-          self.url = table_builder.context.polymorphic_path([trgt].flatten, params.merge(format: :csv, table_id: table_builder.table_id))
+          p = params.merge(format: :csv)
+          p = p.merge(tf_table_id: table_builder.table_id) unless action_options[:skip_table_id]
+          self.url = table_builder.context.polymorphic_path([trgt].flatten, p)
         else
           self.url = table_builder.context.polymorphic_path([action.to_sym, trgt].flatten, params)
         end
