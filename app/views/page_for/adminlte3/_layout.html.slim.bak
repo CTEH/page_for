@@ -5,16 +5,19 @@ html lang=builder.language
     title
       = yield_proc.call(:title)
 
-    = render partial: 'page_for/adminlte/page/metatags'
+    = render partial: "page_for/#{PageFor.configuration.theme}/page/metatags"
 
-    meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport" /
-    = stylesheet_link_tag "application", media: :all
-    = javascript_include_tag "application"
-
-    = builder.context.csrf_meta_tag
-    = yield_proc.call(:head)
+- if builder.context.content_for?(:head)
+      = yield_proc.call(:head)
+    - else
+      meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport" /
+      = csrf_meta_tag
+      = csp_meta_tag
+      = stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload'
+      = javascript_pack_tag 'application', defer: false
 
   body class="#{builder.skin}"
+    header
     nav.navbar.navbar-default.navbar-black.hidden-xs.navbar-xs role="navigation"
       /! Brand and toggle get grouped for better mobile display
       .navbar-header
@@ -23,8 +26,8 @@ html lang=builder.language
 
       nav.collapse.navbar-collapse.bs-navbar-collapse
         - if builder.global_nav_container
-          = render partial: 'page_for/adminlte/layout/top_bar_simple_navigation.html', locals: {builder: builder, container: builder.global_nav_container}
-        = render partial: 'page_for/adminlte/layout/notifications_and_user_menu', locals: {builder: builder}
+          = render partial: 'page_for/#{PageFor.configuration.theme}/layout/top_bar_simple_navigation.html', locals: {builder: builder, container: builder.global_nav_container}
+        = render partial: 'page_for/#{PageFor.configuration.theme}/layout/notifications_and_user_menu', locals: {builder: builder}
     .context-bar.hidden-xs
       - if builder.layout_icon
         .context-bar-icon
@@ -39,7 +42,7 @@ html lang=builder.language
       nav.navbar.navbar-default.navbar-grey.hidden-xs.navbar-xs role="navigation"
         nav.collapse.navbar-collapse.bs-navbar-collapse style="margin-left: -10px;"
           - if builder.contextual_nav_container
-            = render partial: 'page_for/adminlte/layout/top_bar_simple_navigation.html', locals: {builder: builder, container: builder.contextual_nav_container}
+            = render partial: 'page_for/#{PageFor.configuration.theme}/layout/top_bar_simple_navigation.html', locals: {builder: builder, container: builder.contextual_nav_container}
 
     /! Sidebar
     .wrapper.row-offcanvas.row-offcanvas-left
@@ -74,7 +77,7 @@ html lang=builder.language
               h3
                 = builder.contextual_nav_title
             ul.sidebar-menu
-              = render partial: 'page_for/adminlte/layout/simple_navigation_list', locals: {renderer: builder.navigation_renderer, container: builder.contextual_nav_container}
+              = render partial: 'page_for/#{PageFor.configuration.theme}/layout/simple_navigation_list', locals: {renderer: builder.navigation_renderer, container: builder.contextual_nav_container}
               = yield_proc.call(:navbar_secondary_navigation)
 
 
@@ -82,7 +85,7 @@ html lang=builder.language
             h3
               = builder.global_nav_title
             ul.sidebar-menu
-              = render partial: 'page_for/adminlte/layout/simple_navigation_list', locals: {renderer: builder.navigation_renderer, container: builder.global_nav_container}
+              = render partial: 'page_for/#{PageFor.configuration.theme}/layout/simple_navigation_list', locals: {renderer: builder.navigation_renderer, container: builder.global_nav_container}
 
 
       aside.right-side

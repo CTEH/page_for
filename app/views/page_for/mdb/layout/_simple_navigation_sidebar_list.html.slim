@@ -1,0 +1,17 @@
+- container.selected_class = 'active'
+
+- container.items.each do |item|
+  - if item.sub_navigation
+    li class="sidenav-item"
+      a class="sidenav-link" href=item.url
+        - if item.html_options[:icon]
+          i class="#{item.html_options[:icon]}"
+        span = item.name
+      ul class="sidenav-collapse show"
+        = render partial: "page_for/#{PageFor.configuration.theme}/layout/simple_navigation_sidebar_list", locals: {container: item.sub_navigation, renderer: renderer}
+  - else
+    li class="sidenav-item"
+      a class="sidenav-link" href=item.url
+        - if item.html_options[:icon]
+          i class="#{item.html_options[:icon]}"
+        span = item.name

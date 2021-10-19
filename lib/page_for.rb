@@ -8,7 +8,10 @@ require 'page_for/pivot_for'
 require 'page_for/routes_for'
 require 'page_for/layout_for'
 
+# require 'simple_form_for/hyperia'
 require 'simple_form_for/adminlte'
+require 'simple_form_for/adminlte3'
+require 'simple_form_for/mdb'
 
 # require 'page_for/engine'
 
@@ -32,13 +35,14 @@ module PageFor
     attr_accessor :datetime_format
 
     def initialize
-      @theme = 'hyperia'
+      @theme = 'adminlte3'
       @date_format = '%b %d, %Y'
       @datetime_format = '%b %d, %Y %I:%M %p %Z'
     end
 
     def simple_form_for(theme)
       # Needs simple_form 3.1.0 (not 3.0.2)
+      puts("EVALUATING simple_form_for")
       eval("initialize_#{theme}_simple_form_for()")
     end
   end

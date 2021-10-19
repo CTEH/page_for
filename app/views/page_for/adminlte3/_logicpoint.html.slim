@@ -1,0 +1,19 @@
+javascript:
+  function run_#{builder.uuid}() {
+    if (#{builder.jscript_condition}) {
+      $('#{builder.show_fields_selector}').show('fast');
+      $('#{builder.enable_fields_selector}').prop('disabled', false);
+    }
+    else {
+      $('#{builder.show_fields_selector}').hide('fast');
+      $('#{builder.enable_fields_selector}').prop('disabled', true);
+    }
+  }
+
+  $(function() {
+    run_#{builder.uuid}();
+    $('#{builder.watched_fields_selector}').bind("change paste keyup", function() {
+      run_#{builder.uuid}();
+    })
+
+  });

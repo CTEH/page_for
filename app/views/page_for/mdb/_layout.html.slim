@@ -1,0 +1,110 @@
+doctype html
+html lang=builder.language
+  head
+    meta charset="UTF-8" /
+    title
+      = yield_proc.call(:title)
+
+    = render partial: "page_for/#{PageFor.configuration.theme}/page/metatags"
+
+    - if builder.context.content_for?(:head)
+      = yield_proc.call(:head)
+    - else
+      meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport" /
+      = csrf_meta_tag
+      = csp_meta_tag
+      = stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload'
+      = javascript_pack_tag 'application', defer: false
+    
+  body class="#{builder.skin}"
+    header
+      / - if builder.context.content_for?(:global_navbar)
+      /   = yield_proc.call(:global_navbar)
+      / - else
+      /   nav.navbar.navbar-default.navbar-black.hidden-xs.navbar-xs role="navigation"
+      /     /! Brand and toggle get grouped for better mobile display
+      /     .navbar-header
+      /       a.navbar-brand href="javascript:void(0)"
+      /         = builder.global_nav_title
+
+      /     nav.collapse.navbar-collapse.bs-navbar-collapse
+      /       -if builder.global_nav_container
+      /         = render partial: "page_for/#{PageFor.configuration.theme}/layout/top_bar_simple_navigation.html", locals: {builder: builder, container: builder.global_nav_container}
+      /       = render partial: "page_for/#{PageFor.configuration.theme}/layout/notifications_and_user_menu", locals: {builder: builder}
+      / - if builder.context.content_for?(:context_bar)
+      /   = yield_proc.call(:context_bar)
+      / - else
+      /   .context-bar.hidden-xs
+      /     - if builder.layout_icon
+      /       .context-bar-icon
+      /         i class=builder.layout_icon
+      /     - if builder.bread_crumbs.length > 0
+      /       ol.breadcrumb
+      /         - builder.bread_crumbs.each do |link|
+      /           li
+      /             = link.render()
+
+      /   - if builder.contextual_nav_container
+      /     nav.navbar.navbar-default.navbar-grey.hidden-xs.navbar-xs role="navigation"
+      /       nav.collapse.navbar-collapse.bs-navbar-collapse style="margin-left: -10px;"
+      /         - if builder.contextual_nav_container
+      /           = render partial: "page_for/#{PageFor.configuration.theme}/layout/top_bar_simple_navigation.html", locals: {builder: builder, container: builder.contextual_nav_container}
+
+      / / ! Sidebar
+      .sidenav.bg-light data={color: "dark", mode: "side", hidden: "false", "scroll-container" => "#scrollContainer"}
+        .mt-4
+          - if builder.usermenu
+            /! Sidebar user panel
+            .user-panel
+              .pull-left.image
+                img.img-circle alt=("User Image") src="#{builder.usermenu.avatar}" /
+              .pull-left.info
+                p
+                  = builder.usermenu.name
+                = builder.usermenu.title
+            div.pl-3 id="header-content"
+              img class="rounded-circle img-fluid mb-3" alt=("User Image") src="#{builder.usermenu.avatar}" /
+              h4
+                span style="white-space: nowrap" = builder.usermenu.name
+              p = builder.usermenu.title
+            hr class="mb-0"
+
+        - if builder.search_path
+          form.sidebar-form action="#{builder.search_path}" method="get"
+            .input-group
+              input.form-control name="search_phrase" placeholder="Search..." type="text" /
+              span.input-group-btn
+                button#search-btn.btn.btn-flat name="seach" type="submit"
+                  i.fa.fa-search
+        div id="scrollContainer"
+          - if builder.contextual_nav_container
+            - if builder.bread_crumbs.length > 0
+              - builder.bread_crumbs.each do |link|
+                h3
+                  = link.render()
+            - else
+              h3
+                = builder.contextual_nav_title
+            ul class="sidenav-menu"
+              = render partial: "page_for/#{PageFor.configuration.theme}/layout/simple_navigation_sidebar_list", locals: {renderer: builder.navigation_renderer, container: builder.contextual_nav_container}
+              li class="sidenav-item"
+                a class="sidenav-link" href="/"
+                  i class="fas fa-envelope pr-3"
+                  ' Inbox
+          - if builder.global_nav_container
+            h3
+              = builder.global_nav_title
+            ul.sidebar-menu
+              = render partial: "page_for/#{PageFor.configuration.theme}/layout/simple_navigation_sidebar_list", locals: {renderer: builder.navigation_renderer, container: builder.global_nav_container}
+
+    main
+      section.flash_messages
+        - builder.context.flash.each do |name, msg|
+          - alert_class = ({notice: :info, error: :danger}[name.to_sym] || name).to_s
+          div class="alert alert-dismissible alert-#{alert_class}" role="alert"
+            button type="button" class="close" data-dismiss="alert" aria-hidden="true"
+              | &times;
+            .alert-message = msg.html_safe
+
+      = yield_proc.call(nil)
+    = yield_proc.call(:footer)

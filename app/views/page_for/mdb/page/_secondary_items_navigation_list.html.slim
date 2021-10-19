@@ -1,0 +1,25 @@
+- container.selected_class = 'active'
+
+- container.items.each do |item|
+  - if item.sub_navigation
+    = render partial: 'page_for/adminlte/page/secondary_items_navigation_list', locals: {container: item.sub_navigation, renderer: renderer}
+  - else
+    li
+      a href=item.url
+        span
+          = item.name
+          - if item.html_options[:success]
+            small.badge.pull-right.bg-green = item.html_options[:success]
+          - if item.html_options[:info]
+            small.badge.pull-right.bg-blue = item.html_options[:info]
+          - if item.html_options[:warning]
+            small.badge.pull-right.bg-yellow = item.html_options[:warning]
+          - if item.html_options[:danger]
+            small.badge.pull-right.bg-red = item.html_options[:danger]
+
+      -if item.html_options[:description]
+        = ' - '
+        = item.html_options[:description]
+
+
+

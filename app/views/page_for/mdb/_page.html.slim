@@ -1,13 +1,13 @@
 /! Use render_page_for and partials instead of do blocks to avoid weirdness
-- unless page_builder.context.content_for? :navbar
+- if not page_builder.context.content_for? :navbar
   - page_builder.context.content_for :navbar, render_page_for(partial: "page/content_for_navbar", locals: { page_builder: page_builder })
 
 /! Use render_page_for and partials instead of do blocks to avoid weirdness
-- unless page_builder.context.content_for? :title
+- if not page_builder.context.content_for? :title
   - page_builder.context.content_for :title, render_page_for(partial: "page/content_for_title", locals: { page_builder: page_builder })
 
 /! Use render_page_for and partials instead of do blocks to avoid weirdness
-- unless page_builder.context.content_for? :navbar_secondary_navigation
+- if not page_builder.context.content_for? :navbar_secondary_navigation
   - page_builder.context.content_for :navbar_secondary_navigation, render_page_for(partial: "page/navbar_secondary_navigation", locals: { page_builder: page_builder })
 
 
@@ -47,17 +47,14 @@ div class="primary_items #{'overflow' if page_builder.secondary_items.length > 0
 
 
   section class="content"
-    - page_builder.sections&.each do |section|
-      - if section.nowrap
-        = section.title
-        = section.content
-      - else
-        div class=(["page_for_section card card-primary", section.options&.[](:css_class).presence].compact.join(" "))
+    - if page_builder.sections && page_builder.sections.count > 0
+      - page_builder.sections.each do |section|
+        div class=(["page_for_section", section.options&.[](:css_class).presence].compact.join(" "))
           - if section.title.present?
-            .page_for_section_header.card-header
+            .page_for_section_header
               h3.box-title
                 = section.title
-          .page_for_section_content.card-body
+          .page_for_section_content
             = section.content
 
     - [page_builder.top_tab_section_builder, page_builder.tab_section_builder].select {|x|x.tab_contents.length > 0}.each do |tab_section_builder|

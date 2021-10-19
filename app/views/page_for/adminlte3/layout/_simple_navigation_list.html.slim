@@ -1,0 +1,32 @@
+- container.selected_class = 'active'
+
+- container.items.each do |item|
+  - if item.sub_navigation
+    li class="nav-item has-treeview menu-open"
+      a href="#" class="nav-link"
+        -if item.html_options[:icon]
+          i> class="#{item.html_options[:icon]}"
+        -else
+          i> class="far fa-circle nav-icon"
+        span>
+          = item.name
+        i class="right fas fa-angle-left"
+      ul class="nav nav-treeview"
+        = render partial: "page_for/#{PageFor.configuration.theme}/layout/simple_navigation_list", locals: {container: item.sub_navigation, renderer: renderer}
+  - else
+    li class="nav-item"
+      a href=item.url class="nav-link"
+        -if item.html_options[:icon]
+          i> class="#{item.html_options[:icon]}"
+        -else
+          i> class="far fa-circle nav-icon"
+        span
+          = item.name
+          - if item.html_options[:success]
+            small.badge.pull-right.bg-green = item.html_options[:success]
+          - if item.html_options[:info]
+            small.badge.pull-right.bg-blue = item.html_options[:info]
+          - if item.html_options[:warning]
+            small.badge.pull-right.bg-yellow = item.html_options[:warning]
+          - if item.html_options[:danger]
+            small.badge.pull-right.bg-red = item.html_options[:danger]

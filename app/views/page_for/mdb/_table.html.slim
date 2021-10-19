@@ -1,0 +1,55 @@
+div id="t_#{table_builder.table_id}" class="table_for_anchor"
+-if table_builder.searchable
+  ruby:
+    url = table_builder.context.request.fullpath
+    url += "#t_#{table_builder.table_id}" if table_builder.anchors
+
+  - if table_builder.table_actions.present?
+    .table_actions
+      - table_builder.table_actions.each do |ta|
+        = ta.render
+
+  .table_search_box
+    = search_form_for table_builder.ransack_obj, as: table_builder.ransack_key.to_sym, url: url, html: { class: 'form-absolute' } do |f|
+      div.input-group
+        = f.text_field table_builder.ransack_cont_fields.to_sym, class: "form-control pull-right", placeholder: "Search #{table_builder.klass_name.pluralize.titleize}..."
+        div.input-group-btn
+          = f.button "&nbsp;<i class='fa fa-search'></i>&nbsp;".html_safe, class: "btn btn-default"
+      -table_builder.filters.each do |filter|
+        = filter.render(f)
+
+- if table_builder.filtered_resources.length > 0
+  div class="#{'viewport' if table_builder.viewport}"
+    table class="table table-striped table-condensed #{table_builder.table_class}"
+      thead
+        tr
+          - if table_builder.actions.present?
+            th.tblfor_actions
+          - if table_builder.ransack_obj
+            - table_builder.columns.each do |column_builder|
+              th class="#{ column_builder.header_class } #{column_builder.if_hidden('hidden-xs')}"
+               = column_builder.sort_link
+          - else
+            - table_builder.columns.each do |column_builder|
+              th class="#{ column_builder.header_class } #{column_builder.if_hidden('hidden-xs')}"
+                = column_builder.sort_link_title
+          th.tblfor_buffer
+
+      tbody
+        - table_builder.filtered_resources.each do |resource|
+          - row_attributes = table_builder.row_attributes(resource)
+          tr *row_attributes
+            - if table_builder.actions.present?
+              td.tblfor_actions
+                = page.action_sheet_for "btn-xs" do |sheet|
+                  - table_builder.actions.each do |action|
+                    - sheet.link_to(action.label, action.url(resource), method: action.method, remote: action.remote) if action.can?(resource)
+            - table_builder.columns.each do |column_builder|
+              td id="#{column_builder.table_builder.klass_name}_#{resource.id}_#{column_builder.attribute}" class="#{column_builder.cell_class}  #{column_builder.if_hidden('hidden-xs')}"
+                = column_builder.format(resource).to_s.html_safe
+            td.tblfor_buffer
+
+  = table_builder.render_pagination
+
+- else
+  p No items to list
