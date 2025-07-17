@@ -201,11 +201,11 @@ module TableFor
     end
 
     def content_column?(attribute)
-      self.column_names.include?(attribute.to_s)
+      !belongs_to?(attribute) && column_names.include?(attribute.to_s)
     end
 
     def belongs_to?(attribute)
-      self.belongs_to_names.include?(attribute.to_s)
+      belongs_to_names.include?(attribute.to_s)
     end
 
     def reflection(attribute)

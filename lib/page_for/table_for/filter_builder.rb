@@ -2,7 +2,7 @@ module TableFor
   class FilterBuilder
     attr_accessor :filter_options, :table_builder, :attribute, :options, :block, :is_content_column, :is_belongs_to,
                   :content_type, :block, :collection, :class, :html_options, :custom_options, :ransack_clause, :default,
-                  :prompt, :label, :multiple, :matcher
+                  :prompt, :label, :multiple, :matcher, :order, :display_method
 
     def initialize(table_builder, attribute, options, block)
       self.filter_options = options
@@ -30,6 +30,8 @@ module TableFor
       self.prompt = options[:prompt] == false ? false : (options[:prompt].presence || "-- #{self.label} --")
       self.class = options[:class]
       self.html_options = (options[:html_options] || {}).merge(class: options[:class])
+      self.order = options[:order]
+      self.display_method = options[:display_method]
     end
 
     def render(form)
@@ -102,9 +104,10 @@ module TableFor
       tb = self.table_builder
       c = tb.context
       reflection = tb.reflection(self.attribute)
-      unique_sql = tb.resources.all.unscope(:select).select(reflection.foreign_key).distinct
+      unique_sql = tb.resources.all.unscope(:select, :order, :limit, :offset).select(reflection.foreign_key).distinct
       #unique_sql = tb.resources.distinct.to_sql
       values = reflection.klass.where(reflection.klass.primary_key => unique_sql)
+      values = values.reorder(order) if order.present?
 
       predicated_reflection = "#{reflection.foreign_key}_eq".to_sym
       begin
