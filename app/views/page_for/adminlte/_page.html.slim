@@ -49,13 +49,16 @@ div class="primary_items #{'overflow' if page_builder.secondary_items.length > 0
   section class="content"
     - if page_builder.sections && page_builder.sections.count > 0
       - page_builder.sections.each do |section|
-        div class=(["page_for_section", section.options&.[](:css_class).presence].compact.join(" "))
-          - if section.title.present?
-            .page_for_section_header
-              h3.box-title
-                = section.title
-          .page_for_section_content
-            = section.content
+        - if section.nowrap
+          = section.content
+        - else
+          div class=(["page_for_section", section.options&.[](:css_class).presence].compact.join(" "))
+            - if section.title.present?
+              .page_for_section_header
+                h3.box-title
+                  = section.title
+            .page_for_section_content
+              = section.content
 
     - [page_builder.top_tab_section_builder, page_builder.tab_section_builder].select {|x|x.tab_contents.length > 0}.each do |tab_section_builder|
       div.nav-tabs-custom.nav-tab-flat

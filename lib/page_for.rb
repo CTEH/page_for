@@ -414,7 +414,7 @@ module PageFor
 
     def insert(&block)
       # ADD A RAW SECTION WITH NO WRAPPING HTML
-      self.sections << SectionBuilder.new(self,nil, nowrap: true, options: options, &block)
+      self.sections << SectionBuilder.new(self, nil, nowrap: true, &block)
       ''
     end
 

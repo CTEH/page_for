@@ -1,11 +1,7 @@
-- if section_builder.title.present?
-  div class="module head"
+- module_class = ["module", section_builder.title.present? ? "head" : "no-head", section_builder.options&.[](:css_class).presence].compact.join(" ")
+div class=module_class
+  - if section_builder.title.present?
     div class="module-head"
       b #{section_builder.title}
-    div class="module-body"
-      | #{section_builder.content}
-- else
-  div class="module no-head"
-    div class="module-body"
-      | #{section_builder.content}
-
+  div class="module-body"
+    | #{section_builder.content}
