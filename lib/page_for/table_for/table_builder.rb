@@ -47,7 +47,7 @@ module TableFor
       self.ransack_obj = options.fetch(:ransack_obj, instance_variable_get("@#{ransack_key}"))
       self.kaminari_key = "p_#{self.table_id}"
 
-      self.klass = resources.klass
+      self.klass = options[:klass] || resources.klass
       self.klass_name = self.klass.name.demodulize.underscore
 
       self.content_columns = self.klass.content_columns || []
@@ -70,7 +70,7 @@ module TableFor
       # If @ransack_obj is passed in via options, we're not going to alter it
       # If filtered_resources is called before ransack_obj, @ransack_obj will be created (relying on that here!)
       # If ransack_obj is called before filtered_resources, go ahead and build the whole filtered_resources to ensure @ransack_obj is built
-      return @ransack_obj if @ransack_obj
+      return @ransack_obj unless @ransack_obj.nil?
       setup_resources
       @ransack_obj
     end
@@ -99,7 +99,7 @@ module TableFor
       #   1) provides the ransack_obj for later use
       #   2) prevents filtering results by a default ransack obj
       # make sure you don't change that behavior
-      return @filtered_resources if @ransack_obj
+      return @filtered_resources if !searchable || !@ransack_obj.nil?
       default_params = filters.reduce({}){|memo, f| memo.merge(f.ransack_default_params)}
       # pp default_params
       if ::ActiveRecord::VERSION::MAJOR >= 5 && context.params.respond_to?(:to_unsafe_h)
